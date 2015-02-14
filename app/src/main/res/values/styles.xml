@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/amae_primary_text</item>
+        <item name="android:textColorSecondary">@color/amae_secondary_text</item>
+        <item name="android:spinnerStyle">@style/AmaeSpinner</item>
+        <item name="android:spinnerItemStyle">@style/AmaeSpinnerItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/AmaeSpinnerItem</item>
+    </style>
+    <style name="AmaeTextLarge" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/amae_text_icons</item>
+    </style>
+    <style name="AmaeTextMedium" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/amae_text_icons</item>
+    </style>
+    <style name="AmaeSpinner" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/amae_primary</item>
+        <item name="android:background">@null</item>
+    </style>
+    <style name="AmaeSpinnerItem" parent="Base.Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@color/amae_primary_text</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:paddingLeft">9dp</item>
+    </style>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:id="@+id/btn_adder"
+        android:text="+"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="0dp"
+        android:textColor="@color/amae_text_icons"
+        android:textSize="24sp"
+        android:background="@drawable/amae_button"
+        android:singleLine="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:inputType="number"
+        android:ems="20"
+        android:id="@+id/txt_value"
+        android:layout_toRightOf="@+id/btn_substractor"
+        android:layout_toLeftOf="@+id/btn_adder"
+        android:layout_toStartOf="@+id/btn_adder"
+        android:text="0"
+        android:singleLine="true"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/amae_accent"
+        android:background="@color/amae_background"
+        android:padding="0dp"/>
+
+    <Button
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:id="@+id/btn_substractor"
+        android:text="-"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:padding="0dp"
+        android:textColor="@color/amae_text_icons"
+        android:textSize="24sp"
+        android:background="@drawable/amae_button"
+        android:singleLine="true"
+        android:clickable="true"
+        android:longClickable="true"/>
+
+</RelativeLayout>

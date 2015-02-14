@@ -1,0 +1,73 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="hk.amae.sampler.BasicInfoFrag"
+    android:rowCount="5"
+    android:columnCount="2"
+    android:id="@+id/gridlayout"
+    android:background="@color/amae_dark_primary">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/AmaeTextLarge"
+        android:text="@string/app_title"
+        android:id="@+id/textView"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:gravity="center"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:layout_columnSpan="2"
+        android:textColor="@color/amae_text_icons" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/AmaeTextMedium"
+        android:text="@string/app_model"
+        android:id="@+id/textView2"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:gravity="center"
+        android:layout_columnSpan="2"
+        android:textColor="#8affffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/AmaeTextMedium"
+        android:text="大气压101.73kPa"
+        android:id="@+id/txt_atm"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:textColor="@color/amae_text_icons"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/AmaeTextMedium"
+        android:text="温度23.4°C"
+        android:id="@+id/txt_temp"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:textColor="@color/amae_text_icons"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/AmaeTextMedium"
+        android:text="2015-02-08 16:38:00"
+        android:id="@+id/txt_datetime"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:textColor="#8affffff"
+        android:layout_gravity="center"
+        android:paddingBottom="9dp" />
+</GridLayout>

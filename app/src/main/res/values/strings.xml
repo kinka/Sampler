@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">采样控制台</string>
+    <string name="app_title">采样器Wifi控制平台</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_model">AMAE 型号：EM-500</string>
+    <string name="channel_prompt">采样通道</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+<string-array name="channels_array">
+    <item>CH1</item>
+    <item>CH2</item>
+    <item>CH3</item>
+    <item>CH4</item>
+    <item>CH5</item>
+    <item>CH6</item>
+    <item>CH7</item>
+    <item>CH8</item>
+</string-array>
+</resources>

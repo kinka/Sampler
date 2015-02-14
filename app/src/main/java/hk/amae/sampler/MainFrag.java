@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
@@ -17,10 +18,13 @@ import hk.amae.widget.TextProgressBar;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFrag extends Fragment {
+public class MainFrag extends Fragment implements View.OnClickListener {
     Spinner spinChannel;
     TextProgressBar progSampling;
     Activity parent;
+
+    private boolean isLocked = false;
+    private boolean isRunning = false;
 
     public MainFrag() {
 
@@ -38,7 +42,8 @@ public class MainFrag extends Fragment {
         spinChannel.setAdapter(spinAdapter);
 
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
-//        progSampling.setText("Loading 50%...");
+        v.findViewById(R.id.toggle_lock).setOnClickListener(this);
+        v.findViewById(R.id.toggle_run).setOnClickListener(this);
         return v;
     }
 
@@ -49,5 +54,24 @@ public class MainFrag extends Fragment {
 
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.toggle_lock:
+                isLocked = !isLocked;
+                if (isLocked)
+                    ((ImageButton) view).setImageResource(R.drawable.lock);
+                else
+                    ((ImageButton) view).setImageResource(R.drawable.unlock);
+                break;
 
+            case R.id.toggle_run:
+                isRunning = !isRunning;
+                if (isRunning)
+                    ((ImageButton) view).setImageResource(R.drawable.pause);
+                else
+                    ((ImageButton) view).setImageResource(R.drawable.play);
+                break;
+        }
+    }
 }

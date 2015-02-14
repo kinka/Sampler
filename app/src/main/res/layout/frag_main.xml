@@ -25,9 +25,14 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton"
+            android:id="@+id/toggle_lock"
             android:layout_weight="0.25"
-            android:src="@drawable/ic_launcher" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@drawable/unlock"
+            android:background="@null" />
 
         <Spinner
             android:layout_width="48dp"
@@ -52,20 +57,17 @@
             android:textColor="@color/amae_secondary_text" />
 
         <view
-            class="hk.amae.widget.TextProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="56dp"
-            android:layout_height="18dp"
-            android:id="@+id/prog_charging"
-            android:layout_gravity="center"
-            android:progress="50"
-            android:max="100"
-            android:progressDrawable="@drawable/amae_progressbar"
-            components:textSize="12sp"
-            components:textColor="@color/amae_text_icons"
-            components:text="51%"
-            android:indeterminate="false"
-            android:layout_weight="0.3" />
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            class="hk.amae.widget.Battery"
+            android:id="@+id/view"
+            components:cap="99"
+            android:paddingLeft="0dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter" />
 
     </LinearLayout>
 
@@ -91,10 +93,14 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_status"
+            android:id="@+id/toggle_run"
             android:layout_weight="0.5"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/play"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:padding="9dp" />
 
         <TextView
             android:layout_width="0dp"
@@ -166,7 +172,7 @@
             android:textColor="@color/amae_secondary_text" />
         <hk.amae.widget.NumberOperator
             android:layout_width="0dp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.6"
             android:layout_height="match_parent"
             android:paddingTop="9dp"
             android:paddingBottom="9dp"></hk.amae.widget.NumberOperator>
@@ -196,7 +202,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="9dp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.6"
             android:paddingBottom="9dp"></hk.amae.widget.NumberOperator>
     </LinearLayout>
 

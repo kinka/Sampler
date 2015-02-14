@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:layout_width="24dp"
+        android:layout_width="36dp"
         android:layout_height="match_parent"
         android:id="@+id/btn_adder"
         android:text="+"
@@ -35,7 +35,7 @@
         android:padding="0dp"/>
 
     <Button
-        android:layout_width="24dp"
+        android:layout_width="36dp"
         android:layout_height="match_parent"
         android:id="@+id/btn_substractor"
         android:text="-"

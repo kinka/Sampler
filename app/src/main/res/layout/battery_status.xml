@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="32dp"
+        android:id="@+id/img_plug"
+        android:src="@drawable/plug"
+        android:scaleType="fitCenter"
+        android:visibility="visible" />
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/img_battery"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/battery_25"
+        android:scaleType="fitStart"
+        android:layout_marginRight="9dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="25%"
+        android:id="@+id/txt_remain"
+        android:gravity="center" />
+</LinearLayout>

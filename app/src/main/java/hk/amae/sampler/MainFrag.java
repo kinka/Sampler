@@ -25,6 +25,7 @@ public class MainFrag extends Fragment implements View.OnClickListener {
 
     private boolean isLocked = false;
     private boolean isRunning = false;
+    private boolean isCharging = false;
 
     public MainFrag() {
 

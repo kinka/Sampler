@@ -30,7 +30,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:cropToPadding="false"
-            android:padding="5dp"
+            android:padding="9dp"
             android:src="@drawable/unlock"
             android:background="@null" />
 
@@ -51,23 +51,22 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="手动"
             android:id="@+id/textView3"
-            android:layout_weight="0.3"
+            android:layout_weight="0.2"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/amae_secondary_text" />
 
         <view
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
             class="hk.amae.widget.Battery"
             android:id="@+id/view"
-            components:cap="99"
-            android:paddingLeft="0dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
+            components:cap="75"
+            components:charging="true"
             android:cropToPadding="false"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:layout_weight="0.4"
+            android:layout_gravity="center" />
 
     </LinearLayout>
 

@@ -7,5 +7,6 @@
     </declare-styleable>
     <declare-styleable name="Battery">
         <attr name="cap" format="integer"></attr>
+        <attr name="charging" format="boolean"></attr>
     </declare-styleable>
 </resources>

@@ -2,15 +2,19 @@ package hk.amae.sampler;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.Window;
+import android.widget.ScrollView;
 
 import hk.amae.util.Comm;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+       implements MainFrag.OnMainFragListerer {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +52,20 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Comm.logI("X " + ev.getX() + ", " + ev.getY());
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void onLockToggled(boolean locked) {
+        ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+        if (locked)
+            scrollContainer.setForeground(new ColorDrawable(0x40727272));
+        else
+            scrollContainer.setForeground(new ColorDrawable(0x00000000));
     }
 }

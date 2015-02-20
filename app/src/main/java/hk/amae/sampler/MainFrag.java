@@ -2,6 +2,7 @@ package hk.amae.sampler;
 
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import hk.amae.util.Comm;
 import hk.amae.widget.TextProgressBar;
 
 
@@ -19,9 +21,12 @@ import hk.amae.widget.TextProgressBar;
  * A simple {@link Fragment} subclass.
  */
 public class MainFrag extends Fragment implements View.OnClickListener {
+    OnMainFragListerer mCallback;
+
     Spinner spinChannel;
     TextProgressBar progSampling;
     Activity parent;
+    ImageButton btnLock;
 
     private boolean isLocked = false;
     private boolean isRunning = false;
@@ -43,8 +48,10 @@ public class MainFrag extends Fragment implements View.OnClickListener {
         spinChannel.setAdapter(spinAdapter);
 
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
-        v.findViewById(R.id.toggle_lock).setOnClickListener(this);
+        btnLock = (ImageButton) v.findViewById(R.id.toggle_lock);
+        btnLock.setOnClickListener(this);
         v.findViewById(R.id.toggle_run).setOnClickListener(this);
+
         return v;
     }
 
@@ -52,7 +59,7 @@ public class MainFrag extends Fragment implements View.OnClickListener {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         parent = activity;
-
+        mCallback = (OnMainFragListerer) parent;
     }
 
     @Override
@@ -64,6 +71,9 @@ public class MainFrag extends Fragment implements View.OnClickListener {
                     ((ImageButton) view).setImageResource(R.drawable.lock);
                 else
                     ((ImageButton) view).setImageResource(R.drawable.unlock);
+                Rect rect = new Rect();
+                btnLock.getDrawingRect(rect);
+                mCallback.onLockToggled(isLocked);
                 break;
 
             case R.id.toggle_run:
@@ -74,5 +84,9 @@ public class MainFrag extends Fragment implements View.OnClickListener {
                     ((ImageButton) view).setImageResource(R.drawable.play);
                 break;
         }
+    }
+
+    public interface OnMainFragListerer {
+        public void onLockToggled(boolean locked);
     }
 }

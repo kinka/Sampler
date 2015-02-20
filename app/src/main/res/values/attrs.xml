@@ -9,4 +9,7 @@
         <attr name="cap" format="integer"></attr>
         <attr name="charging" format="boolean"></attr>
     </declare-styleable>
+    <declare-styleable name="NumberOperator">
+        <attr name="delta" format="integer"></attr>
+    </declare-styleable>
 </resources>

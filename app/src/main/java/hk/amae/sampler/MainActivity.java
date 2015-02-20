@@ -68,7 +68,7 @@ public class MainActivity extends Activity
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (isLocked) { // think about scrolling
-            int statusHeight = (int) (25*3);
+            int statusHeight = 75;
             try {
                 Class c = Class.forName("com.android.internal.R$dimen");
                 Object obj = c.newInstance();

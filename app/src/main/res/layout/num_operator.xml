@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="30dp">
+
 
     <Button
         android:layout_width="36dp"
         android:layout_height="match_parent"
-        android:id="@+id/btn_adder"
-        android:text="+"
+        android:id="@+id/btn_substractor"
+        android:text="-"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:padding="0dp"
         android:textColor="@color/amae_text_icons"
-        android:textSize="24sp"
+        android:textSize="15sp"
         android:background="@drawable/amae_button"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:clickable="true"
+        android:longClickable="true"
+        android:gravity="center"
+        android:height="30dp"
+        android:textStyle="bold"
+        android:elegantTextHeight="false"
+        android:focusable="true"
+        android:focusableInTouchMode="false" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -37,17 +46,20 @@
     <Button
         android:layout_width="36dp"
         android:layout_height="match_parent"
-        android:id="@+id/btn_substractor"
-        android:text="-"
+        android:id="@+id/btn_adder"
+        android:text="+"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:padding="0dp"
         android:textColor="@color/amae_text_icons"
-        android:textSize="24sp"
+        android:textSize="15sp"
         android:background="@drawable/amae_button"
         android:singleLine="true"
-        android:clickable="true"
-        android:longClickable="true"/>
+        android:gravity="center"
+        android:height="30sp"
+        android:textStyle="bold"
+        android:focusableInTouchMode="false"
+        android:focusable="true" />
 
 </RelativeLayout>

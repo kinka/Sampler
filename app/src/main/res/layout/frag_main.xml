@@ -32,7 +32,9 @@
             android:cropToPadding="false"
             android:padding="9dp"
             android:src="@drawable/unlock"
-            android:background="@null" />
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
         <Spinner
             android:layout_width="48dp"
@@ -99,7 +101,9 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="@null"
-            android:padding="9dp" />
+            android:padding="9dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
         <TextView
             android:layout_width="0dp"
@@ -173,6 +177,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.6"
             android:layout_height="match_parent"
+            components:delta="100"
             android:paddingTop="9dp"
             android:paddingBottom="9dp"></hk.amae.widget.NumberOperator>
     </LinearLayout>
@@ -202,6 +207,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="9dp"
             android:layout_weight="0.6"
+            components:delta="10"
             android:paddingBottom="9dp"></hk.amae.widget.NumberOperator>
     </LinearLayout>
 

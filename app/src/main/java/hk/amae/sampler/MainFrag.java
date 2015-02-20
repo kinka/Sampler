@@ -32,11 +32,6 @@ public class MainFrag extends Fragment implements View.OnClickListener {
     private boolean isRunning = false;
     private boolean isCharging = false;
 
-    public MainFrag() {
-
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

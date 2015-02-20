@@ -2,19 +2,30 @@ package hk.amae.sampler;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.widget.FrameLayout;
+import android.widget.GridLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
+
+import java.io.File;
+import java.lang.reflect.Field;
 
 import hk.amae.util.Comm;
 
 
 public class MainActivity extends Activity
        implements MainFrag.OnMainFragListerer {
+    private boolean isLocked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +67,50 @@ public class MainActivity extends Activity
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Comm.logI("X " + ev.getX() + ", " + ev.getY());
+        if (isLocked) { // think about scrolling
+            int statusHeight = (int) (25*3);
+            try {
+                Class c = Class.forName("com.android.internal.R$dimen");
+                Object obj = c.newInstance();
+                Field field = c.getField("status_bar_height");
+                int res = (Integer) field.get(obj);
+                statusHeight = getResources().getDimensionPixelSize(res);
+            } catch (Exception e) {
+
+            }
+
+            FrameLayout container = (FrameLayout) findViewById(R.id.container);
+            float offsetX = container.getX();
+            float offsetY = container.getY();
+
+            LinearLayout wrapper = (LinearLayout) findViewById(R.id.layout_lockwrapper);
+            offsetX += wrapper.getX();
+            offsetY += wrapper.getY();
+
+            ImageButton lock = (ImageButton) findViewById(R.id.toggle_lock);
+            offsetX += lock.getX();
+            offsetY += lock.getY();
+
+            Rect rectSrc = new Rect((int) offsetX, (int) offsetY, (int) offsetX + lock.getWidth(), (int) offsetY + lock.getHeight());
+            int eX = (int) ev.getX();
+            int eY = (int) ev.getY() - statusHeight;
+//            Comm.logI("x=" + eX + " y=" + eY + " rect=" + rectSrc.toShortString());
+            boolean isInLock = eX < rectSrc.right && eX > rectSrc.left && eY < rectSrc.bottom && eY > rectSrc.top;
+            if (!isInLock)
+                return true;
+        }
         return super.dispatchTouchEvent(ev);
     }
 
     @Override
     public void onLockToggled(boolean locked) {
+        isLocked = locked;
+
         ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
         if (locked)
-            scrollContainer.setForeground(new ColorDrawable(0x40727272));
+            scrollContainer.setForeground(new ColorDrawable(0x60727272));
         else
             scrollContainer.setForeground(new ColorDrawable(0x00000000));
+
     }
 }

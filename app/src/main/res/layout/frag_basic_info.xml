@@ -3,7 +3,7 @@
     android:layout_height="match_parent" tools:context="hk.amae.sampler.BasicInfoFrag"
     android:rowCount="5"
     android:columnCount="2"
-    android:id="@+id/gridlayout"
+    android:id="@+id/layout_basic_info"
     android:background="@color/amae_dark_primary">
 
     <!-- TODO: Update blank fragment layout -->

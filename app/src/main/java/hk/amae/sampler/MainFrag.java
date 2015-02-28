@@ -46,7 +46,10 @@ public class MainFrag extends Fragment implements View.OnClickListener {
         btnLock = (ImageButton) v.findViewById(R.id.toggle_lock);
         btnLock.setOnClickListener(this);
         v.findViewById(R.id.toggle_run).setOnClickListener(this);
-
+        v.findViewById(R.id.btn_setting).setOnClickListener(this);
+        v.findViewById(R.id.btn_connect).setOnClickListener(this);
+        v.findViewById(R.id.btn_query).setOnClickListener(this);
+        v.findViewById(R.id.btn_clean).setOnClickListener(this);
         return v;
     }
 
@@ -78,10 +81,18 @@ public class MainFrag extends Fragment implements View.OnClickListener {
                 else
                     ((ImageButton) view).setImageResource(R.drawable.play);
                 break;
+
+            case R.id.btn_setting:
+            case R.id.btn_connect:
+            case R.id.btn_query:
+            case R.id.btn_clean:
+                mCallback.onButtonClick(view.getId());
+                break;
         }
     }
 
     public interface OnMainFragListerer {
         public void onLockToggled(boolean locked);
+        public void onButtonClick(int id);
     }
 }

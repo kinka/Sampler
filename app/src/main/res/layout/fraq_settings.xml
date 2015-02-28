@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:columnCount="3"
+    android:rowCount="5"
+    android:orientation="vertical"
+    android:id="@+id/frag_settings">
+
+    <Space
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/space_center"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="参数设置"
+        android:id="@+id/label_heading"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="@style/AmaeTextLarge"
+        android:padding="9dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_model"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:src="@drawable/timer"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/space_center"
+        android:layout_toStartOf="@+id/space_center"
+        android:layout_marginRight="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="9dp"
+        android:cropToPadding="false"
+        android:adjustViewBounds="false"
+        android:padding="12dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_database"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/database"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp"
+        android:layout_alignTop="@+id/btn_model"
+        android:layout_toRightOf="@+id/space_center"
+        android:layout_toEndOf="@+id/space_center"
+        android:layout_marginLeft="32dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_hardware"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:src="@drawable/control"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:layout_below="@+id/btn_model"
+        android:layout_alignLeft="@+id/btn_model"
+        android:layout_alignStart="@+id/btn_model"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="9dp"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_channel"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/genealogy"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp"
+        android:layout_alignTop="@+id/btn_hardware"
+        android:layout_alignLeft="@+id/textView9"
+        android:layout_alignStart="@+id/textView9" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_info"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:src="@drawable/info"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:layout_below="@+id/btn_hardware"
+        android:layout_alignLeft="@+id/btn_hardware"
+        android:layout_alignStart="@+id/btn_hardware"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="9dp"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_password"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/key"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp"
+        android:layout_alignTop="@+id/btn_info"
+        android:layout_alignLeft="@+id/textView11"
+        android:layout_alignStart="@+id/textView11" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_calculate"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:src="@drawable/calculate"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:layout_below="@+id/btn_info"
+        android:layout_alignLeft="@+id/btn_info"
+        android:layout_alignStart="@+id/btn_info"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="9dp"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp" />
+
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="60dp"
+        android:id="@+id/btn_other"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:src="@drawable/dust"
+        android:scaleType="fitCenter"
+        android:background="@drawable/amae_button"
+        android:layout_gravity="center"
+        android:layout_columnWeight="1"
+        android:cropToPadding="true"
+        android:adjustViewBounds="false"
+        android:padding="12dp"
+        android:layout_alignTop="@+id/btn_calculate"
+        android:layout_alignLeft="@+id/textView13"
+        android:layout_alignStart="@+id/textView13" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="模式设置"
+        android:id="@+id/textView8"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_below="@+id/btn_database"
+        android:layout_alignLeft="@+id/btn_model"
+        android:layout_alignStart="@+id/btn_model"
+        android:layout_alignRight="@+id/btn_model"
+        android:layout_alignEnd="@+id/btn_model" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="数据查询"
+        android:id="@+id/textView9"
+        android:layout_alignBottom="@+id/textView8"
+        android:layout_alignLeft="@+id/btn_database"
+        android:layout_alignStart="@+id/btn_database"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_alignRight="@+id/btn_database"
+        android:layout_alignEnd="@+id/btn_database" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="硬件设置"
+        android:id="@+id/textView10"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_below="@+id/btn_channel"
+        android:layout_alignLeft="@+id/btn_hardware"
+        android:layout_alignStart="@+id/btn_hardware"
+        android:layout_alignRight="@+id/btn_hardware"
+        android:layout_alignEnd="@+id/btn_hardware" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="通道设置"
+        android:id="@+id/textView11"
+        android:layout_alignBottom="@+id/textView10"
+        android:layout_alignLeft="@+id/btn_channel"
+        android:layout_alignStart="@+id/btn_channel"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_alignRight="@+id/btn_channel"
+        android:layout_alignEnd="@+id/btn_channel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="系统信息"
+        android:id="@+id/textView12"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_below="@+id/btn_password"
+        android:layout_alignLeft="@+id/btn_info"
+        android:layout_alignStart="@+id/btn_info"
+        android:layout_alignRight="@+id/btn_info"
+        android:layout_alignEnd="@+id/btn_info" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="密码管理"
+        android:id="@+id/textView13"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_alignLeft="@+id/btn_password"
+        android:layout_alignStart="@+id/btn_password"
+        android:layout_alignRight="@+id/btn_password"
+        android:layout_alignEnd="@+id/btn_password"
+        android:layout_alignBottom="@+id/textView12" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="流量校准"
+        android:id="@+id/textView14"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_below="@+id/btn_other"
+        android:layout_alignLeft="@+id/btn_calculate"
+        android:layout_alignStart="@+id/btn_calculate"
+        android:layout_alignRight="@+id/btn_calculate"
+        android:layout_alignEnd="@+id/btn_calculate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="其它"
+        android:id="@+id/textView15"
+        android:gravity="center"
+        android:textColor="@color/amae_secondary_text"
+        android:layout_alignLeft="@+id/btn_other"
+        android:layout_alignStart="@+id/btn_other"
+        android:layout_alignRight="@+id/btn_other"
+        android:layout_alignEnd="@+id/btn_other"
+        android:layout_alignBottom="@+id/textView14" />
+
+</RelativeLayout>

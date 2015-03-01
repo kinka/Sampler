@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:divider="@color/amae_divider"
+    android:background="@drawable/amae_border"
+    android:columnCount="8"
+    android:rowCount="2"
+    android:focusable="false"
+    android:clickable="false">
+
+    <TextView
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="1"
+        android:id="@+id/txt_rowid"
+        android:gravity="center"
+        android:background="@drawable/amae_border"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:layout_rowSpan="2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/checkBox"
+        android:layout_gravity="center_vertical"
+        android:checked="false"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:layout_rowSpan="2"
+        android:background="@drawable/amae_border" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="容量:"
+        android:id="@+id/textView16"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:layout_gravity="center|left"
+        android:gravity="left|center_vertical"
+        android:layout_marginLeft="5dp" />
+
+    <EditText
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/txt_total"
+        android:layout_row="0"
+        android:layout_column="3"
+        android:layout_gravity="center"
+        android:text="9.99"
+        android:gravity="center"
+        android:singleLine="true"
+        android:numeric="decimal"
+        android:paddingBottom="0dp"
+        android:textSize="12sp"
+        android:textColor="@color/amae_accent"
+        android:focusable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="L"
+        android:id="@+id/textView17"
+        android:layout_row="0"
+        android:layout_column="4"
+        android:layout_gravity="center|left"
+        android:gravity="left|center_vertical" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="流量:"
+        android:id="@+id/textView18"
+        android:layout_row="0"
+        android:layout_column="5"
+        android:layout_gravity="center|left"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="5dp" />
+
+    <EditText
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/txt_speed"
+        android:layout_row="0"
+        android:layout_column="6"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="1000"
+        android:paddingBottom="0dp"
+        android:textSize="12sp"
+        android:textColor="@color/amae_accent"
+        android:focusable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="mL/min"
+        android:id="@+id/textView19"
+        android:layout_row="0"
+        android:layout_column="7"
+        android:layout_gravity="center|left"
+        android:gravity="left|center_vertical" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="启动"
+        android:id="@+id/textView20"
+        android:layout_row="1"
+        android:layout_column="2"
+        android:layout_gravity="center|left"
+        android:gravity="left|center_vertical"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="2015-03-01"
+        android:id="@+id/txt_datepicker"
+        android:layout_row="1"
+        android:layout_column="3"
+        android:layout_columnSpan="3"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/amae_accent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="11:40"
+        android:id="@+id/txt_timepicker"
+        android:layout_row="1"
+        android:layout_column="6"
+        android:layout_columnSpan="2"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/amae_accent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+</GridLayout>

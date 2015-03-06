@@ -1,52 +1,92 @@
 package hk.amae.sampler;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
+import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
+import hk.amae.util.SwipeInterface;
 
 
-public class ModelSettingAct extends Activity {
+public class ModelSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
+    public static String CapacitySet = "定容设置";
+    public static String TimingSet = "定时设置";
+
+    private String model = CapacitySet; // 定时设置
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_model_setting);
 
-        ListView listView = (ListView) findViewById(R.id.list_settings);
+        Intent intent = getIntent();
+        model = intent.getStringExtra("model");
+        if (model == null)
+            model = TimingSet;
+
+        TextView labelModel = (TextView) findViewById(R.id.label_model);
+        labelModel.setText(model);
+        findViewById(R.id.btn_pre).setOnClickListener(this);
+        findViewById(R.id.btn_next).setOnClickListener(this);
+
+        listView = (ListView) findViewById(R.id.list_settings);
         final ArrayList<SettingItem> list = new ArrayList<>();
         for (int i=0; i<8; i++)
             list.add(new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5));
 
-        final SettingArrayAdapter adapter = new SettingArrayAdapter(this, R.layout.model_setting_item, list);
+        final ListAdapter adapter = new SettingArrayAdapter(this, R.layout.model_setting_item, list);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Comm.logI("click at " + i);
-            }
-        });
+        ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);
+        listView.setOnTouchListener(gestureDetector);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
+        view.startAnimation(animation);
+
+        switch (view.getId()) {
+            case R.id.btn_pre:
+
+                break;
+            case R.id.btn_next:
+
+                break;
+        }
+    }
+
+    @Override
+    public void onLeftWipe(View v) {
+        Comm.logI("LeftWipe");
+    }
+
+    @Override
+    public void onRightWipe(View v) {
+        Comm.logI("RightWipe");
     }
 
     public class SettingArrayAdapter extends ArrayAdapter<SettingItem> implements View.OnClickListener {
@@ -62,7 +102,7 @@ public class ModelSettingAct extends Activity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(rowLayout, parent, false);
             TextView rowId = (TextView) rowView.findViewById(R.id.txt_rowid);
@@ -81,9 +121,8 @@ public class ModelSettingAct extends Activity {
         }
 
         @Override
-        public void onClick(final View view) { // todo 反推当前所在列位置
+        public void onClick(final View view) {
             Calendar calendar = Calendar.getInstance();
-
             switch (view.getId()) {
                 case R.id.txt_datepicker:
                     new DatePickerDialog(context,

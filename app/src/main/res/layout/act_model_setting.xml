@@ -22,8 +22,76 @@
         android:layout_below="@+id/label_model"
         android:layout_centerHorizontal="true"
         android:scrollbars="none"
-        android:clickable="true"
-        android:choiceMode="singleChoice"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_marginTop="9dp"
+        android:layout_above="@+id/btn_pre" />
+
+    <Button
+        android:text="确定"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:id="@+id/btn_ok"
+        android:textColor="@color/amae_text_icons"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:background="@drawable/amae_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="返回"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:id="@+id/btn_cancel"
+        android:textColor="@color/amae_text_icons"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:background="@drawable/amae_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="36dp"
+        android:id="@+id/btn_pre"
+        android:src="@drawable/pre"
+        android:cropToPadding="true"
+        android:scaleType="fitCenter"
+        android:layout_above="@+id/btn_ok"
+        android:layout_toLeftOf="@+id/label_channel"
+        android:layout_toStartOf="@+id/label_channel"
+        android:layout_marginRight="9dp"
+        android:background="@null"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="第1通道"
+        android:id="@+id/label_channel"
+        android:singleLine="false"
+        android:gravity="center"
+        style="@style/AmaeTextMedium"
+        android:textColor="@color/amae_primary_text"
+        android:height="32dp"
+        android:layout_alignTop="@+id/btn_pre"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="36dp"
+        android:id="@+id/btn_next"
+        android:src="@drawable/play"
+        android:cropToPadding="true"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/list_settings"
+        android:layout_toRightOf="@+id/label_channel"
+        android:layout_toEndOf="@+id/label_channel"
+        android:layout_marginLeft="9dp"
+        android:background="@null"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" />
 </RelativeLayout>

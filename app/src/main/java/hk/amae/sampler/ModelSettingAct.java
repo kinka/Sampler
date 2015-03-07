@@ -1,17 +1,22 @@
 package hk.amae.sampler;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -33,9 +38,12 @@ import hk.amae.util.SwipeInterface;
 public class ModelSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
     public static String TimingSet = "定时设置";
+    static String FMT_CHANNEL = "第%d通道";
 
     private String model = CapacitySet; // 定时设置
     ListView listView;
+    TextView labelChannel;
+    int channel = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,10 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
 
         TextView labelModel = (TextView) findViewById(R.id.label_model);
         labelModel.setText(model);
+
+        labelChannel = (TextView) findViewById(R.id.label_channel);
+        labelChannel.setText(String.format(FMT_CHANNEL, channel));
+
         findViewById(R.id.btn_pre).setOnClickListener(this);
         findViewById(R.id.btn_next).setOnClickListener(this);
 
@@ -71,22 +83,55 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
 
         switch (view.getId()) {
             case R.id.btn_pre:
-
+                 flip(false);
                 break;
             case R.id.btn_next:
-
+                flip(true);
                 break;
         }
+
+    }
+
+    boolean switchChannel(boolean add) {
+        if ((add && channel >= 8) || (!add && channel <=1 ))
+            return false;
+        channel = add ? channel+1 : channel-1;
+        labelChannel.setText(String.format(FMT_CHANNEL, channel));
+        return true;
+    }
+    void flip(boolean add) {
+        if (!switchChannel(add))
+            return;
+
+        int duration = 200;
+        ObjectAnimator transA, transB;
+        AnimatorSet set = new AnimatorSet();
+        if (add) {
+            transA = ObjectAnimator.ofFloat(listView, "translationX", 0, -listView.getMeasuredWidth());
+
+            transB = ObjectAnimator.ofFloat(listView, "translationX", listView.getMeasuredWidth(), 0);
+        } else {
+            transA = ObjectAnimator.ofFloat(listView, "translationX", 0, listView.getMeasuredWidth());
+
+            transB = ObjectAnimator.ofFloat(listView, "translationX", -listView.getMeasuredWidth(), 0);
+        }
+
+        transA.setDuration(duration);
+        transB.setDuration(duration);
+        set.play(transA).before(transB);
+        set.start();
     }
 
     @Override
     public void onLeftWipe(View v) {
         Comm.logI("LeftWipe");
+//        flip(false);
     }
 
     @Override
     public void onRightWipe(View v) {
         Comm.logI("RightWipe");
+//        flip(true);
     }
 
     public class SettingArrayAdapter extends ArrayAdapter<SettingItem> implements View.OnClickListener {

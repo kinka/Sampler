@@ -49,12 +49,13 @@ public class ActivityGestureDetector implements View.OnTouchListener {
                 float deltaY = downY - upY;
                 float absDeltaY = Math.abs(deltaY);
 
+
+//                Comm.logI(String.format("absDeltaX=%.2f, time=%d, VELOCITY=%d, absDeltaY=%.2f deltaX=%.2f",
+//                        absDeltaX, time, VELOCITY, absDeltaY, deltaX));
+
                 if (absDeltaY > MAX_OFF_PATH)
                     return view.performClick();
                 final long M_SEC = 1000;
-
-//                Comm.logI(String.format("absDeltaX=%.2f, time=%d, VELOCITY=%d, time*VELOCITY/M_SEC=%d, absDeltaX > time * VELOCITY / M_SEC=%b",
-//                        absDeltaX, time, VELOCITY, time * VELOCITY / M_SEC, (absDeltaX > time * VELOCITY / M_SEC)));
 
                 if (absDeltaX > MIN_DIST && absDeltaX > time * VELOCITY / M_SEC) {
                     if (deltaX < 0) {
@@ -65,8 +66,8 @@ public class ActivityGestureDetector implements View.OnTouchListener {
                         activity.onRightWipe(view);
                         return true;
                     }
-                } else {
-
+                } else { // 有时好像被卡住一样, 所以重置
+                    timeDown = System.currentTimeMillis();
                 }
                 break;
         }

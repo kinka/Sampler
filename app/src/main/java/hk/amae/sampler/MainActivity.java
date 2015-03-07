@@ -34,9 +34,6 @@ public class MainActivity extends Activity
         Comm.logI("entered main...");
 
         switchPanel(0);
-
-        Intent intent = new Intent(this, ModelSettingAct.class);
-        startActivity(intent);
     }
 
     private void switchPanel(int id) {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#be484848"
+        android:id="@+id/as_bg" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/as_panel"
+        android:gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="你要干嘛呢？"
+        android:id="@+id/btn_as_item1"
+        android:layout_gravity="center"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons"
+        android:padding="9dp"
+        android:textAppearance="@style/AmaeTextMedium" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="你又要干嘛呢？"
+        android:id="@+id/btn_as_item2"
+        android:layout_gravity="right"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons"
+        android:padding="9dp"
+        android:textAppearance="@style/AmaeTextMedium" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="你还想干嘛？"
+        android:id="@+id/btn_as_item3"
+        android:layout_gravity="right"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons"
+        android:padding="9dp"
+        android:textAppearance="@style/AmaeTextMedium" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:id="@+id/btn_as_cancel"
+        android:layout_gravity="right"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons"
+        android:padding="9dp"
+        android:textAppearance="@style/AmaeTextMedium"
+        android:layout_marginTop="18dp" />
+    </LinearLayout>
+</FrameLayout>
+

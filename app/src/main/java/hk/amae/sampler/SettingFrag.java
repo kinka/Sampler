@@ -9,12 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import hk.amae.util.Comm;
+import hk.amae.widget.ActionSheet;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFrag extends Fragment implements View.OnClickListener {
+public class SettingFrag extends Fragment implements View.OnClickListener, ActionSheet.OnASItemClickListener {
 
+    ActionSheet as;
+    int as_owner;
 
     public SettingFrag() {
         // Required empty public constructor
@@ -26,17 +31,41 @@ public class SettingFrag extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fraq_settings, container, false);
         v.findViewById(R.id.btn_model).setOnClickListener(this);
+        v.findViewById(R.id.btn_database).setOnClickListener(this);
         return v;
     }
-
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_model:
-                Intent intent = new Intent(getActivity(), ModelSettingAct.class);
-                startActivity(intent);
+                as_owner = R.id.btn_model;
+                as = new ActionSheet(getActivity());
+                as.setOnASItemClickListener(this);
+                as.addItems(ModelSettingAct.CapacitySet, ModelSettingAct.TimingSet);
+                as.showMenu();
+
                 break;
+            case R.id.btn_database:
+                as_owner = R.id.btn_database;
+                as = new ActionSheet(getActivity());
+                as.setOnASItemClickListener(this);
+                as.addItems("查询当前数据", "查询历史数据");
+                as.showMenu();
+                as.setCancelableTouchOutside(false);
+                break;
+        }
+    }
+
+    @Override
+    public void onASItemClick(int position) {
+        Comm.logI("position " + position);
+        if (as_owner == R.id.btn_model) {
+            Intent intent = new Intent(getActivity(), ModelSettingAct.class);
+            intent.putExtra("model", position == 0 ? ModelSettingAct.CapacitySet : ModelSettingAct.TimingSet);
+            startActivity(intent);
+        } else if (as_owner == R.id.btn_database) {
+
         }
     }
 }

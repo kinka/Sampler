@@ -67,7 +67,7 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
         listView = (ListView) findViewById(R.id.list_settings);
         final ArrayList<SettingItem> list = new ArrayList<>();
         for (int i=0; i<8; i++)
-            list.add(new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5));
+            list.add(new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet)));
 
         final ListAdapter adapter = new SettingArrayAdapter(this, R.layout.model_setting_item, list);
         listView.setAdapter(adapter);
@@ -149,19 +149,36 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(rowLayout, parent, false);
+            SettingItem item = values.get(position);
+
+            View rowView;
+            if (convertView == null) {
+                rowView = inflater.inflate(rowLayout, parent, false);
+            } else {
+                rowView = convertView;
+            }
             TextView rowId = (TextView) rowView.findViewById(R.id.txt_rowid);
             CheckBox checkBox = (CheckBox) rowView.findViewById(R.id.checkBox);
             EditText total = (EditText) rowView.findViewById(R.id.txt_total);
             EditText speed = (EditText) rowView.findViewById(R.id.txt_speed);
+            TextView labelTotal = (TextView) rowView.findViewById(R.id.label_total);
+            TextView labelUnit = (TextView) rowView.findViewById(R.id.label_total_unit);
+            if (item.isCapacitySet) {
+                labelTotal.setText("容量");
+                labelUnit.setText("L");
+            } else {
+                labelTotal.setText("时长");
+                labelUnit.setText("min");
+            }
+
             rowView.findViewById(R.id.txt_datepicker).setOnClickListener(this);
             rowView.findViewById(R.id.txt_timepicker).setOnClickListener(this);
 
-            SettingItem item = values.get(position);
             rowId.setText(String.valueOf(item.rowid));
             checkBox.setChecked(item.checked);
             total.setText(String.valueOf(item.total/1000.0));
             speed.setText(String.valueOf(item.speed));
+
             return rowView;
         }
 
@@ -197,15 +214,17 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
         int total;
         int speed;
         boolean checked;
+        boolean isCapacitySet; // 容量设置 或者 定时设置
         int year;
         int month;
         int dayOfMonth;
 
-        public SettingItem(int id, int total, int speed, boolean checked) {
+        public SettingItem(int id, int total, int speed, boolean checked, boolean isCapacitySet) {
             this.rowid = id;
             this.total = total;
             this.speed = speed;
             this.checked = checked;
+            this.isCapacitySet = isCapacitySet;
         }
     }
 }

@@ -24,6 +24,7 @@ public class MainFrag extends Fragment implements View.OnClickListener {
     OnMainFragListerer mCallback;
 
     Spinner spinChannel;
+    Spinner spinModel;
     TextProgressBar progSampling;
     Activity parent;
     ImageButton btnLock;
@@ -37,10 +38,15 @@ public class MainFrag extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_main, container, false);
         spinChannel = (Spinner) v.findViewById(R.id.spin_channel);
+        spinModel = (Spinner) v.findViewById(R.id.spin_model);
         ArrayAdapter<CharSequence> spinAdapter =
                 ArrayAdapter.createFromResource(parent, R.array.channels_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> modelAdapter =
+                ArrayAdapter.createFromResource(parent, R.array.models_array, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinChannel.setAdapter(spinAdapter);
+        spinModel.setAdapter(modelAdapter);
 
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
         btnLock = (ImageButton) v.findViewById(R.id.toggle_lock);

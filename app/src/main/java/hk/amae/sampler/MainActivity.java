@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -42,6 +43,9 @@ public class MainActivity extends Activity
             case R.id.btn_setting:
                 ft.replace(R.id.container, new SettingFrag());
                 break;
+            case R.id.btn_connect:
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                return;
             default:
                 ft.replace(R.id.container, new MainFrag());
         }

@@ -47,16 +47,15 @@
             android:prompt="@string/channel_prompt"
             android:paddingLeft="9dp" />
 
-        <TextView
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="手动"
-            android:id="@+id/textView3"
-            android:layout_weight="0.2"
+        <Spinner
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:id="@+id/spin_model"
+            android:spinnerMode="dialog"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@color/amae_secondary_text" />
+            android:dropDownWidth="wrap_content"
+            android:layout_weight="0.2"
+            android:prompt="@string/model_prompt" />
 
         <view
             android:layout_width="0dp"
@@ -74,20 +73,21 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="72dp"
+        android:id="@+id/linearLayout2"
+        android:weightSum="5"
         android:layout_below="@+id/layout_lockwrapper"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout2">
+        android:layout_alignParentStart="true">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="299\nmL/min"
             android:id="@+id/txt_flow"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_gravity="center_vertical"
             android:gravity="center" />
 
@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/toggle_run"
-            android:layout_weight="0.5"
+            android:layout_weight="2"
             android:layout_gravity="center_vertical"
             android:src="@drawable/play"
             android:scaleType="fitCenter"
@@ -105,15 +105,31 @@
             android:focusable="false"
             android:focusableInTouchMode="false" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="0.99L"
-            android:id="@+id/txt_capacity"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:gravity="center" />
+            android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="0.99L"
+                    android:id="@+id/txt_capacity"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center" />
+
+            <Button
+                android:text="监视器"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:id="@+id/btn_monitor"
+                android:textColor="@color/amae_text_icons"
+                android:singleLine="true"
+                android:background="@drawable/amae_button"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

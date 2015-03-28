@@ -5,8 +5,9 @@
     android:fillViewport="false"
     android:scrollbars="none"
     android:id="@+id/scroll_container">
-    <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         tools:context=".MainActivity"
         android:background="@color/amae_background">
 
@@ -22,8 +23,10 @@
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_below="@+id/basicinfo_frag"
-            android:id="@+id/container"></FrameLayout>
-    </RelativeLayout>
+            android:id="@+id/container"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"></FrameLayout>
+    </LinearLayout>
 </ScrollView>

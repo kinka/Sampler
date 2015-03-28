@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="监视器"
+        android:id="@+id/textView17"
+        android:layout_gravity="center_horizontal"
+        android:padding="9dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="通道"
+                    android:id="@+id/textView25"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="流量(mL/min)"
+                    android:id="@+id/textView26"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="已采体积(L)"
+                    android:id="@+id/textView27"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="进度"
+                    android:id="@+id/textView28"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1"
+                    android:id="@+id/textView33"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="101"
+                    android:id="@+id/textView34"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1010"
+                    android:id="@+id/textView35"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView36"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="2"
+                    android:id="@+id/textView29"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView30"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView31"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView32"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="3"
+                    android:id="@+id/textView21"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView22"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView23"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView24"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="4"
+                    android:id="@+id/textView37"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView38"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView39"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView40"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="5"
+                    android:id="@+id/textView41"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView42"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView43"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView44"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="6"
+                    android:id="@+id/textView45"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView46"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView47"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView48"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="7"
+                    android:id="@+id/textView49"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView50"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView51"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10%"
+                    android:id="@+id/textView52"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="8"
+                    android:id="@+id/textView53"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="102"
+                    android:id="@+id/textView54"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1012"
+                    android:id="@+id/textView55"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="无启动"
+                    android:id="@+id/textView56"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="本地时间"
+                    android:id="@+id/textView57"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="2015-03-28\n12:02:00"
+                    android:id="@+id/textView59"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="当前气压"
+                    android:id="@+id/textView58"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="101.74kPa"
+                    android:id="@+id/textView60"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="36dp"
+                android:weightSum="6" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="当前温度"
+                    android:id="@+id/textView61"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3"
+                    android:singleLine="false" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="24.0°C"
+                    android:id="@+id/textView62"
+                    android:background="@drawable/amae_border"
+                    android:gravity="center"
+                    android:layout_weight="3" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

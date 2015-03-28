@@ -24,8 +24,7 @@
         <activity android:name=".ModelSettingAct" >
         </activity>
         <activity
-            android:name=".ConnectAct"
-            android:label="@string/title_activity_connect" >
+            android:name=".MonitorAct" >
         </activity>
     </application>
 

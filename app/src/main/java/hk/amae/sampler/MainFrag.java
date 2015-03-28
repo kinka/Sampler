@@ -2,11 +2,13 @@ package hk.amae.sampler;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -36,6 +39,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     Activity parent;
     ImageButton btnLock;
     ImageButton btnRun;
+
+    TextView txtTimingGroups;
 
     private int runningState = -1; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
@@ -67,6 +72,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         v.findViewById(R.id.btn_connect).setOnClickListener(this);
         v.findViewById(R.id.btn_query).setOnClickListener(this);
         v.findViewById(R.id.btn_clean).setOnClickListener(this);
+
+        v.findViewById(R.id.btn_monitor).setOnClickListener(this);
+
+        txtTimingGroups = (TextView) v.findViewById(R.id.txt_timing_groups);
+        txtTimingGroups.setMovementMethod(new ScrollingMovementMethod());
+
         return v;
     }
 
@@ -96,6 +107,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             case R.id.btn_query:
             case R.id.btn_clean:
                 mCallback.onButtonClick(view.getId());
+                break;
+            case R.id.btn_monitor:
+                startActivity(new Intent(getActivity(), MonitorAct.class));
                 break;
         }
     }

@@ -75,7 +75,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:id="@+id/linearLayout2"
+        android:id="@+id/wrap_state"
         android:weightSum="5"
         android:layout_below="@+id/layout_lockwrapper"
         android:layout_alignParentLeft="true"
@@ -136,14 +136,17 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout2"
-        android:id="@+id/wrap_manual">
+        android:layout_below="@+id/wrap_state"
+        android:id="@+id/wrap_manual"
+        android:visibility="gone"
+        android:layout_alignParentEnd="false"
+        android:layout_marginBottom="48dp">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="48dp"
-            android:layout_below="@+id/linearLayout2"
+            android:layout_below="@+id/wrap_state"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:weightSum="1"
@@ -340,13 +343,42 @@
     </LinearLayout>
 
     <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:id="@+id/wrap_timing"
+        android:layout_below="@+id/wrap_state"
+        android:layout_marginBottom="48dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:text="第一组9:00启动 时长：30min 流量：500mL/min\n第二组9:30启动 时长：30min 流量：500mL/min\n第三组9:30启动 时长：30min 流量：500mL/min\n第四组9:30启动 时长：30min 流量：500mL/min\n第五组9:30启动 时长：30min 流量：500mL/min\n第六组9:30启动 时长：30min 流量：500mL/min\n第七组9:30启动 时长：30min 流量：500mL/min\n第八组9:30启动 时长：30min 流量：500mL/min\n"
+            android:id="@+id/txt_timing_groups"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="8"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/AmaeTextMedium"
+            android:text="第一组启动倒计时 15:39:00"
+            android:id="@+id/txt_countdown"
+            android:padding="9dp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:id="@+id/layout_actions"
-        android:layout_below="@+id/wrap_manual">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <Button
             android:text="设置"

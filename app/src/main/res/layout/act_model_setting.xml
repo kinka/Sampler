@@ -22,6 +22,7 @@
         android:layout_below="@+id/label_model"
         android:layout_centerHorizontal="true"
         android:scrollbars="none"
+        tools:listitem="@layout/model_setting_item"
         android:layout_marginTop="9dp"
         android:layout_above="@+id/btn_pre" />
 

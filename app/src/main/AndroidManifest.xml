@@ -24,7 +24,16 @@
         <activity android:name=".ModelSettingAct" >
         </activity>
         <activity
+            android:launchMode="singleTask"
             android:name=".MonitorAct" >
+        </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name=".HistoryAct" >
+        </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name=".HardwareAct" >
         </activity>
     </application>
 

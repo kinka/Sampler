@@ -1,4 +1,4 @@
-package hk.amae.sampler;
+package hk.amae.frag;
 
 
 import android.content.Intent;
@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import hk.amae.sampler.HardwareAct;
+import hk.amae.sampler.HistoryAct;
+import hk.amae.sampler.ModelSettingAct;
+import hk.amae.sampler.R;
 import hk.amae.util.Comm;
 import hk.amae.widget.ActionSheet;
 

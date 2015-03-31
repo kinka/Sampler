@@ -14,7 +14,7 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="hk.amae.sampler.BasicInfoFrag"
+            android:name="hk.amae.frag.BasicInfoFrag"
             android:id="@+id/basicinfo_frag"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"

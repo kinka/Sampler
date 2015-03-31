@@ -16,10 +16,12 @@ import android.widget.ScrollView;
 
 import java.lang.reflect.Field;
 
+import hk.amae.frag.MainFrag;
+import hk.amae.frag.SettingFrag;
 import hk.amae.util.Comm;
 
 
-public class MainActivity extends Activity
+public class MainAct extends Activity
        implements MainFrag.OnMainFragListerer {
     private boolean isLocked = false;
 

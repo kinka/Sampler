@@ -1,4 +1,4 @@
-package hk.amae.sampler;
+package hk.amae.frag;
 
 
 import android.app.Activity;
@@ -23,6 +23,8 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hk.amae.sampler.MonitorAct;
+import hk.amae.sampler.R;
 import hk.amae.util.Comm;
 import hk.amae.widget.TextProgressBar;
 

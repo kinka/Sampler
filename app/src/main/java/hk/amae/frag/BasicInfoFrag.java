@@ -1,4 +1,4 @@
-package hk.amae.sampler;
+package hk.amae.frag;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import hk.amae.sampler.R;
 import hk.amae.util.Comm;
 
 

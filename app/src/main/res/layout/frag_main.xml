@@ -3,7 +3,7 @@
     xmlns:components="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hk.amae.sampler.MainFrag"
+    tools:context="hk.amae.frag.MainFrag"
     android:rowCount="9"
     android:columnCount="4"
     android:orientation="horizontal"

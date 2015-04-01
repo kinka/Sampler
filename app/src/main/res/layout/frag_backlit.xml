@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="hk.amae.frag.BacklitFrag"
+    android:orientation="vertical"
+    android:id="@+id/whatever"
+    android:padding="9dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="正常背光"
+        android:id="@+id/label_normal"
+        android:layout_gravity="center" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:id="@+id/seekBar_normal"
+        android:max="10"
+        android:progress="2"
+        android:indeterminate="false"
+        android:layout_gravity="center"
+        android:layout_marginBottom="36dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="节能背光"
+        android:id="@+id/label_saving"
+        android:layout_gravity="center" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:id="@+id/seekBar_saving"
+        android:layout_gravity="center"
+        android:max="10"
+        android:progress="3"
+        android:indeterminate="false"
+        android:layout_marginBottom="36dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4">
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="36dp"
+            android:text="确定"
+            android:id="@+id/btn_confirm"
+            android:layout_gravity="bottom|center|right"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:padding="0dp"
+            android:layout_weight="1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="2" />
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="36dp"
+            android:text="返回"
+            android:id="@+id/btn_back"
+            android:layout_gravity="bottom|center"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:padding="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

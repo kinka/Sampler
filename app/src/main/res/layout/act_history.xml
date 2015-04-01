@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="历史数据查询"
+        android:id="@+id/textView17"
+        android:layout_gravity="center_horizontal"
+        android:padding="9dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="36dp"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="搜索编号"
+            android:id="@+id/textView63"
+            android:layout_gravity="center"
+            android:gravity="center_vertical" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/edit_query"
+            android:layout_weight="1"
+            android:text="00000"
+            android:layout_gravity="center"
+            android:layout_marginRight="9dp"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:padding="0dp"
+            android:gravity="center_vertical"
+            android:password="false"
+            android:layout_marginLeft="9dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="位号000/140"
+            android:id="@+id/txt_page"
+            android:layout_gravity="center"
+            android:gravity="center_vertical" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp">
+
+        <TextView
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="序号"
+            android:id="@+id/textView64"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_width="36dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/amae_border" />
+
+        <TextView
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="采样时间"
+            android:id="@+id/textView65"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:layout_columnWeight="8"
+            android:layout_width="0dp"
+            android:layout_weight="10"
+            android:layout_gravity="center"
+            android:background="@drawable/amae_border"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="9dp" />
+
+        <TextView
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="打印"
+            android:id="@+id/textView66"
+            android:layout_columnWeight="1"
+            android:layout_column="2"
+            android:layout_row="0"
+            android:layout_width="48dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/amae_border"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:listitem="@layout/history_item"
+        android:id="@+id/listView"
+        android:choiceMode="none"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:layout_marginBottom="48dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="-42dp">
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="32dp"
+            android:text="上一页"
+            android:id="@+id/btn_pre"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="9dp"
+            android:layout_marginRight="9dp"
+            android:padding="0dp"
+            android:layout_gravity="center|right" />
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="32dp"
+            android:text="下一页"
+            android:id="@+id/btn_next"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="9dp"
+            android:layout_marginRight="9dp"
+            android:padding="0dp"
+            android:layout_gravity="center|right" />
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="32dp"
+            android:text="返回"
+            android:id="@+id/btn_back"
+            android:layout_gravity="center|right"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="9dp"
+            android:layout_marginRight="9dp"
+            android:padding="0dp" />
+    </LinearLayout>
+
+</LinearLayout>

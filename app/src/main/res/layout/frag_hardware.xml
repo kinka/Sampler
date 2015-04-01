@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="hk.amae.frag.HardwareFrag"
+    android:orientation="vertical"
+    android:id="@+id/whatever"
+    android:padding="9dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="1. 背光设定"
+            android:id="@+id/btn_backlit"
+            android:layout_gravity="left|center"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:gravity="left|center_vertical"
+            android:layout_marginRight="36dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="2. 时间设置"
+            android:id="@+id/btn_time"
+            android:layout_gravity="left|center_horizontal"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:gravity="left|center_vertical"
+            android:layout_marginRight="36dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="3. 恢复出厂设置"
+            android:id="@+id/btn_restore"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:gravity="left|center_vertical"
+            android:layout_marginRight="36dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="4. 清空采样数据组"
+            android:id="@+id/btn_clear"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:gravity="left|center_vertical"
+            android:layout_marginRight="36dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="5. 定时关机设置"
+            android:id="@+id/btn_power"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:gravity="left|center_vertical"
+            android:layout_marginRight="36dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_weight="8" />
+
+        <Button
+            android:layout_width="48dp"
+            android:layout_height="36dp"
+            android:text="返回"
+            android:id="@+id/btn_back"
+            android:layout_gravity="bottom|center|right"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_marginLeft="9dp"
+            android:layout_marginRight="36dp"
+            android:padding="0dp"
+            android:layout_marginBottom="9dp" />
+</LinearLayout>

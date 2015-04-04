@@ -15,7 +15,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="正常背光"
         android:id="@+id/label_normal"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:gravity="center" />
 
     <SeekBar
         android:layout_width="match_parent"
@@ -33,7 +34,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="节能背光"
         android:id="@+id/label_saving"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:gravity="center" />
 
     <SeekBar
         android:layout_width="match_parent"

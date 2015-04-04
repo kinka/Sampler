@@ -33,6 +33,7 @@ import java.util.Calendar;
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
 import hk.amae.util.SwipeInterface;
+import hk.amae.widget.AmaeDateTimePicker;
 
 
 public class ModelSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
@@ -187,23 +188,11 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
             Calendar calendar = Calendar.getInstance();
             switch (view.getId()) {
                 case R.id.txt_datepicker:
-                    new DatePickerDialog(context,
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker datePicker, int y, int m, int d) {
-                                    ((TextView) view).setText(String.format("%d-%02d-%02d", y, m+1, d));
-                                }
-                            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                    AmaeDateTimePicker.showDateDialog(context, (TextView) view, "%d-%02d-%02d", "--");
                     break;
 
                 case R.id.txt_timepicker:
-                    new TimePickerDialog(context,
-                            new TimePickerDialog.OnTimeSetListener() {
-                                @Override
-                                public void onTimeSet(TimePicker timePicker, int h, int m) {
-                                    ((TextView) view).setText(String.format("%02d:%02d", h, m));
-                                }
-                            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                    AmaeDateTimePicker.showTimeDialog(context, (TextView) view, "%02d:%02d");
                     break;
             }
         }

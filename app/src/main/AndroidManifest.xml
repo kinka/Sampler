@@ -43,6 +43,10 @@
             android:launchMode="singleTask"
             android:name=".SysInfoAct" >
         </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name=".PasswordAct" >
+        </activity>
     </application>
 
 </manifest>

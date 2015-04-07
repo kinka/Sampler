@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:text="5. 定时关机设置"
-            android:id="@+id/btn_power"
+            android:id="@+id/btn_poweroff"
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"

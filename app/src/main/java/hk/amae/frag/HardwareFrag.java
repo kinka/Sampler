@@ -29,7 +29,7 @@ public class HardwareFrag extends Fragment {
         v.findViewById(R.id.btn_time).setOnClickListener(listener);
         v.findViewById(R.id.btn_restore).setOnClickListener(listener);
         v.findViewById(R.id.btn_clear).setOnClickListener(listener);
-        v.findViewById(R.id.btn_power).setOnClickListener(listener);
+        v.findViewById(R.id.btn_poweroff).setOnClickListener(listener);
         return v;
     }
 

@@ -7,13 +7,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import hk.amae.frag.BacklitFrag;
+import hk.amae.frag.ClearSampleFrag;
 import hk.amae.frag.HardwareFrag;
 import hk.amae.frag.RestoreFrag;
 import hk.amae.frag.SetDateTimeFrag;
+import hk.amae.frag.SetPowerOffFrag;
 
 
 public class HardwareAct extends Activity implements View.OnClickListener {
-    String[] FragTitles = {"硬件管理器", "背光亮度设置", "时间设置", "时间设置", "恢复出厂设置", "清空采样数据", "定时关机设置"};
+    String[] FragTitles = {"硬件管理器", "背光亮度设置", "时间设置", "恢复出厂设置", "清空采样数据", "定时关机设置"};
     TextView labelTitle;
 
     @Override
@@ -44,6 +46,16 @@ public class HardwareAct extends Activity implements View.OnClickListener {
                 ft.replace(R.id.container, new RestoreFrag());
                 break;
 
+            case R.id.btn_clear:
+                labelTitle.setText(FragTitles[4]);
+                ft.replace(R.id.container, new ClearSampleFrag());
+                break;
+
+            case R.id.btn_poweroff:
+                labelTitle.setText(FragTitles[5]);
+                ft.replace(R.id.container, new SetPowerOffFrag());
+                break;
+
             default:
                 labelTitle.setText(FragTitles[0]);
                 ft.replace(R.id.container, new HardwareFrag());
@@ -62,7 +74,7 @@ public class HardwareAct extends Activity implements View.OnClickListener {
             case R.id.btn_time:
             case R.id.btn_restore:
             case R.id.btn_clear:
-            case R.id.btn_power:
+            case R.id.btn_poweroff:
                 switchPanel(id);
                 break;
         }

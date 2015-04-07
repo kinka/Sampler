@@ -106,7 +106,7 @@
     <ImageButton
         android:layout_width="72dp"
         android:layout_height="60dp"
-        android:id="@+id/btn_info"
+        android:id="@+id/btn_sysinfo"
         android:layout_row="0"
         android:layout_column="0"
         android:src="@drawable/info"
@@ -137,7 +137,7 @@
         android:cropToPadding="true"
         android:adjustViewBounds="false"
         android:padding="12dp"
-        android:layout_alignTop="@+id/btn_info"
+        android:layout_alignTop="@+id/btn_sysinfo"
         android:layout_alignLeft="@+id/textView11"
         android:layout_alignStart="@+id/textView11" />
 
@@ -152,9 +152,9 @@
         android:background="@drawable/amae_button"
         android:layout_gravity="center"
         android:layout_columnWeight="1"
-        android:layout_below="@+id/btn_info"
-        android:layout_alignLeft="@+id/btn_info"
-        android:layout_alignStart="@+id/btn_info"
+        android:layout_below="@+id/btn_sysinfo"
+        android:layout_alignLeft="@+id/btn_sysinfo"
+        android:layout_alignStart="@+id/btn_sysinfo"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="9dp"
         android:cropToPadding="true"
@@ -239,10 +239,10 @@
         android:gravity="center"
         android:textColor="@color/amae_secondary_text"
         android:layout_below="@+id/btn_password"
-        android:layout_alignLeft="@+id/btn_info"
-        android:layout_alignStart="@+id/btn_info"
-        android:layout_alignRight="@+id/btn_info"
-        android:layout_alignEnd="@+id/btn_info" />
+        android:layout_alignLeft="@+id/btn_sysinfo"
+        android:layout_alignStart="@+id/btn_sysinfo"
+        android:layout_alignRight="@+id/btn_sysinfo"
+        android:layout_alignEnd="@+id/btn_sysinfo" />
 
     <TextView
         android:layout_width="wrap_content"

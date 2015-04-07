@@ -35,6 +35,14 @@
             android:launchMode="singleTask"
             android:name=".HardwareAct" >
         </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name=".ChannelAct" >
+        </activity>
+        <activity
+            android:launchMode="singleTask"
+            android:name=".SysInfoAct" >
+        </activity>
     </application>
 
 </manifest>

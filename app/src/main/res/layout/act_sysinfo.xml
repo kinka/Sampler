@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="系统信息"
+        android:id="@+id/label_title"
+        android:layout_gravity="center_horizontal"
+        android:padding="9dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:paddingBottom="9dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="仪器型号："
+                android:id="@+id/textView70"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="EM-2008"
+                android:id="@+id/txt_model" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="软件版本："
+                android:id="@+id/textView71"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="V1.0"
+                android:id="@+id/txt_software_ver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="通道数量："
+                android:id="@+id/textView72"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="8通道"
+                android:id="@+id/txt_channel_num" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="通道容量："
+                android:id="@+id/textView74"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="(100-1000)mL/min"
+                android:id="@+id/textView75" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="存储容量："
+                android:id="@+id/textView76"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="64K"
+                android:id="@+id/txt_capacity" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="硬件版本："
+                android:id="@+id/textView78"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="V1.0"
+                android:id="@+id/txt_hardware_ver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="AMAE 国技仪器有限公司"
+                android:id="@+id/textView80"
+                android:textColor="@color/amae_secondary_text"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="返回"
+            android:id="@+id/button"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_gravity="right" />
+
+    </LinearLayout>
+
+</LinearLayout>

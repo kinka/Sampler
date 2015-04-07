@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="通道设置"
+        android:id="@+id/label_title"
+        android:layout_gravity="center_horizontal"
+        android:padding="9dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:padding="9dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="1. 并联四组"
+                android:id="@+id/textView67"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="18dp"
+                android:gravity="center" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:id="@+id/chk_p2"
+                android:checked="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="2. 四联二组"
+                android:id="@+id/textView68"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="18dp"
+                android:gravity="center" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:id="@+id/chk_p4"
+                android:checked="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="3. 八联一组"
+                android:id="@+id/textView69"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="18dp"
+                android:gravity="center" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:id="@+id/chk_p8"
+                android:checked="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="9dp">
+
+            <Button
+                android:layout_width="48dp"
+                android:layout_height="36dp"
+                android:text="确定"
+                android:id="@+id/btn_confirm"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:layout_weight="1" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2" />
+
+            <Button
+                android:layout_width="48dp"
+                android:layout_height="36dp"
+                android:text="返回"
+                android:id="@+id/btn_back"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

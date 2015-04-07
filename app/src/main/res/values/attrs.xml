@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TextProgressBar">
-        <attr name="text" format="string"></attr>
         <attr name="textColor" format="color"></attr>
         <attr name="textSize" format="dimension"></attr>
+        <attr name="textFormat" format="string"></attr>
+        <attr name="textBelow" format="boolean"></attr>
     </declare-styleable>
     <declare-styleable name="Battery">
         <attr name="cap" format="integer"></attr>

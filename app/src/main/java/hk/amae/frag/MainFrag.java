@@ -64,6 +64,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         spinModel.setAdapter(modelAdapter);
 
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
+        progSampling.setProgress(98);
+
         btnLock = (ImageButton) v.findViewById(R.id.toggle_lock);
         btnLock.setOnClickListener(this);
 

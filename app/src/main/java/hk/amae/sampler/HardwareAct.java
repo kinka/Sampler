@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import hk.amae.frag.BacklitFrag;
 import hk.amae.frag.HardwareFrag;
+import hk.amae.frag.RestoreFrag;
 import hk.amae.frag.SetDateTimeFrag;
 
 
@@ -36,6 +37,11 @@ public class HardwareAct extends Activity implements View.OnClickListener {
             case R.id.btn_time:
                 labelTitle.setText(FragTitles[2]);
                 ft.replace(R.id.container, new SetDateTimeFrag());
+                break;
+
+            case R.id.btn_restore:
+                labelTitle.setText(FragTitles[3]);
+                ft.replace(R.id.container, new RestoreFrag());
                 break;
 
             default:

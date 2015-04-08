@@ -48,6 +48,12 @@ public class MainAct extends Activity
             case R.id.btn_connect:
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 return;
+            case R.id.btn_clean:
+                startActivity(new Intent(this, CleanMachineAct.class));
+                return;
+            case R.id.btn_query:
+                startActivity(new Intent(this, QueryAct.class));
+                return;
             default:
                 ft.replace(R.id.container, new MainFrag());
         }

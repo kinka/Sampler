@@ -21,8 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ModelSettingAct" >
-        </activity>
+        <activity android:name=".ModelSettingAct" android:launchMode="singleTask" ></activity>
+        <activity android:name=".CleanMachineAct" android:launchMode="singleTask" ></activity>
+        <activity android:name=".QueryAct" android:launchMode="singleTask" ></activity>
         <activity
             android:launchMode="singleTask"
             android:name=".MonitorAct" >

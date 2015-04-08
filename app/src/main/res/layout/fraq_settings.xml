@@ -144,10 +144,10 @@
     <ImageButton
         android:layout_width="72dp"
         android:layout_height="60dp"
-        android:id="@+id/btn_calculate"
+        android:id="@+id/btn_adjust"
         android:layout_row="0"
         android:layout_column="0"
-        android:src="@drawable/calculate"
+        android:src="@drawable/adjustment"
         android:scaleType="fitCenter"
         android:background="@drawable/amae_button"
         android:layout_gravity="center"
@@ -175,7 +175,7 @@
         android:cropToPadding="true"
         android:adjustViewBounds="false"
         android:padding="12dp"
-        android:layout_alignTop="@+id/btn_calculate"
+        android:layout_alignTop="@+id/btn_adjust"
         android:layout_alignLeft="@+id/textView13"
         android:layout_alignStart="@+id/textView13" />
 
@@ -265,10 +265,10 @@
         android:gravity="center"
         android:textColor="@color/amae_secondary_text"
         android:layout_below="@+id/btn_other"
-        android:layout_alignLeft="@+id/btn_calculate"
-        android:layout_alignStart="@+id/btn_calculate"
-        android:layout_alignRight="@+id/btn_calculate"
-        android:layout_alignEnd="@+id/btn_calculate" />
+        android:layout_alignLeft="@+id/btn_adjust"
+        android:layout_alignStart="@+id/btn_adjust"
+        android:layout_alignRight="@+id/btn_adjust"
+        android:layout_alignEnd="@+id/btn_adjust" />
 
     <TextView
         android:layout_width="wrap_content"

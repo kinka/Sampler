@@ -1,0 +1,264 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="hk.amae.sampler.ModelSettingAct"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="流量校准"
+        android:id="@+id/label_title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="保存"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:id="@+id/btn_save"
+        android:textColor="@color/amae_text_icons"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:background="@drawable/amae_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="返回"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:id="@+id/btn_cancel"
+        android:textColor="@color/amae_text_icons"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:background="@drawable/amae_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="36dp"
+        android:id="@+id/btn_pre"
+        android:src="@drawable/pre"
+        android:cropToPadding="true"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:layout_alignTop="@+id/label_channel"
+        android:layout_toLeftOf="@+id/label_channel"
+        android:layout_toStartOf="@+id/label_channel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="第1通道校准"
+        android:id="@+id/label_channel"
+        android:singleLine="false"
+        android:gravity="center"
+        style="@style/AmaeTextMedium"
+        android:textColor="@color/amae_primary_text"
+        android:height="32dp"
+        android:layout_below="@+id/label_title"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="36dp"
+        android:id="@+id/btn_next"
+        android:src="@drawable/play"
+        android:cropToPadding="true"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:layout_alignTop="@+id/label_channel"
+        android:layout_toRightOf="@+id/label_channel"
+        android:layout_toEndOf="@+id/label_channel" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn_pre"
+        android:layout_above="@+id/btn_cancel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/adjust_container">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="36dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="动力输出"
+                android:id="@+id/textView77"
+                android:gravity="center" />
+
+            <EditText
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_output"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="232"
+                android:singleLine="true"
+                android:editable="false"
+                android:enabled="false"
+                android:textColor="@color/amae_secondary_text" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="(15%)"
+                android:id="@+id/textView79"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="36dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="采集压力"
+                android:id="@+id/textView81"
+                android:gravity="center" />
+
+            <EditText
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_voltage"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="232"
+                android:singleLine="true"
+                android:editable="false"
+                android:enabled="false"
+                android:textColor="@color/amae_secondary_text" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="(0.17V)"
+                android:id="@+id/textView82"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="36dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="预估压力"
+                android:id="@+id/textView83"
+                android:gravity="center" />
+
+            <EditText
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_expect"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="232"
+                android:singleLine="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView84"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="36dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="被校流量"
+                android:id="@+id/textView85"
+                android:gravity="center" />
+
+            <EditText
+                android:layout_width="72dp"
+                android:layout_height="36dp"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_adjust"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="232"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="(mL/min)"
+                android:id="@+id/textView86"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="2" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -14,8 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import hk.amae.sampler.AdjustAct;
 import hk.amae.sampler.ChannelAct;
 import hk.amae.sampler.HardwareAct;
 import hk.amae.sampler.HistoryAct;
@@ -53,7 +53,7 @@ public class SettingFrag extends Fragment implements
         v.findViewById(R.id.btn_channel).setOnClickListener(this);
         v.findViewById(R.id.btn_sysinfo).setOnClickListener(this);
         v.findViewById(R.id.btn_password).setOnClickListener(this);
-        v.findViewById(R.id.btn_calculate).setOnClickListener(this);
+        v.findViewById(R.id.btn_adjust).setOnClickListener(this);
         v.findViewById(R.id.btn_other).setOnClickListener(this);
 
         return v;
@@ -90,7 +90,8 @@ public class SettingFrag extends Fragment implements
                 verifyAdmin();
                 break;
 
-            case R.id.btn_calculate:
+            case R.id.btn_adjust:
+                startActivity(new Intent(getActivity(), AdjustAct.class));
                 break;
 
             case R.id.btn_other:

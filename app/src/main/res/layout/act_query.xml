@@ -39,7 +39,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -65,7 +65,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -91,7 +91,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -117,7 +117,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -144,7 +144,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -171,7 +171,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -197,7 +197,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -223,7 +223,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -249,7 +249,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -275,7 +275,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -301,7 +301,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -327,7 +327,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -353,7 +353,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 
@@ -379,7 +379,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="28dp"
                 android:gravity="center"
                 android:background="@drawable/amae_border">
 

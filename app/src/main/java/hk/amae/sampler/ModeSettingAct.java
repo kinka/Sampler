@@ -2,30 +2,21 @@ package hk.amae.sampler;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +27,7 @@ import hk.amae.util.SwipeInterface;
 import hk.amae.widget.AmaeDateTimePicker;
 
 
-public class ModelSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
+public class ModeSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
     public static String TimingSet = "定时设置";
     static String FMT_CHANNEL = "第%d通道";
@@ -49,7 +40,7 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_model_setting);
+        setContentView(R.layout.act_mode_setting);
 
         Intent intent = getIntent();
         model = intent.getStringExtra("model");
@@ -70,7 +61,7 @@ public class ModelSettingAct extends Activity implements View.OnClickListener, S
         for (int i=0; i<8; i++)
             list.add(new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet)));
 
-        final ListAdapter adapter = new SettingArrayAdapter(this, R.layout.model_setting_item, list);
+        final ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, list);
         listView.setAdapter(adapter);
 
         ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);

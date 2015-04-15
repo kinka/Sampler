@@ -19,7 +19,7 @@ import hk.amae.sampler.AdjustAct;
 import hk.amae.sampler.ChannelAct;
 import hk.amae.sampler.HardwareAct;
 import hk.amae.sampler.HistoryAct;
-import hk.amae.sampler.ModelSettingAct;
+import hk.amae.sampler.ModeSettingAct;
 import hk.amae.sampler.PasswordAct;
 import hk.amae.sampler.R;
 import hk.amae.sampler.SysInfoAct;
@@ -66,7 +66,7 @@ public class SettingFrag extends Fragment implements
                 as_owner = R.id.btn_model;
                 as = new ActionSheet(getActivity());
                 as.setOnASItemClickListener(this);
-                as.addItems(ModelSettingAct.CapacitySet, ModelSettingAct.TimingSet);
+                as.addItems(ModeSettingAct.CapacitySet, ModeSettingAct.TimingSet);
                 as.showMenu();
 
                 break;
@@ -118,8 +118,8 @@ public class SettingFrag extends Fragment implements
         Comm.logI("position " + position);
         switch (as_owner) {
             case R.id.btn_model: {
-                Intent intent = new Intent(getActivity(), ModelSettingAct.class);
-                intent.putExtra("model", position == 0 ? ModelSettingAct.CapacitySet : ModelSettingAct.TimingSet);
+                Intent intent = new Intent(getActivity(), ModeSettingAct.class);
+                intent.putExtra("model", position == 0 ? ModeSettingAct.CapacitySet : ModeSettingAct.TimingSet);
                 startActivity(intent);
             }
             break;

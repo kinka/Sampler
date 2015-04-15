@@ -1,7 +1,5 @@
 package hk.amae.util;
 
-import android.bluetooth.BluetoothClass;
-
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -42,12 +40,16 @@ public class Deliver {
 
     public static void main(String... args) {
         Command command = new Command();
-        ByteBuffer buffer = command.reqQueryModel();
+        ByteBuffer buffer = command.reqModel();
         Deliver.printData(buffer.array());
         buffer.flip();
-        System.out.println("verify " + command.parseQueryModel(buffer));
+        System.out.println("verify " + command.resolveModel(buffer));
         System.out.println(command.Model + " " + command.SN);
 
+        command = new Command();
+        command.reqChannelState(Comm.Channel.A1);
+        command.reqChannelState(Comm.Channel.ALL);
+        command.reqChannelState(Comm.Channel.CH4);
 /*        buffer = Deliver.send(command.reqQueryModel());
         byte[] arr = new byte[buffer.remaining()];
         buffer.mark(); // for reset

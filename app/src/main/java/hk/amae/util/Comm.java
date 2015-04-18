@@ -14,7 +14,7 @@ import java.util.logging.SimpleFormatter;
 public class Comm {
     private static final Logger logger = Logger.getLogger("sampler");
 
-    public static enum Channel {
+    public enum Channel {
         ALL(0),
         CH1(1), CH2(2), CH3(3), CH4(4), CH5(5), CH6(6), CH7(7), CH8(8),
         C1(9), C2(0xa), C3(0xb), C4(0xc),
@@ -22,11 +22,17 @@ public class Comm {
         A1(0xf);
 
         private final int value;
-        private Channel(int value) {
+        Channel(int value) {
             this.value = value;
         }
         public byte getValue() {
             return (byte) this.value;
+        }
+
+        public static Channel init(int ch) {
+            for (Channel c:values())
+                if (ch == c.value) return c;
+            return ALL;
         }
     }
 

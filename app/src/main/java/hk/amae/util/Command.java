@@ -38,10 +38,10 @@ public class Command {
         reply.get(data);
         return new String(data);
     }
-    private ByteBuffer build(int cmd, byte[] data) {
+    private ByteBuffer build(final int cmd, byte[] data) {
         if (data == null) data = new byte[0];
 
-        ByteBuffer buf = ByteBuffer.allocate(3 + 1 + 2 + 2 + data.length + 2);
+        final ByteBuffer buf = ByteBuffer.allocate(3 + 1 + 2 + 2 + data.length + 2);
         buf.order(ByteOrder.BIG_ENDIAN);
         buf.put((byte) 0xaa);
         buf.put((byte) 0xaf);
@@ -54,8 +54,21 @@ public class Command {
         short sum = crc16_ccitt(buf.array(), buf.capacity() - 2); // crc16-CCITT
         buf.putShort(sum);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean verify = resolve(buf, cmd);
+                Command.this.once.done(verify, Command.this);
+            }
+        }).start();
+
+        return buf;
+    }
+    private boolean resolve(ByteBuffer buf, int cmd) {
         ByteBuffer reply = Deliver.send(buf);
         reply.order(ByteOrder.BIG_ENDIAN);
+
+        if (reply.limit() == 0) return false;
 
         reply.getShort();
         reply.get(); // == 0xfa?
@@ -119,11 +132,19 @@ public class Command {
         }
 
         // 校验sum
-        sum = reply.getShort(); // sum
+        short sum = reply.getShort(); // sum
         short crc = crc16_ccitt(reply.array(), reply.arrayOffset());
         System.out.println("checksum " + (crc == sum));
 
-        return buf;
+        return crc == sum;
+    }
+
+    interface Once {
+        void done(boolean verify, Command cmd);
+    }
+    private Once once;
+    public Command(Once once) {
+        this.once = once;
     }
 
     public String Model = ""; // 型号
@@ -140,10 +161,6 @@ public class Command {
         return build(0x1, null);
     }
     public void resolveModel(ByteBuffer reply) {
-        int len;
-        byte[] data;
-        reply.getShort(); // data len
-
         Model = getString(reply);
         SN = getString(reply);
     }

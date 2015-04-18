@@ -1,9 +1,10 @@
 package hk.amae.util;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import hk.amae.util.Comm.Channel;
 
 /**
  * Created by kinka on 4/12/15.
@@ -23,41 +24,37 @@ public class Deliver {
     }
     public static ByteBuffer send(ByteBuffer data) {
         ByteBuffer recvData = ByteBuffer.allocate(1024);
+        DatagramPacket packet = new DatagramPacket(recvData.array(), recvData.limit());
 
         try {
             DatagramChannel channel = DatagramChannel.open();
-            // todo timeout
-            channel.socket().bind(new InetSocketAddress(localPort));
+            DatagramSocket socket = channel.socket();
+            socket.bind(new InetSocketAddress(localPort));
+            channel.configureBlocking(true);
             channel.send(data, new InetSocketAddress(server, svrPort));
+            socket.setSoTimeout(1000);
 
-            channel.receive(recvData);
-            recvData.flip();
+            socket.receive(packet);
+            recvData.limit(packet.getLength());
+//            channel.receive(recvData);
+//            recvData.flip();
         } catch (Exception e) {
-            e.printStackTrace();
+            recvData.limit(0);
         }
 
         return recvData;
     }
 
     public static void main(String... args) {
-        System.out.println(Channel.init(4));
-/*        Command command = new Command();
+        Command command = new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                System.out.println(verify + " " + cmd.Model + " " + cmd.SN);
+            }
+        });
         ByteBuffer buffer = command.reqModel();
-        Deliver.printData(buffer.array());
-        System.out.println(command.Model + " " + command.SN);
 
-        command = new Command();
-        command.reqChannelState(Comm.Channel.A1);
-        command.reqChannelState(Comm.Channel.ALL);
-        command.reqChannelState(Comm.Channel.CH4);*/
-/*        buffer = Deliver.send(command.reqQueryModel());
-        byte[] arr = new byte[buffer.remaining()];
-        buffer.mark(); // for reset
-        buffer.get(arr);
-        Deliver.printData(arr);
-        buffer.reset();
-        System.out.println(buffer.remaining());
-        command.parseQueryModel(buffer);
-        System.out.println(command.Model + " " + command.SN);*/
+        System.out.println("req ");
+        Deliver.printData(buffer.array());
     }
 }

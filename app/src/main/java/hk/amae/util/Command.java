@@ -18,6 +18,9 @@ public class Command {
     byte Version = 1;
 
     // http://introcs.cs.princeton.edu/java/51data/CRC16CCITT.java.html
+    public static short crc16(byte[] bytes) {
+        return new Command(null).crc16_kermit(bytes, bytes.length);
+    }
     private short crc16_ccitt(byte[] bytes, int end) {
         int crc = 0xFFFF;          // initial value
         int polynomial = 0x1021;   // 0001 0000 0010 0001  (0, 5, 12)
@@ -35,6 +38,46 @@ public class Command {
 
         return (short) crc;
     }
+
+    private short P_KERMIT =  (short) 0x8408;
+    private short crc_tabkermit[] = null;
+    private void init_crckermit_tab() {
+        crc_tabkermit = new short[256];
+        short crc, c;
+
+        for (int i=0; i<0x100; i++) {
+            crc = 0;
+            c = (short) (i & 0xff);
+
+            for (int j=0; j<8; j++) {
+                if (((crc ^ c) & 0x0001) > 0)
+                    crc = (short) (((crc & 0xffff) >> 1) ^ P_KERMIT);
+                else
+                    crc = (short) ((crc & 0xffff) >> 1);
+                c = (short) ((c & 0xffff) >> 1);
+            }
+
+            crc_tabkermit[i] = crc;
+        }
+        System.out.println();
+    }
+    private int crc16_update(int crc, byte c) {
+        if (crc_tabkermit == null) init_crckermit_tab();
+
+        short tmp, short_c;
+        short_c = (short) (0xff & c);
+        tmp = (short) (crc ^ short_c);
+        crc = ((crc & 0xffff )>> 8) ^ crc_tabkermit[tmp & 0xff];
+        return crc;
+    }
+    private short crc16_kermit(byte[] bytes, int end) {
+        int crc = 0;
+        for (int i=0; i<end; i++) {
+            crc = crc16_update(crc, bytes[i]);
+        }
+        return (short) (crc & 0xffff);
+    }
+
     private String getString(ByteBuffer reply) {
         int len = reply.get();
         byte[] data = new byte[len];
@@ -54,8 +97,9 @@ public class Command {
         buf.putShort((short) data.length);
         buf.put(data);
 
-        short sum = crc16_ccitt(buf.array(), buf.capacity() - 2); // crc16-CCITT
-        buf.putShort(sum);
+        short crc = crc16_kermit(buf.array(), buf.capacity() - 2); // crc16-CCITT
+        System.out.println(String.format("%x", crc));
+        buf.putShort(crc);
 
         new Thread(new Runnable() {
             @Override
@@ -153,9 +197,9 @@ public class Command {
         }
 
         // 校验sum
-        short sum = reply.getShort(); // sum
-        short crc = crc16_ccitt(reply.array(), reply.arrayOffset());
-//        System.out.println("checksum " + (crc == sum));
+        short recv_crc = reply.getShort();
+        short crc = crc16_kermit(reply.array(), reply.arrayOffset());
+        System.out.println(String.format("%x", crc));
         return true;
 //        return crc == sum;
     }

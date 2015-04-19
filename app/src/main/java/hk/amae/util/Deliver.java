@@ -54,7 +54,11 @@ public class Deliver {
             }
         });
         ByteBuffer buffer = command.reqModel();
-        final int cnt = 1000;
+        printData(buffer.array());
+
+//        System.out.println(String.format("%x", Command.crc16(new byte[]{0x12, 0x34, 0x56, 0x78})));
+
+        final int cnt = 0;
 
         for (int i=0; i<cnt; i++) {
             final int k = i;

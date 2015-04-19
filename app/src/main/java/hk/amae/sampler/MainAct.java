@@ -1,10 +1,16 @@
 package hk.amae.sampler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MotionEvent;
@@ -13,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
@@ -20,7 +27,9 @@ import hk.amae.frag.MainFrag;
 import hk.amae.frag.SettingFrag;
 import hk.amae.util.Comm;
 
-
+/**
+ * 这个是入口界面
+ */
 public class MainAct extends Activity
        implements MainFrag.OnMainFragListerer {
     private boolean isLocked = false;
@@ -32,11 +41,57 @@ public class MainAct extends Activity
 
         setContentView(R.layout.act_main);
 
-        Comm.initLogger(getPackageName());
+        Comm.init(getApplicationContext(), getPackageName());
 
         Comm.logI("entered main...");
+    }
 
-        switchPanel(0);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectServer();
+    }
+
+    private void connectServer() {
+        // 判断连网状态，如果没有连网，弹出连网提示;否则，获取当前连接的SSID，并让用户确认
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo info = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        final String ssid = wifiInfo.getSSID().replaceAll("\"", "");
+
+        if (info != null && info.isConnected() && ssid != null && ssid.length() > 0) {
+            if (Comm.getSP("ssid").equals(ssid)) {// 已经确认过了
+                switchPanel(0);
+                ((TextView) findViewById(R.id.txt_ssid)).setText(String.format("名称：%s", ssid));
+                return;
+            }
+
+            new AlertDialog.Builder(this).setTitle("确认连接")
+                    .setMessage("您当前已经连接到 " + ssid +", 请确认。")
+                    .setPositiveButton("没问题", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switchPanel(0);
+                            ((TextView) findViewById(R.id.txt_ssid)).setText(String.format("名称：%s", ssid));
+                            Comm.setSP("ssid", ssid);
+                        }
+                    }).setNegativeButton("重新连接", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            }).setCancelable(false).show();
+        } else {
+            new AlertDialog.Builder(this).setTitle("没有连接")
+                    .setMessage("当前暂时没有WIFI连接，请点击连接。")
+                    .setPositiveButton("连接", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    }).setCancelable(false).show();
+        }
     }
 
     private void switchPanel(int id) {
@@ -46,7 +101,9 @@ public class MainAct extends Activity
                 ft.replace(R.id.container, new SettingFrag());
                 break;
             case R.id.btn_connect:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                // 算是强制重新连接吧
+                Comm.setSP("ssid", "");
+                connectServer();
                 return;
             case R.id.btn_clean:
                 startActivity(new Intent(this, CleanMachineAct.class));

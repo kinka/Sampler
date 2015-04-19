@@ -5,7 +5,6 @@ import android.widget.Spinner;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import hk.amae.sampler.HardwareAct;
 import hk.amae.util.Comm.Channel;
 
 /**

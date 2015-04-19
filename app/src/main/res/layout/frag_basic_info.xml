@@ -52,7 +52,7 @@
             android:text="名称：华测1号"
             android:textColor="#8affffff"
             android:gravity="center"
-            android:id="@+id/txt_name"
+            android:id="@+id/txt_ssid"
             android:layout_weight="2" />
 
         <TextView

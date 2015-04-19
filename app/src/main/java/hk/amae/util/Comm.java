@@ -1,5 +1,7 @@
 package hk.amae.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 
 import java.io.File;
@@ -7,7 +9,7 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
+import android.content.SharedPreferences.Editor;
 /**
  * Created by kinka on 2/8/15.
  */
@@ -42,6 +44,12 @@ public class Comm {
     public final static int DO_PAUSE = 0x2;
     public final static int DO_STOP = 0x3;
 
+    private static Context ctx;
+    public static void init(Context ctx, String pkgName) {
+        Comm.ctx = ctx;
+        initLogger(pkgName);
+    }
+
     public static Logger initLogger(String pkgName) {
         try {
             int FileSizeLimit = 1024 * 1024;
@@ -65,5 +73,17 @@ public class Comm {
     }
     public static void logE(String msg) {
         logger.severe(msg);
+    }
+
+    public static void setSP(String key, String value) {
+        SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
+        Editor editor = commSP.edit();
+        editor.putString(key, value);
+        editor.commit();
+        Comm.logI("write " + key + "=" + value);
+    }
+    public static String getSP(String key) {
+        SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
+        return commSP.getString(key, "");
     }
 }

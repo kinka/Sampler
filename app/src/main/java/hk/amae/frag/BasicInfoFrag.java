@@ -2,7 +2,6 @@ package hk.amae.frag;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -12,13 +11,13 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
-
+import hk.amae.util.Command;
+import hk.amae.util.Command.Once;
 
 public class BasicInfoFrag extends Fragment implements View.OnClickListener, AlertDialog.OnClickListener {
     private Activity parent;
@@ -26,10 +25,22 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     private EditText snPassword;
     private EditText snText;
 
+    String snFormat;
+    String hostFormat;
+    String modelFormat;
+    String atmFormat;
+    String tempFormat;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        snFormat = getResources().getString(R.string.app_sn);
+        hostFormat = getResources().getString(R.string.app_host);
+        modelFormat = getResources().getString(R.string.app_model);
+
+        atmFormat = getResources().getString(R.string.atm);
+        tempFormat = getResources().getString(R.string.temperature);
     }
 
     @Override
@@ -111,14 +122,46 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
             }
         } else {
             if (snText == null) return;
-            String newSN = snText.getText().toString();
+            final String newSN = snText.getText().toString();
             if (newSN.length() == 0 || i == AlertDialog.BUTTON_NEGATIVE) {
                 dialogInterface.dismiss();
             } else {
-                ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format("系列号：%s", newSN));
+                new Command(new Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format(snFormat, newSN));
+                    }
+                }).setSN(newSN);
             }
             passed = false;
         }
+    }
 
+    public void updateInfo() {
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                ((TextView) parent.findViewById(R.id.txt_model)).setText(String.format(modelFormat, cmd.Model));
+                ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format(snFormat, cmd.SN));
+                ((TextView) parent.findViewById(R.id.txt_ssid)).setText(String.format(hostFormat, Comm.getSP("ssid")));
+            }
+        }).reqModel();
+
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                float atm = 10173 / 100f;
+                float temp = 253 / 10f;
+                ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, atm));
+                ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, temp));
+            }
+        }).reqATM_TEMP();
+
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                ((TextView) parent.findViewById(R.id.txt_datetime)).setText("2015-04-19 17:53:00");
+            }
+        }).reqDateTime();
     }
 }

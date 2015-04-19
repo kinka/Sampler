@@ -11,6 +11,10 @@ import hk.amae.util.Comm.Channel;
  * Created by kinka on 4/11/15.
  */
 public class Command {
+    private final static Object __TOTAL = new Object();
+    private final static Object __SUCC = new Object();
+    private static int __total = 0;
+    private static int __succ = 0;
     byte Version = 1;
 
     // http://introcs.cs.princeton.edu/java/51data/CRC16CCITT.java.html
@@ -56,18 +60,36 @@ public class Command {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean verify = resolve(buf, cmd);
-                Command.this.once.done(verify, Command.this);
+                final boolean verify = resolve(buf, cmd);
+                if (Command.this.once == null)
+                    return;
+                Comm.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Command.this.once.done(verify, Command.this);
+                    }
+                });
             }
         }).start();
 
         return buf;
     }
+    public static void PacketLost() {
+        System.out.println(String.format("succ/total: %d/%d, packet lost %.1f%%", __succ, __total, (__total - __succ)*100.0/__total));
+    }
     private boolean resolve(ByteBuffer buf, int cmd) {
+        synchronized (__TOTAL) {
+            __total++;
+        }
+
         ByteBuffer reply = Deliver.send(buf);
         reply.order(ByteOrder.BIG_ENDIAN);
 
         if (reply.limit() == 0) return false;
+
+        synchronized (__SUCC) {
+            __succ++;
+        }
 
         reply.getShort();
         reply.get(); // == 0xfa?
@@ -133,12 +155,12 @@ public class Command {
         // 校验sum
         short sum = reply.getShort(); // sum
         short crc = crc16_ccitt(reply.array(), reply.arrayOffset());
-        System.out.println("checksum " + (crc == sum));
-
-        return crc == sum;
+//        System.out.println("checksum " + (crc == sum));
+        return true;
+//        return crc == sum;
     }
 
-    interface Once {
+    public interface Once {
         void done(boolean verify, Command cmd);
     }
     private Once once;
@@ -434,5 +456,12 @@ public class Command {
     // 清洗
     public ByteBuffer setClean() {
         return build(0x10b, null);
+    }
+
+    public void setSN(String sn) {
+        ByteBuffer buffer = ByteBuffer.allocate(1 + sn.length());
+        buffer.put((byte) sn.length());
+        buffer.put(sn.getBytes());
+        build(0x10c, buffer.array());
     }
 }

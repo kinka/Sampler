@@ -59,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_height="32dp"
             class="hk.amae.widget.Battery"
-            android:id="@+id/view"
+            android:id="@+id/battery"
             components:cap="75"
             components:charging="true"
             android:cropToPadding="false"

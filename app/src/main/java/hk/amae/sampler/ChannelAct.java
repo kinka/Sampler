@@ -74,6 +74,7 @@ public class ChannelAct extends Activity {
                         break;
                 }
                 lastMode = ChannelMode;
+                enableCombine.setChecked(true);
 
                 onModeChange();
             }

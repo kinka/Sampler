@@ -47,9 +47,11 @@ public class Comm {
     public final static int DO_STOP = 0x3;
 
     private static Context ctx;
+    private static android.os.Handler handler;
     public static void init(Context ctx, String pkgName) {
         Comm.ctx = ctx;
         initLogger(pkgName);
+        handler = new android.os.Handler();
     }
 
     public static Logger initLogger(String pkgName) {
@@ -92,5 +94,12 @@ public class Comm {
     public static void showSoftInput() {
         InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+    }
+
+    public static void runOnUiThread(Runnable runnable) {
+        if (handler != null)
+            handler.post(runnable);
+        else
+            runnable.run();
     }
 }

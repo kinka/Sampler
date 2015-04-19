@@ -26,6 +26,8 @@ import java.util.TimerTask;
 import hk.amae.sampler.MonitorAct;
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
+import hk.amae.widget.Battery;
 import hk.amae.widget.TextProgressBar;
 
 
@@ -82,6 +84,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         txtTimingGroups = (TextView) v.findViewById(R.id.txt_timing_groups);
         txtTimingGroups.setMovementMethod(new ScrollingMovementMethod());
 
+        askBatteryState();
+
         return v;
     }
 
@@ -90,6 +94,17 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         super.onAttach(activity);
         parent = activity;
         mCallback = (OnMainFragListerer) parent;
+    }
+
+    private void askBatteryState() {
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                Battery battery = (Battery) parent.findViewById(R.id.battery);
+                battery.setCharging(true);
+                battery.setCapacity(50);
+            }
+        }).reqBattery();
     }
 
     @Override
@@ -211,7 +226,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     public interface OnMainFragListerer {
-        public void onLockToggled(boolean locked);
-        public void onButtonClick(int id);
+        void onLockToggled(boolean locked);
+        void onButtonClick(int id);
     }
 }

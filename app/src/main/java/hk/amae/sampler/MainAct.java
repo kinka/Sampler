@@ -23,15 +23,19 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
+import hk.amae.frag.BasicInfoFrag;
 import hk.amae.frag.MainFrag;
 import hk.amae.frag.SettingFrag;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
 
 /**
  * 这个是入口界面
  */
 public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
     private boolean isLocked = false;
+    BasicInfoFrag basicInfoFrag;
+    private static int lastid = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +47,15 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
         Comm.init(getApplicationContext(), getPackageName());
 
         Comm.logI("entered main...");
+
+        basicInfoFrag = (BasicInfoFrag) getFragmentManager().findFragmentById(R.id.basicinfo_frag);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectServer();
+        if (lastid == 0)
+            connectServer();
     }
 
     private void connectServer() {
@@ -62,7 +69,6 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
         if (info != null && info.isConnected() && ssid != null && ssid.length() > 0) {
             if (Comm.getSP("ssid").equals(ssid)) {// 已经确认过了
                 switchPanel(0);
-                ((TextView) findViewById(R.id.txt_ssid)).setText(String.format("名称：%s", ssid));
                 return;
             }
 
@@ -71,9 +77,8 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
                     .setPositiveButton("没问题", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            switchPanel(0);
-                            ((TextView) findViewById(R.id.txt_ssid)).setText(String.format("名称：%s", ssid));
                             Comm.setSP("ssid", ssid);
+                            switchPanel(0);
                         }
                     }).setNegativeButton("重新连接", new DialogInterface.OnClickListener() {
                 @Override
@@ -112,11 +117,13 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
                 return;
             default:
                 ft.replace(R.id.container, new MainFrag());
+                basicInfoFrag.updateInfo();
         }
         if (id != 0)
-            ft.addToBackStack("xxx");
+            ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
+        lastid = id;
     }
 
     @Override
@@ -157,15 +164,19 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
     }
 
     @Override
-    public void onLockToggled(boolean locked) {
+    public void onLockToggled(final boolean locked) {
         isLocked = locked;
 
-        ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
-        if (locked)
-            scrollContainer.setForeground(new ColorDrawable(0x60727272));
-        else
-            scrollContainer.setForeground(new ColorDrawable(0x00000000));
-
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+                if (locked)
+                    scrollContainer.setForeground(new ColorDrawable(0x60727272));
+                else
+                    scrollContainer.setForeground(new ColorDrawable(0x00000000));
+            }
+        }).setScreenLock();
     }
 
     @Override

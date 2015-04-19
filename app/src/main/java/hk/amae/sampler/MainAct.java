@@ -30,8 +30,7 @@ import hk.amae.util.Comm;
 /**
  * 这个是入口界面
  */
-public class MainAct extends Activity
-       implements MainFrag.OnMainFragListerer {
+public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
     private boolean isLocked = false;
 
     @Override

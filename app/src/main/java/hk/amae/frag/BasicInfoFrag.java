@@ -22,6 +22,9 @@ import hk.amae.util.Comm;
 
 public class BasicInfoFrag extends Fragment implements View.OnClickListener, AlertDialog.OnClickListener {
     private Activity parent;
+    private boolean passed = false; // 是否通过密码验证
+    private EditText snPassword;
+    private EditText snText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,24 +56,69 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.txt_sn:
-                EditText editText = new EditText(parent);
-                editText.setSingleLine(); // 不能放在setTransformationMethod 后面！
-//                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                editText.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
-                editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
-                new AlertDialog.Builder(parent).setTitle("请输入新的序列号")
-                        .setView(editText).setPositiveButton("确定", this)
-                        .setNegativeButton("取消", this).show();
+                snPassword = new EditText(parent);
+                snPassword.setSingleLine();
+                snPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                snPassword.setInputType(InputType.TYPE_CLASS_NUMBER);
+                snPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(parent);
+                alertDialog.setTitle("请输入系列号密码")
+                        .setView(snPassword).setPositiveButton("确定", this)
+                        .setNegativeButton("取消", this).setCancelable(false);
+
+                AlertDialog tmpDialog = alertDialog.create();
+                tmpDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        Comm.showSoftInput();
+                    }
+                });
+                tmpDialog.show();
                 break;
         }
     }
 
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
-        if (i == AlertDialog.BUTTON_POSITIVE)
-            Comm.logI("确定");
-        else if (i == AlertDialog.BUTTON_NEGATIVE)
-            Comm.logI("取消");
+        if (!passed) { // 弹的是密码框
+            if (i == AlertDialog.BUTTON_POSITIVE) {
+                if (snPassword.getText().toString().equals("888888")) {
+                    passed = true;
+
+                    snText = new EditText(parent);
+                    snText.setSingleLine(); // 不能放在setTransformationMethod 后面！
+                    snText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    snText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(parent);
+                    alertDialog.setTitle("请输入新的序列号")
+                            .setView(snText).setPositiveButton("确定", this)
+                            .setNegativeButton("取消", this).setCancelable(false);
+
+                    AlertDialog tmpDialog = alertDialog.create();
+                    tmpDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            Comm.showSoftInput();
+                        }
+                    });
+                    tmpDialog.show();
+                } else {
+                    new AlertDialog.Builder(parent).setTitle("密码错误")
+                            .setPositiveButton("确定", null).setCancelable(false).show();
+                }
+            }
+        } else {
+            if (snText == null) return;
+            String newSN = snText.getText().toString();
+            if (newSN.length() == 0 || i == AlertDialog.BUTTON_NEGATIVE) {
+                dialogInterface.dismiss();
+            } else {
+                ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format("系列号：%s", newSN));
+            }
+            passed = false;
+        }
+
     }
 }

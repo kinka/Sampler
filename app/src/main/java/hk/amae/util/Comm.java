@@ -10,6 +10,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import android.content.SharedPreferences.Editor;
+import android.view.inputmethod.InputMethodManager;
+
 /**
  * Created by kinka on 2/8/15.
  */
@@ -85,5 +87,10 @@ public class Comm {
     public static String getSP(String key) {
         SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
         return commSP.getString(key, "");
+    }
+
+    public static void showSoftInput() {
+        InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
     }
 }

@@ -8,9 +8,7 @@
     android:columnCount="4"
     android:orientation="horizontal"
     android:id="@+id/whatever"
-    android:padding="9dp"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:padding="9dp">
 
     <LinearLayout
         android:orientation="horizontal"

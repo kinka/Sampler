@@ -12,16 +12,36 @@
     <string name="channel_prompt">采样通道</string>
     <string name="model_prompt">操作模式</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-<string-array name="channels_array">
-    <item>CH1</item>
-    <item>CH2</item>
-    <item>CH3</item>
-    <item>CH4</item>
-    <item>CH5</item>
-    <item>CH6</item>
-    <item>CH7</item>
-    <item>CH8</item>
-</string-array>
+
+    <string-array name="channels_CH">
+        <item>CH1</item>
+        <item>CH2</item>
+        <item>CH3</item>
+        <item>CH4</item>
+        <item>CH5</item>
+        <item>CH6</item>
+        <item>CH7</item>
+        <item>CH8</item>
+        <item>全选</item>
+    </string-array>
+
+    <string-array name="channels_C">
+        <item>C1</item>
+        <item>C2</item>
+        <item>C3</item>
+        <item>C4</item>
+        <item>全选</item>
+    </string-array>
+
+    <string-array name="channels_B">
+        <item>B1</item>
+        <item>B2</item>
+        <item>全选</item>
+    </string-array>
+    <string-array name="channels_A">
+        <item>A1</item>
+    </string-array>
+
     <string-array name="models_array">
         <item>手动</item>
         <item>定时模式</item>

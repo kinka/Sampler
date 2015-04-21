@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hk.amae.sampler.ChannelAct;
 import hk.amae.sampler.MonitorAct;
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
@@ -56,8 +57,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         View v = inflater.inflate(R.layout.frag_main, container, false);
         spinChannel = (Spinner) v.findViewById(R.id.spin_channel);
         spinModel = (Spinner) v.findViewById(R.id.spin_model);
+
+        int channels_res = getChannels();
+
         ArrayAdapter<CharSequence> spinAdapter =
-                ArrayAdapter.createFromResource(parent, R.array.channels_array, android.R.layout.simple_spinner_item);
+                ArrayAdapter.createFromResource(parent, channels_res, android.R.layout.simple_spinner_item);
+
         ArrayAdapter<CharSequence> modelAdapter =
                 ArrayAdapter.createFromResource(parent, R.array.models_array, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -94,6 +99,26 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         super.onAttach(activity);
         parent = activity;
         mCallback = (OnMainFragListerer) parent;
+    }
+
+    private int getChannels() {
+        String s_mode = Comm.getSP("channel_mode");
+        int mode = 0;
+        if (s_mode.length() == 0)
+            mode = ChannelAct.MODE_SINGLE;
+        else
+            mode = Integer.valueOf(s_mode);
+
+        switch (mode) {
+            case ChannelAct.MODE_COUPLE:
+                return R.array.channels_C;
+            case ChannelAct.MODE_4IN1:
+                return R.array.channels_B;
+            case ChannelAct.MODE_8IN1:
+                return R.array.channels_A;
+            default:
+                return R.array.channels_CH;
+        }
     }
 
     private void askBatteryState() {

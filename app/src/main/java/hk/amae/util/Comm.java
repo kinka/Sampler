@@ -45,6 +45,9 @@ public class Comm {
     public final static int DO_PLAY = 0x1;
     public final static int DO_PAUSE = 0x2;
     public final static int DO_STOP = 0x3;
+    public final static int PLAYING = 0x1;
+    public final static int PAUSED = 0x2;
+    public final static int STOPPED = 0x3;
 
     private static Context ctx;
     private static android.os.Handler handler;

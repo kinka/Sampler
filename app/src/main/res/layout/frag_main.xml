@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="299\nmL/min"
-            android:id="@+id/txt_flow"
+            android:id="@+id/txt_speed"
             android:layout_weight="2"
             android:layout_gravity="center_vertical"
             android:gravity="center" />
@@ -113,7 +113,7 @@
                     android:layout_height="36dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="0.99L"
-                    android:id="@+id/txt_capacity"
+                    android:id="@+id/txt_volume"
                     android:layout_gravity="center_vertical"
                     android:gravity="center" />
 

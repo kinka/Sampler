@@ -59,7 +59,6 @@ public class Command {
 
             crc_tabkermit[i] = crc;
         }
-        System.out.println();
     }
     private int crc16_update(int crc, byte c) {
         if (crc_tabkermit == null) init_crckermit_tab();
@@ -98,7 +97,6 @@ public class Command {
         buf.put(data);
 
         short crc = crc16_kermit(buf.array(), buf.capacity() - 2); // crc16-CCITT
-        System.out.println(String.format("%x", crc));
         buf.putShort(crc);
 
         new Thread(new Runnable() {
@@ -199,7 +197,7 @@ public class Command {
         // 校验sum
         short recv_crc = reply.getShort();
         short crc = crc16_kermit(reply.array(), reply.arrayOffset());
-        System.out.println(String.format("%x", crc));
+
         return true;
 //        return crc == sum;
     }
@@ -264,7 +262,6 @@ public class Command {
     public int Speed;
     public int Volume;
     public ByteBuffer reqChannelState(Channel channel) { // 查询实时流量和已采样
-        System.out.println((byte) channel.getValue());
         return build(0x5, new byte[] {(byte) channel.getValue()});
     }
     public void resolveChannelState(ByteBuffer reply) {

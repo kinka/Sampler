@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,11 +33,12 @@ import hk.amae.util.Command;
 import hk.amae.widget.Battery;
 import hk.amae.widget.TextProgressBar;
 
+import hk.amae.util.Command.Once;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFrag extends Fragment implements View.OnClickListener, View.OnTouchListener {
+public class MainFrag extends Fragment implements View.OnClickListener, View.OnTouchListener, AdapterView.OnItemSelectedListener {
     OnMainFragListerer mCallback;
 
     Spinner spinChannel;
@@ -44,12 +47,17 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     Activity parent;
     ImageButton btnLock;
     ImageButton btnRun;
+    LinearLayout wrapManual, wrapTiming;
+    TextView txtSpeed, txtVolume;
 
     TextView txtTimingGroups;
 
-    private int runningState = -1; // -1 停止 0 暂停 1 运行
+    private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
-    private boolean isCharging = false;
+    private String sampleMode;
+
+    private String fmtSpeed = "%d\nmL/min";
+    private String fmtVolume = "%.2fL";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +78,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         spinChannel.setAdapter(spinAdapter);
         spinModel.setAdapter(modelAdapter);
 
+        spinChannel.setOnItemSelectedListener(this);
+        spinModel.setOnItemSelectedListener(this);
+
+        txtSpeed = (TextView) v.findViewById(R.id.txt_speed);
+        txtVolume = (TextView) v.findViewById(R.id.txt_volume);
+
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
         progSampling.setProgress(98);
 
@@ -89,7 +103,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         txtTimingGroups = (TextView) v.findViewById(R.id.txt_timing_groups);
         txtTimingGroups.setMovementMethod(new ScrollingMovementMethod());
 
+        wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
+        wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
+
         askBatteryState();
+
+        sampleMode = Comm.getSP("sample_mode");
 
         return v;
     }
@@ -173,11 +192,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    if (runningState == 1) {
-                        runningState = 0;
+                    if (runningState == Comm.PLAYING) {
+                        runningState = Comm.PAUSED;
                         btnRun.setImageResource(R.drawable.pause);
                     } else {
-                        runningState = 1;
+                        runningState = Comm.PLAYING;
                         btnRun.setImageResource(R.drawable.play);
                     }
                     break;
@@ -223,7 +242,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                         clickCnt++;
                         clickTask.cancel();
                         clickTask = null;
-                        runningState = -1;
+                        runningState = Comm.STOPPED;
                         btnRun.setImageResource(R.drawable.stop);
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -248,6 +267,40 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.equals(spinChannel)) {
+            String selected = spinChannel.getSelectedItem().toString();
+            if (selected.equals("全选"))
+                selected = "ALL";
+            new Command(new Once() {
+                @Override
+                public void done(boolean verify, Command cmd) {
+                    cmd.ChannelState = Comm.PLAYING;
+                    cmd.Volume = 880;
+                    cmd.Speed = 300;
+                    txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                    txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                    runningState = cmd.ChannelState;
+                }
+            }).reqChannelState(Comm.Channel.valueOf(selected));
+        } else if (parent.equals(spinModel)) {
+            String selected = spinModel.getSelectedItem().toString();
+            if (selected.equals("手动")) {
+                wrapManual.setVisibility(View.VISIBLE);
+                wrapTiming.setVisibility(View.GONE);
+            } else {
+                wrapManual.setVisibility(View.GONE);
+                wrapTiming.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 
     public interface OnMainFragListerer {

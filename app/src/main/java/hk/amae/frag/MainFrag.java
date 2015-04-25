@@ -61,7 +61,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private String fmtSpeed = "%d\nmL/min";
     private String fmtVolume = "%.2fL";
 
-    private final String SP_LASTMODE = "last_mode";
+    private final String SP_MANUALMODE = "manual_mode"; // 手动情况下设定时长还是设定容量
     private final String SP_SAMPLEMODE = "sample_mode";
 
     @Override
@@ -113,8 +113,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
         wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
+
         layoutCap = (LinearLayout) v.findViewById(R.id.layout_capacity);
         layoutTiming = (LinearLayout) v.findViewById(R.id.layout_timing);
+        v.findViewById(R.id.label_cap).setOnClickListener(this);
+        v.findViewById(R.id.label_timing).setOnClickListener(this);
 
         askBatteryState();
 
@@ -186,6 +189,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 break;
             case R.id.btn_monitor:
                 startActivity(new Intent(getActivity(), MonitorAct.class));
+                break;
+            case R.id.label_timing:
+            case R.id.label_cap:
+                if (view.getId() == R.id.label_timing) // toggle
+                    Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_CAP);
+                else
+                    Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_TIME);
+                switchManualMode();
                 break;
         }
     }
@@ -320,7 +331,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         } else if (parent.equals(spinMode)) {
             String selected = spinMode.getSelectedItem().toString();
             Intent intent = new Intent(getActivity(), ModeSettingAct.class);
-            int lastMode = Comm.getIntSP(SP_LASTMODE);
+            int manualMode = Comm.getIntSP(SP_MANUALMODE);
             // selected 选中文字对应spinMode的选项文字，在strings.xml中
             switch (selected) {
                 case "手动":
@@ -330,18 +341,18 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     intent = null;
                     break;
                 case "定时模式":
-                    Comm.setIntSP(SP_LASTMODE, sampleMode);
+                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     sampleMode = Comm.AUTO_SET_TIME;
                     intent.putExtra("model", ModeSettingAct.TimingSet);
                     break;
                 case "定容模式":
-                    Comm.setIntSP(SP_LASTMODE, sampleMode);
+                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     sampleMode = Comm.AUTO_SET_CAP;
                     intent.putExtra("model", ModeSettingAct.CapacitySet);
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
-            if (sampleMode != Comm.MANUAL_SET && lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
+            if (sampleMode != Comm.MANUAL_SET && manualMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
             if (intent != null && isSpinnerClick) {
                 startActivityForResult(intent, 0);
@@ -362,14 +373,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 // todo 获取通道工作状态
                 wrapManual.setVisibility(View.VISIBLE);
                 wrapTiming.setVisibility(View.GONE);
-                int lastMode = Comm.getIntSP(SP_LASTMODE);
-                if (lastMode == Comm.AUTO_SET_CAP) {
-                    layoutCap.setVisibility(View.VISIBLE);
-                    layoutTiming.setVisibility(View.GONE);
-                } else if (lastMode == Comm.AUTO_SET_TIME) {
-                    layoutCap.setVisibility(View.GONE);
-                    layoutTiming.setVisibility(View.VISIBLE);
-                }
+                switchManualMode();
             } else {
                 wrapManual.setVisibility(View.GONE);
                 wrapTiming.setVisibility(View.VISIBLE);
@@ -378,6 +382,17 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             e.printStackTrace();
         }
 
+    }
+
+    private void switchManualMode() {
+        int manualMode = Comm.getIntSP(SP_MANUALMODE);
+        if (manualMode == Comm.AUTO_SET_CAP) {
+            layoutCap.setVisibility(View.VISIBLE);
+            layoutTiming.setVisibility(View.GONE);
+        } else if (manualMode == Comm.AUTO_SET_TIME) {
+            layoutCap.setVisibility(View.GONE);
+            layoutTiming.setVisibility(View.VISIBLE);
+        }
     }
 
     public interface OnMainFragListener {

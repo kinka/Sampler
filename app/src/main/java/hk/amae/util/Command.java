@@ -262,7 +262,7 @@ public class Command {
     public int Speed;
     public int Volume;
     public ByteBuffer reqChannelState(Channel channel) { // 查询实时流量和已采样
-        return build(0x5, new byte[] {(byte) channel.getValue()});
+        return build(0x5, new byte[] {channel.getValue()});
     }
     public void resolveChannelState(ByteBuffer reply) {
         ChannelState = reply.get();

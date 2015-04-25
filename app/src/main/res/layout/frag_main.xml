@@ -233,7 +233,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="设定时长"
-                android:id="@+id/textView6"
+                android:id="@+id/label_timing"
                 android:layout_gravity="center"
                 android:layout_marginRight="9dp"
                 android:textColor="@color/amae_secondary_text"
@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="设定容量"
-                android:id="@+id/textView7"
+                android:id="@+id/label_cap"
                 android:layout_gravity="center"
                 android:layout_marginRight="9dp"
                 android:textColor="@color/amae_secondary_text"
@@ -333,8 +333,6 @@
                 android:text="tips here....\nanother line"
                 android:id="@+id/txt_tips"
                 android:layout_below="@+id/layout_speed"
-                android:layout_toRightOf="@+id/textView7"
-                android:layout_toEndOf="@+id/textView7"
                 android:layout_weight="0.7"
                 android:textColor="@color/amae_secondary_text" />
         </LinearLayout>

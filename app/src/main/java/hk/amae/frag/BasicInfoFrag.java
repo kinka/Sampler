@@ -28,8 +28,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     String snFormat;
     String hostFormat;
     String modelFormat;
-    String atmFormat;
-    String tempFormat;
+    public static String atmFormat;
+    public static String tempFormat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

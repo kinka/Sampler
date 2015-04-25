@@ -29,8 +29,10 @@ import hk.amae.sampler.ModeSettingAct;
 import hk.amae.sampler.MonitorAct;
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
+import hk.amae.util.Comm.Channel;
 import hk.amae.util.Command;
 import hk.amae.widget.Battery;
+import hk.amae.widget.NumberOperator;
 import hk.amae.widget.TextProgressBar;
 
 import hk.amae.util.Command.Once;
@@ -51,7 +53,10 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     LinearLayout layoutCap, layoutTiming;
     TextView txtSpeed, txtVolume;
 
+    NumberOperator npSpeed, npTiming, npVolume;
+
     TextView txtTimingGroups;
+    TextView txtTips;
 
     private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
@@ -110,6 +115,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         txtTimingGroups = (TextView) v.findViewById(R.id.txt_timing_groups);
         txtTimingGroups.setMovementMethod(new ScrollingMovementMethod());
+
+        txtTips = (TextView) v.findViewById(R.id.txt_tips);
+
+        npSpeed = (NumberOperator) v.findViewById(R.id.np_speed);
+        npTiming = (NumberOperator) v.findViewById(R.id.np_timing);
+        npVolume = (NumberOperator) v.findViewById(R.id.np_cap);
 
         wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
         wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
@@ -231,13 +242,66 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
      * runningState 反映当前运行状态，但是图标展示的是下一步能进行的操作
      */
     private void switchRunningState(boolean sendCmd) {
-        if (runningState == Comm.PAUSED || runningState == Comm.STOPPED)
+        int op = Comm.DO_PLAY;
+        if (runningState == Comm.PAUSED || runningState == Comm.STOPPED) {
             btnRun.setImageResource(R.drawable.play);
-        else if (runningState == Comm.PLAYING)
+            op = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
+        } else if (runningState == Comm.PLAYING) {
             btnRun.setImageResource(R.drawable.pause);
+            op = Comm.DO_PLAY;
+        }
         if (!sendCmd) return;
+        if (sampleMode == Comm.MANUAL_SET)
+            setManual(op);
+        else
+            setAuto(op);
+    }
+
+    private void setManual(int op) {
+        int mode = 0;
+        int speed = npSpeed.getValue();
+        int manualMode = Comm.getIntSP(SP_MANUALMODE);
+        int cap = manualMode == Comm.AUTO_SET_TIME ? npTiming.getValue() : npVolume.getValue();
         // 发送状态切换命令
-        // todo
+        // 根据通道设置分配手动设置参数
+        String selected = spinChannel.getSelectedItem().toString();
+        Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+
+            }
+        }).setManualChannel(op, mode, channel, speed, cap);
+        // 开始定时查询
+        cycleQuery();
+    }
+    private void setAuto(int op) {
+        // 获取自动设置并开始倒计时
+    }
+    private void cycleQuery() {
+        String selected = spinChannel.getSelectedItem().toString();
+        Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                progSampling.setProgress((int) Math.round(Math.random()*100));
+                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+            }
+        }).reqChannelState(channel);
+
+        final String[] State = new String[]{"", "正在采样", "等待", "暂停"};
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                String states = "";
+                for (int i=0; i<8; i++) {
+                    cmd.MachineState[i] = (byte) (Math.round(Math.random()*100)%4);
+                    states += String.format("通道%d%s ", i+1, State[cmd.MachineState[i]]);
+                }
+                txtTips.setText(states);
+            }
+        }).reqMachineState();
     }
 
     @Override
@@ -272,7 +336,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
                     touchStartTime = System.currentTimeMillis();
 
-                    Comm.logI("gap " + (touchStartTime - lastupTime));
+//                    Comm.logI("gap " + (touchStartTime - lastupTime));
                     if (clickCnt==1 && touchStartTime - lastupTime < DBLCLICKGAP) { // 触发双击
                         clickCnt++;
                         clickTask.cancel();
@@ -284,7 +348,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
                     long touchEndTime = System.currentTimeMillis();
-                    Comm.logI("passed time " + (touchEndTime - touchStartTime));
+//                    Comm.logI("passed time " + (touchEndTime - touchStartTime));
                     if (touchEndTime - touchStartTime < 3000) {
                         poweroffTask.cancel();
                         poweroffTask = null;
@@ -327,11 +391,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     runningState = cmd.ChannelState;
                     switchRunningState(false);
                 }
-            }).reqChannelState(Comm.Channel.valueOf(selected));
+            }).reqChannelState(Channel.valueOf(selected));
         } else if (parent.equals(spinMode)) {
             String selected = spinMode.getSelectedItem().toString();
             Intent intent = new Intent(getActivity(), ModeSettingAct.class);
             int manualMode = Comm.getIntSP(SP_MANUALMODE);
+            int lastMode = sampleMode;
             // selected 选中文字对应spinMode的选项文字，在strings.xml中
             switch (selected) {
                 case "手动":
@@ -352,7 +417,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
-            if (sampleMode != Comm.MANUAL_SET && manualMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
+            if (lastMode != Comm.MANUAL_SET && manualMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
             if (intent != null && isSpinnerClick) {
                 startActivityForResult(intent, 0);
@@ -370,7 +435,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private void switchSampleMode() {
         try {
             if (sampleMode == Comm.MANUAL_SET) {
-                // todo 获取通道工作状态
+                cycleQuery();
                 wrapManual.setVisibility(View.VISIBLE);
                 wrapTiming.setVisibility(View.GONE);
                 switchManualMode();

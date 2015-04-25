@@ -269,6 +269,7 @@ public class Command {
         Channel = Comm.Channel.init(reply.get());
         Speed = reply.getInt();
         Volume = reply.getInt();
+        Progress = reply.get();
     }
 
     public byte[] MachineState = new byte[8];

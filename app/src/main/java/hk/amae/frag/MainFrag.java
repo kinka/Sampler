@@ -25,6 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import hk.amae.sampler.ChannelAct;
+import hk.amae.sampler.MainAct;
 import hk.amae.sampler.ModeSettingAct;
 import hk.amae.sampler.MonitorAct;
 import hk.amae.sampler.R;
@@ -98,7 +99,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         txtVolume = (TextView) v.findViewById(R.id.txt_volume);
 
         progSampling = (TextProgressBar) v.findViewById(R.id.prog_sampling);
-        progSampling.setProgress(98);
 
         btnLock = (ImageButton) v.findViewById(R.id.toggle_lock);
         btnLock.setOnClickListener(this);
@@ -130,13 +130,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         v.findViewById(R.id.label_cap).setOnClickListener(this);
         v.findViewById(R.id.label_timing).setOnClickListener(this);
 
-        askBatteryState();
-
         sampleMode = Comm.getIntSP(SP_SAMPLEMODE);
         isSpinnerClick = false;
+
+        askBatteryState();
         spinMode.setSelection(sampleMode);
         switchSampleMode();
 
+        MainAct.lastid = 0;
         return v;
     }
 
@@ -297,7 +298,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 String states = "";
                 for (int i=0; i<8; i++) {
                     cmd.MachineState[i] = (byte) (Math.round(Math.random()*100)%4);
-                    states += String.format("通道%d%s ", i+1, State[cmd.MachineState[i]]);
+                    states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
                 }
                 txtTips.setText(states);
             }
@@ -392,6 +393,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     switchRunningState(false);
                 }
             }).reqChannelState(Channel.valueOf(selected));
+
         } else if (parent.equals(spinMode)) {
             String selected = spinMode.getSelectedItem().toString();
             Intent intent = new Intent(getActivity(), ModeSettingAct.class);
@@ -417,11 +419,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
+
             if (lastMode != Comm.MANUAL_SET && manualMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
+
             if (intent != null && isSpinnerClick) {
                 startActivityForResult(intent, 0);
             }
+
             switchSampleMode();
             isSpinnerClick = true;
         }

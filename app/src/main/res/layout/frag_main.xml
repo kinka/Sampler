@@ -377,7 +377,8 @@
         android:id="@+id/layout_actions"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:gravity="center">
 
         <Button
             android:text="设置"

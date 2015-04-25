@@ -2,6 +2,7 @@ package hk.amae.sampler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,11 +35,12 @@ import hk.amae.util.Command;
 public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     private boolean isLocked = false;
     BasicInfoFrag basicInfoFrag;
-    private static int lastid = 0;
+    public static int lastid = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.act_main);
@@ -48,12 +50,14 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
         Comm.logI("entered main...");
 
         basicInfoFrag = (BasicInfoFrag) getFragmentManager().findFragmentById(R.id.basicinfo_frag);
+
+        connectServer();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (lastid == 0)
+        if (lastid <= 0)
             connectServer();
     }
 
@@ -67,7 +71,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
         if (info != null && info.isConnected() && ssid != null && ssid.length() > 0) {
             if (Comm.getSP("ssid").equals(ssid)) {// 已经确认过了
-                switchPanel(0);
+                if (lastid < 0) switchPanel(0); // init
                 return;
             }
 
@@ -98,7 +102,8 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     }
 
     private void switchPanel(int id) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
         switch (id) {
             case R.id.btn_setting:
                 ft.replace(R.id.container, new SettingFrag());
@@ -118,11 +123,20 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                 ft.replace(R.id.container, new MainFrag());
                 basicInfoFrag.updateInfo();
         }
-        if (id != 0)
-            ft.addToBackStack("xxx" + id);
+        ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
         lastid = id;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (lastid != 0) {
+            super.onBackPressed();
+        } else {
+            lastid = -1;
+            finish();
+        }
     }
 
     @Override

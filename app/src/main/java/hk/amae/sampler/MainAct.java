@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
@@ -32,7 +31,7 @@ import hk.amae.util.Command;
 /**
  * 这个是入口界面
  */
-public class MainAct extends Activity implements MainFrag.OnMainFragListerer {
+public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     private boolean isLocked = false;
     BasicInfoFrag basicInfoFrag;
     private static int lastid = 0;

@@ -40,6 +40,7 @@ public class Comm {
         }
     }
 
+    public final static int MANUAL_SET = 0;
     public final static int AUTO_SET_TIME = 0x1;
     public final static int AUTO_SET_CAP = 0x2;
     public final static int DO_PLAY = 0x1;
@@ -92,6 +93,18 @@ public class Comm {
     public static String getSP(String key) {
         SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
         return commSP.getString(key, "");
+    }
+
+    public static void setIntSP(String key, int value) {
+        SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
+        Editor editor = commSP.edit();
+        editor.putInt(key, value);
+        editor.commit();
+        Comm.logI("write " + key + "=" + value);
+    }
+    public static int getIntSP(String key) {
+        SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
+        return commSP.getInt(key, 0);
     }
 
     public static void showSoftInput() {

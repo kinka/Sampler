@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import hk.amae.sampler.ChannelAct;
+import hk.amae.sampler.ModeSettingAct;
 import hk.amae.sampler.MonitorAct;
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
@@ -39,33 +39,39 @@ import hk.amae.util.Command.Once;
  * A simple {@link Fragment} subclass.
  */
 public class MainFrag extends Fragment implements View.OnClickListener, View.OnTouchListener, AdapterView.OnItemSelectedListener {
-    OnMainFragListerer mCallback;
+    OnMainFragListener mCallback;
 
     Spinner spinChannel;
-    Spinner spinModel;
+    Spinner spinMode;
     TextProgressBar progSampling;
     Activity parent;
     ImageButton btnLock;
     ImageButton btnRun;
     LinearLayout wrapManual, wrapTiming;
+    LinearLayout layoutCap, layoutTiming;
     TextView txtSpeed, txtVolume;
 
     TextView txtTimingGroups;
 
     private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
-    private String sampleMode;
+    private int sampleMode;
+    private boolean isSpinnerClick = true;
 
     private String fmtSpeed = "%d\nmL/min";
     private String fmtVolume = "%.2fL";
+
+    private final String SP_LASTMODE = "last_mode";
+    private final String SP_SAMPLEMODE = "sample_mode";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_main, container, false);
-        spinChannel = (Spinner) v.findViewById(R.id.spin_channel);
-        spinModel = (Spinner) v.findViewById(R.id.spin_model);
 
+        spinChannel = (Spinner) v.findViewById(R.id.spin_channel);
+        spinMode = (Spinner) v.findViewById(R.id.spin_model);
+        // channel and mode
         int channels_res = getChannels();
 
         ArrayAdapter<CharSequence> spinAdapter =
@@ -73,14 +79,16 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         ArrayAdapter<CharSequence> modelAdapter =
                 ArrayAdapter.createFromResource(parent, R.array.models_array, android.R.layout.simple_spinner_item);
+
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinChannel.setAdapter(spinAdapter);
-        spinModel.setAdapter(modelAdapter);
+        spinMode.setAdapter(modelAdapter);
 
         spinChannel.setOnItemSelectedListener(this);
-        spinModel.setOnItemSelectedListener(this);
+        spinMode.setOnItemSelectedListener(this);
 
+        // state
         txtSpeed = (TextView) v.findViewById(R.id.txt_speed);
         txtVolume = (TextView) v.findViewById(R.id.txt_volume);
 
@@ -105,10 +113,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
         wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
+        layoutCap = (LinearLayout) v.findViewById(R.id.layout_capacity);
+        layoutTiming = (LinearLayout) v.findViewById(R.id.layout_timing);
 
         askBatteryState();
 
-        sampleMode = Comm.getSP("sample_mode");
+        sampleMode = Comm.getIntSP(SP_SAMPLEMODE);
+        isSpinnerClick = false;
+        spinMode.setSelection(sampleMode);
+        switchSampleMode();
 
         return v;
     }
@@ -117,7 +130,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         parent = activity;
-        mCallback = (OnMainFragListerer) parent;
+        mCallback = (OnMainFragListener) parent;
     }
 
     private int getChannels() {
@@ -194,19 +207,30 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 case 2:
                     if (runningState == Comm.PLAYING) {
                         runningState = Comm.PAUSED;
-                        btnRun.setImageResource(R.drawable.pause);
                     } else {
                         runningState = Comm.PLAYING;
-                        btnRun.setImageResource(R.drawable.play);
                     }
+                    switchRunningState(true);
                     break;
             }
         }
     };
 
+    /**
+     * runningState 反映当前运行状态，但是图标展示的是下一步能进行的操作
+     */
+    private void switchRunningState(boolean sendCmd) {
+        if (runningState == Comm.PAUSED || runningState == Comm.STOPPED)
+            btnRun.setImageResource(R.drawable.play);
+        else if (runningState == Comm.PLAYING)
+            btnRun.setImageResource(R.drawable.pause);
+        if (!sendCmd) return;
+        // 发送状态切换命令
+        // todo
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
         switch (view.getId()) {
             case R.id.toggle_run:
                 if (poweroffTask == null)
@@ -243,7 +267,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                         clickTask.cancel();
                         clickTask = null;
                         runningState = Comm.STOPPED;
-                        btnRun.setImageResource(R.drawable.stop);
+                        Toast.makeText(parent, "停止提醒", Toast.LENGTH_SHORT).show();
+                        switchRunningState(true);
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
@@ -270,6 +295,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switchSampleMode(0);
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.equals(spinChannel)) {
             String selected = spinChannel.getSelectedItem().toString();
@@ -284,17 +314,40 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                     txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
                     runningState = cmd.ChannelState;
+                    switchRunningState(false);
                 }
             }).reqChannelState(Comm.Channel.valueOf(selected));
-        } else if (parent.equals(spinModel)) {
-            String selected = spinModel.getSelectedItem().toString();
-            if (selected.equals("手动")) {
-                wrapManual.setVisibility(View.VISIBLE);
-                wrapTiming.setVisibility(View.GONE);
-            } else {
-                wrapManual.setVisibility(View.GONE);
-                wrapTiming.setVisibility(View.VISIBLE);
+        } else if (parent.equals(spinMode)) {
+            String selected = spinMode.getSelectedItem().toString();
+            Intent intent = new Intent(getActivity(), ModeSettingAct.class);
+            int lastMode = Comm.getIntSP(SP_LASTMODE);
+            // selected 选中文字对应spinMode的选项文字，在strings.xml中
+            switch (selected) {
+                case "手动":
+                    sampleMode = Comm.MANUAL_SET;
+                    runningState = Comm.STOPPED; // 强制切换状态为停止
+                    switchRunningState(false);
+                    intent = null;
+                    break;
+                case "定时模式":
+                    Comm.setIntSP(SP_LASTMODE, sampleMode);
+                    sampleMode = Comm.AUTO_SET_TIME;
+                    intent.putExtra("model", ModeSettingAct.TimingSet);
+                    break;
+                case "定容模式":
+                    Comm.setIntSP(SP_LASTMODE, sampleMode);
+                    sampleMode = Comm.AUTO_SET_CAP;
+                    intent.putExtra("model", ModeSettingAct.CapacitySet);
+                    break;
             }
+            Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
+            if (sampleMode != Comm.MANUAL_SET && lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
+                isSpinnerClick = false;
+            if (intent != null && isSpinnerClick) {
+                startActivityForResult(intent, 0);
+            }
+            switchSampleMode();
+            isSpinnerClick = true;
         }
     }
 
@@ -303,7 +356,31 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     }
 
-    public interface OnMainFragListerer {
+    private void switchSampleMode() {
+        try {
+            if (sampleMode == Comm.MANUAL_SET) {
+                // todo 获取通道工作状态
+                wrapManual.setVisibility(View.VISIBLE);
+                wrapTiming.setVisibility(View.GONE);
+                int lastMode = Comm.getIntSP(SP_LASTMODE);
+                if (lastMode == Comm.AUTO_SET_CAP) {
+                    layoutCap.setVisibility(View.VISIBLE);
+                    layoutTiming.setVisibility(View.GONE);
+                } else if (lastMode == Comm.AUTO_SET_TIME) {
+                    layoutCap.setVisibility(View.GONE);
+                    layoutTiming.setVisibility(View.VISIBLE);
+                }
+            } else {
+                wrapManual.setVisibility(View.GONE);
+                wrapTiming.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public interface OnMainFragListener {
         void onLockToggled(boolean locked);
         void onButtonClick(int id);
     }

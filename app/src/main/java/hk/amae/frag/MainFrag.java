@@ -70,6 +70,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private final String SP_MANUALMODE = "manual_mode"; // 手动情况下设定时长还是设定容量
     private final String SP_SAMPLEMODE = "sample_mode";
 
+    private int __lastid = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,9 +91,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinChannel.setAdapter(spinAdapter);
         spinMode.setAdapter(modelAdapter);
-
-        spinChannel.setOnItemSelectedListener(this);
-        spinMode.setOnItemSelectedListener(this);
 
         // state
         txtSpeed = (TextView) v.findViewById(R.id.txt_speed);
@@ -137,7 +135,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         spinMode.setSelection(sampleMode);
         switchSampleMode();
 
+        __lastid = MainAct.lastid;
         MainAct.lastid = 0;
+
+        spinChannel.setOnItemSelectedListener(this);
+        spinMode.setOnItemSelectedListener(this);
+
         return v;
     }
 
@@ -397,8 +400,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         } else if (parent.equals(spinMode)) {
             String selected = spinMode.getSelectedItem().toString();
             Intent intent = new Intent(getActivity(), ModeSettingAct.class);
-            int manualMode = Comm.getIntSP(SP_MANUALMODE);
-            int lastMode = sampleMode;
+            int lastMode = Comm.getIntSP(SP_SAMPLEMODE);
             // selected 选中文字对应spinMode的选项文字，在strings.xml中
             switch (selected) {
                 case "手动":
@@ -408,20 +410,21 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     intent = null;
                     break;
                 case "定时模式":
-                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     sampleMode = Comm.AUTO_SET_TIME;
+                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     intent.putExtra("model", ModeSettingAct.TimingSet);
                     break;
                 case "定容模式":
-                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     sampleMode = Comm.AUTO_SET_CAP;
+                    Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     intent.putExtra("model", ModeSettingAct.CapacitySet);
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
 
-            if (lastMode != Comm.MANUAL_SET && manualMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
+            if (__lastid > 0 || lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
+            __lastid = 0; // 仅用于区分初次调用是否从其它frag切换回来
 
             if (intent != null && isSpinnerClick) {
                 startActivityForResult(intent, 0);

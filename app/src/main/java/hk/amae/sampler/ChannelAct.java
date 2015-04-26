@@ -26,6 +26,7 @@ public class ChannelAct extends Activity implements View.OnClickListener {
     public final static int MODE_COUPLE = 1;
     public final static int MODE_SINGLE = 0;
     public static int ChannelMode = MODE_SINGLE;
+    public static final String SP_CHANNELMODE = "channel_mode";
 
     private RadioGroup radioGroup;
 
@@ -33,7 +34,7 @@ public class ChannelAct extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-                Comm.setSP("channel_mode", String.valueOf(ChannelMode));
+                Comm.setSP(SP_CHANNELMODE, String.valueOf(ChannelMode));
                 // fall through
             case R.id.btn_back:
                 super.onBackPressed();
@@ -63,7 +64,7 @@ public class ChannelAct extends Activity implements View.OnClickListener {
 
         enableCombine = (CheckBox) findViewById(R.id.chk_enable);
 
-        String mode = Comm.getSP("channel_mode");
+        String mode = Comm.getSP(SP_CHANNELMODE);
         if (mode.length() != 0)
             ChannelMode = Integer.valueOf(mode);
 

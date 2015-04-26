@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,12 +32,14 @@ import hk.amae.widget.AmaeDateTimePicker;
 public class ModeSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
     public static String TimingSet = "定时设置";
-    static String FMT_CHANNEL = "第%d通道";
+    static String FMT_CHANNEL = "%s通道";
 
     private String model = CapacitySet; // 定时设置
     ListView listView;
     TextView labelChannel;
-    int channel = 1;
+    int channel;
+
+    String[] Channels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +51,23 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         if (model == null)
             model = TimingSet;
 
+        Channels = getChannels();
+
         TextView labelModel = (TextView) findViewById(R.id.label_model);
         labelModel.setText(model);
 
         labelChannel = (TextView) findViewById(R.id.label_channel);
-        labelChannel.setText(String.format(FMT_CHANNEL, channel));
+        labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
 
-        findViewById(R.id.btn_pre).setOnClickListener(this);
-        findViewById(R.id.btn_next).setOnClickListener(this);
+        ImageButton btnPre = (ImageButton) findViewById(R.id.btn_pre);
+        ImageButton btnNext = (ImageButton) findViewById(R.id.btn_next);
+        if (Channels.length == 1) {
+            btnPre.setVisibility(View.INVISIBLE);
+            btnNext.setVisibility(View.INVISIBLE);
+        } else {
+            btnPre.setOnClickListener(this);
+            btnNext.setOnClickListener(this);
+        }
 
         listView = (ListView) findViewById(R.id.list_settings);
         final ArrayList<SettingItem> list = new ArrayList<>();
@@ -66,6 +79,37 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);
         listView.setOnTouchListener(gestureDetector);
+
+        findViewById(R.id.btn_save).setOnClickListener(this);
+        findViewById(R.id.btn_cancel).setOnClickListener(this);
+    }
+
+    private String[] getChannels() {
+        String s_mode = Comm.getSP(ChannelAct.SP_CHANNELMODE);
+        int mode = 0;
+        if (s_mode.length() == 0)
+            mode = ChannelAct.MODE_SINGLE;
+        else
+            mode = Integer.valueOf(s_mode);
+
+        int res;
+        switch (mode) {
+            case ChannelAct.MODE_COUPLE:
+                res = R.array.channels_C;
+                break;
+            case ChannelAct.MODE_4IN1:
+                res = R.array.channels_B;
+                break;
+            case ChannelAct.MODE_8IN1:
+                res = R.array.channels_A;
+                break;
+            default:
+                res = R.array.channels_CH;
+        }
+        String[] src = getResources().getStringArray(res);
+        String[] dest = new String[mode != ChannelAct.MODE_8IN1 ? src.length - 1 : 1];
+        System.arraycopy(src, 0, dest, 0, dest.length);
+        return dest;
     }
 
     @Override
@@ -80,15 +124,20 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
             case R.id.btn_next:
                 flip(true);
                 break;
+            case R.id.btn_save: // channel one by one to save
+                break;
+            case R.id.btn_cancel:
+                super.onBackPressed();
+                break;
         }
 
     }
 
     boolean switchChannel(boolean add) {
-        if ((add && channel >= 8) || (!add && channel <=1 ))
+        if ((add && channel+1 >= Channels.length) || (!add && channel <=0 ))
             return false;
         channel = add ? channel+1 : channel-1;
-        labelChannel.setText(String.format(FMT_CHANNEL, channel));
+        labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
         return true;
     }
     void flip(boolean add) {

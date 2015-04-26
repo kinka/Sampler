@@ -138,65 +138,69 @@ public class Command {
         reply.get(); // version
         reply.getShort(); // cmd
 
-        int len = reply.getShort();
-        switch (cmd) {
-            case 0x1:
-                resolveModel(reply);
-                break;
-            case 0x2:
-                resolveATM_TEMP(reply);
-                break;
-            case 0x3:
-            case 0x104:
-                resolveDateTime(reply);
-                break;
-            case 0x4:
-                resolveBattery(reply);
-                break;
-            case 0x5:
-                resolveChannelState(reply);
-                break;
-            case 0x6:
-                resolveMachineState(reply);
-                break;
-            case 0x7:
-                resolveSampleState(reply);
-                break;
-            case 0x8:
-                resolveSampleHistory(reply);
-                break;
-            case 0x9:
-                resolveSampleData(reply);
-                break;
-            case 0xa:
-                resolveSysInfo(reply);
-                break;
-            case 0xb:
-                resolveAutoSetting(reply);
-                break;
-            case 0x101:
-                resolveManualChannel(reply);
-                break;
-            case 0x102:
-                resolveAutoChannel(reply);
-                break;
-            case 0x103:
-                resolveBacklit(reply);
-                break;
-            case 0x105:
-                resolveRestore(reply);
-                break;
-            case 0x106:
-                resolveClearSample(reply);
-                break;
-            case 0x107:
-                resolveAdjust(reply);
-                break;
-        }
+        try {
+            int len = reply.getShort();
+            switch (cmd) {
+                case 0x1:
+                    resolveModel(reply);
+                    break;
+                case 0x2:
+                    resolveATM_TEMP(reply);
+                    break;
+                case 0x3:
+                case 0x104:
+                    resolveDateTime(reply);
+                    break;
+                case 0x4:
+                    resolveBattery(reply);
+                    break;
+                case 0x5:
+                    resolveChannelState(reply);
+                    break;
+                case 0x6:
+                    resolveMachineState(reply);
+                    break;
+                case 0x7:
+                    resolveSampleState(reply);
+                    break;
+                case 0x8:
+                    resolveSampleHistory(reply);
+                    break;
+                case 0x9:
+                    resolveSampleData(reply);
+                    break;
+                case 0xa:
+                    resolveSysInfo(reply);
+                    break;
+                case 0xb:
+                    resolveAutoSetting(reply);
+                    break;
+                case 0x101:
+                    resolveManualChannel(reply);
+                    break;
+                case 0x102:
+                    resolveAutoChannel(reply);
+                    break;
+                case 0x103:
+                    resolveBacklit(reply);
+                    break;
+                case 0x105:
+                    resolveRestore(reply);
+                    break;
+                case 0x106:
+                    resolveClearSample(reply);
+                    break;
+                case 0x107:
+                    resolveAdjust(reply);
+                    break;
+            }
 
-        // 校验sum
-        short recv_crc = reply.getShort();
-        short crc = crc16_kermit(reply.array(), reply.arrayOffset());
+            // 校验sum
+            short recv_crc = reply.getShort();
+            short crc = crc16_kermit(reply.array(), reply.arrayOffset());
+        } catch (Exception e) {
+
+        }
 
         return true;
 //        return crc == sum;

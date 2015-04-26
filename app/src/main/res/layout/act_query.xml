@@ -319,7 +319,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="定时长"
-                    android:id="@+id/label_sample_model"
+                    android:id="@+id/label_sample_mode"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>
@@ -371,7 +371,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="2"
-                    android:id="@+id/label_channel_count"
+                    android:id="@+id/label_channel"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>
@@ -397,7 +397,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="第一组"
-                    android:id="@+id/label_channel_group"
+                    android:id="@+id/label_set_group"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>

@@ -19,11 +19,12 @@ import hk.amae.widget.TextProgressBar;
 public class CleanMachineAct extends Activity implements DialogInterface.OnClickListener {
 
     TextProgressBar progClean;
-    Button btnBack;
 
     TimerTask cleanTask;
     Timer timer;
-    int progress = 0;
+    static int progress = 0;
+
+    int total = 60 * 15 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +32,11 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
         setContentView(R.layout.act_clean_machine);
 
         progClean = (TextProgressBar) findViewById(R.id.prog_cleaning);
-        btnBack = (Button) findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                back();
-            }
-        });
 
-        doClean();
+        if (progress == 0)
+            doClean();
+        else
+            cleaning();
     }
 
     private Handler handler = new Handler() {
@@ -47,25 +44,31 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
         public void handleMessage(Message msg) {
             progress += 1;
             progClean.setProgress(progress);
-            if (progress == 100)
+            if (progress == 100) {
                 timer.cancel();
+                progress = 0;
+            }
         }
     };
     private void doClean() {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                timer = new Timer();
-                cleanTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        handler.sendMessage(msg);
-                    }
-                };
-                timer.schedule(cleanTask, 100, 100);
+                cleaning();
             }
         }).setClean();
+    }
+
+    private void cleaning() {
+        timer = new Timer();
+        cleanTask = new TimerTask() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                handler.sendMessage(msg);
+            }
+        };
+        timer.schedule(cleanTask, progress == 0 ? total / 100 : 0, total / 100);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
         if (progress == 100)
             super.onBackPressed();
         else
-            new AlertDialog.Builder(this).setTitle("确认").setMessage("正在清洁中，确定离开吗？")
+            new AlertDialog.Builder(this).setTitle("清洁中").setMessage("正在清洁中，15分钟后自动关机")
                 .setPositiveButton("离开", this).setNegativeButton("留下", this).setCancelable(false).show();
     }
 
@@ -85,7 +88,7 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     public void onClick(DialogInterface dialogInterface, int i) {
         switch (i) {
             case AlertDialog.BUTTON_POSITIVE:
-                timer.cancel();
+//                timer.cancel();
                 super.onBackPressed();
                 break;
             case AlertDialog.BUTTON_NEGATIVE:

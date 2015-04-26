@@ -152,7 +152,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     private int getChannels() {
-        String s_mode = Comm.getSP("channel_mode");
+        String s_mode = Comm.getSP(ChannelAct.SP_CHANNELMODE);
         int mode = 0;
         if (s_mode.length() == 0)
             mode = ChannelAct.MODE_SINGLE;

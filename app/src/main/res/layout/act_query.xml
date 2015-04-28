@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="99mL/min"
-                    android:id="@+id/label_total_target"
+                    android:id="@+id/label_total_standard"
                     android:layout_weight="3"
                     android:gravity="center" />
 

@@ -3,7 +3,6 @@ package hk.amae.sampler;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import hk.amae.util.Comm;
@@ -11,7 +10,7 @@ import hk.amae.util.Command;
 
 
 public class QueryAct extends Activity {
-    private TextView labelSpeed, labelTargetSpeed, labelVolume, labelTargetVolume,
+    private TextView labelSpeed, labelTargetSpeed, labelVolume, labelStandardVol,
         labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration,
         labelSampleMode, labelLaunchMode, labelChannel, labelGroup;
 
@@ -30,7 +29,7 @@ public class QueryAct extends Activity {
         labelSpeed = (TextView) findViewById(R.id.label_speed);
         labelTargetSpeed = (TextView) findViewById(R.id.label_set_speed);
         labelVolume = (TextView) findViewById(R.id.label_total);
-        labelTargetVolume = (TextView) findViewById(R.id.label_total_target);
+        labelStandardVol = (TextView) findViewById(R.id.label_total_standard);
         labelTime = (TextView) findViewById(R.id.label_local_time);
         labelATM = (TextView) findViewById(R.id.label_atm);
         labelTEMP = (TextView) findViewById(R.id.label_temp);

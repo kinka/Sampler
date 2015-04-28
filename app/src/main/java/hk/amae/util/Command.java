@@ -1,7 +1,5 @@
 package hk.amae.util;
 
-import android.widget.Spinner;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -239,7 +237,7 @@ public class Command {
     public void resolveATM_TEMP(ByteBuffer reply) {
 
         ATM = reply.getInt();
-        TEMP = reply.getShort();
+        TEMP = reply.getInt();
     }
 
     public String DateTime;
@@ -288,7 +286,7 @@ public class Command {
     public String SampleID; // 采样编号
     public int TargetSpeed; // 设定流量/流速
     public int SampleMode; // 采样模式(定时or定容)
-    public int SampleVolume; // 累计标体(临时命名)
+    public int StandardVol; // 累计标体(临时命名)
     public byte Progress; // 采样进度
     public int Elapse; // 已采样时间
     public int TargetDuration; // 设定时间
@@ -304,11 +302,11 @@ public class Command {
         Speed = reply.getInt();
         TargetSpeed = reply.getInt();
         Volume = reply.getShort();
-        SampleVolume = reply.getShort();
+        StandardVol = reply.getInt();
         SampleMode = reply.get();
         DateTime = getString(reply);
         ATM = reply.getInt();
-        TEMP = reply.getShort();
+        TEMP = reply.getInt();
         Progress = reply.get();
         Elapse = reply.getInt();
         TargetDuration = reply.getShort();

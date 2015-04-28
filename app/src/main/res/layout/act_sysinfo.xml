@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="(100-1000)mL/min"
-                android:id="@+id/textView75" />
+                android:id="@+id/txt_channel_cap" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="64K"
-                android:id="@+id/txt_capacity" />
+                android:id="@+id/txt_storage" />
         </LinearLayout>
 
         <LinearLayout
@@ -179,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:text="返回"
-            android:id="@+id/button"
+            android:id="@+id/btn_back"
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_gravity="right" />

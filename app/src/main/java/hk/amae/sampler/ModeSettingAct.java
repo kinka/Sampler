@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,9 +25,10 @@ import java.util.Calendar;
 
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
 import hk.amae.util.SwipeInterface;
 import hk.amae.widget.AmaeDateTimePicker;
-
+import hk.amae.util.Comm.Channel;
 
 public class ModeSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
@@ -40,6 +41,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     int channel;
 
     String[] Channels;
+    ArrayList<SettingItem> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,11 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         }
 
         listView = (ListView) findViewById(R.id.list_settings);
-        final ArrayList<SettingItem> list = new ArrayList<>();
-        for (int i=0; i<8; i++)
-            list.add(new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet)));
 
-        final ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, list);
+        dataList = new ArrayList<>(Channels.length);
+        for (int i=0; i<Channels.length; i++)
+            dataList.add(new SettingItem());
+        ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, dataList);
         listView.setAdapter(adapter);
 
         ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);
@@ -82,6 +84,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         findViewById(R.id.btn_save).setOnClickListener(this);
         findViewById(R.id.btn_cancel).setOnClickListener(this);
+
+        updateList();
     }
 
     private String[] getChannels() {
@@ -134,12 +138,30 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     }
 
     boolean switchChannel(boolean add) {
-        if ((add && channel+1 >= Channels.length) || (!add && channel <=0 ))
+        if ((add && channel > Channels.length) || (!add && channel <=0 ))
             return false;
         channel = add ? channel+1 : channel-1;
         labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
+
+        updateList();
+
         return true;
     }
+    private void updateList() {
+        int autoMode = model.equals(CapacitySet) ? Comm.AUTO_SET_CAP : Comm.AUTO_SET_TIME;
+
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                for (int i=0; i<8; i++) {
+                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet));
+                    dataList.set(i, item);
+                }
+                ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+            }
+        }).reqAutoSetting(autoMode, Channel.valueOf(Channels[channel]), 0); // num from 0 - 7 ? 能否合并成一个请求？
+    }
+
     void flip(boolean add) {
         if (!switchChannel(add))
             return;
@@ -254,6 +276,9 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
             this.speed = speed;
             this.checked = checked;
             this.isCapacitySet = isCapacitySet;
+        }
+        public SettingItem() {
+
         }
     }
 }

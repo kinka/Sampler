@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private final String SP_SAMPLEMODE = "sample_mode";
 
     private int __lastid = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -141,6 +143,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         spinChannel.setOnItemSelectedListener(this);
         spinMode.setOnItemSelectedListener(this);
 
+        if (Comm.getIntSP("locked") == 1) {
+            isLocked = true;
+            setLock();
+        }
+
         return v;
     }
 
@@ -182,18 +189,19 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }).reqBattery();
     }
 
+    private void setLock() {
+        if (isLocked)
+            btnLock.setImageResource(R.drawable.lock);
+        else
+            btnLock.setImageResource(R.drawable.unlock);
+        mCallback.onLockToggled(isLocked);
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toggle_lock:
                 isLocked = !isLocked;
-                if (isLocked)
-                    ((ImageButton) view).setImageResource(R.drawable.lock);
-                else
-                    ((ImageButton) view).setImageResource(R.drawable.unlock);
-                Rect rect = new Rect();
-                btnLock.getDrawingRect(rect);
-                mCallback.onLockToggled(isLocked);
+                setLock();
                 break;
 
             case R.id.btn_setting:

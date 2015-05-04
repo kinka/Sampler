@@ -57,7 +57,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (lastid <= 0)
+        if (lastid < 0)
             connectServer();
     }
 
@@ -153,9 +153,11 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
             }
 
+            ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+
             FrameLayout container = (FrameLayout) findViewById(R.id.container);
             float offsetX = container.getX();
-            float offsetY = container.getY();
+            float offsetY = container.getY() - scrollContainer.getScrollY();
 
             LinearLayout wrapper = (LinearLayout) findViewById(R.id.layout_lockwrapper);
             offsetX += wrapper.getX();
@@ -183,11 +185,13 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                ScrollView scrollContainer = (ScrollView) findViewById(R.id.scroll_container);
-                if (locked)
-                    scrollContainer.setForeground(new ColorDrawable(0x60727272));
-                else
-                    scrollContainer.setForeground(new ColorDrawable(0x00000000));
+                FrameLayout container = (FrameLayout) findViewById(R.id.container);
+                if (locked) {
+                    container.setForeground(new ColorDrawable(0x60727272));
+                } else {
+                    container.setForeground(new ColorDrawable(0x00000000));
+                }
+                Comm.setIntSP("locked", locked ? 1 : 0);
             }
         }).setScreenLock();
     }

@@ -6,10 +6,14 @@ import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import android.content.SharedPreferences.Editor;
+import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
 
 /**
@@ -112,10 +116,53 @@ public class Comm {
         imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
     }
 
+    public static void hideSoftInput() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            }
+        }, 200);
+    }
+
     public static void runOnUiThread(Runnable runnable) {
         if (handler != null)
             handler.post(runnable);
         else
             runnable.run();
+    }
+
+    public static String[] getLocalDateTime(String serverDateTime) {
+        String[] res = new String[2];
+        int posY = serverDateTime.indexOf("-");
+        int posM = serverDateTime.lastIndexOf("-");
+        int posD = serverDateTime.indexOf(" ");
+        String y = serverDateTime.substring(0, posY);
+        String m = serverDateTime.substring(posY+1, posM);
+        String d = serverDateTime.substring(posM+1, posD);
+        res[0] = String.format("%s 年 %s 月 %s 日", y, m, d);
+        res[1] = serverDateTime.substring(posD+1);
+        return res;
+    }
+    public static String getServerDateTime(String localDate, String localTime) {
+        String theDate = localDate.replaceAll("\\s(年|月)\\s", "-").replaceFirst("\\s日", "");
+        String theTime = localTime.replaceAll("\\s", "");
+
+        return theDate + " " + theTime;
+    }
+    public static String getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        return String.format("%d 年 %02d 月 %02d 日",
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.DAY_OF_MONTH));
+    }
+    public static String getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        return String.format("%02d : %02d : %02d",
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                calendar.get(Calendar.SECOND));
     }
 }

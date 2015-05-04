@@ -17,6 +17,7 @@ import java.util.Calendar;
 
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
 import hk.amae.widget.AmaeDateTimePicker;
 
 public class SetDateTimeFrag extends Fragment implements View.OnClickListener {
@@ -37,6 +38,18 @@ public class SetDateTimeFrag extends Fragment implements View.OnClickListener {
         txtDate.setOnClickListener(this);
         txtTime.setOnClickListener(this);
 
+        v.findViewById(R.id.btn_confirm).setOnClickListener(this);
+        v.findViewById(R.id.btn_back).setOnClickListener(this);
+
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                String[] local = Comm.getLocalDateTime("2015-05-04 22:37:02");
+                txtDate.setText(local[0]);
+                txtTime.setText(local[1]);
+            }
+        }).reqDateTime();
+
         return v;
     }
 
@@ -48,6 +61,17 @@ public class SetDateTimeFrag extends Fragment implements View.OnClickListener {
                 break;
             case R.id.txt_time:
                 AmaeDateTimePicker.showTimeDialog(getActivity(), (TextView) view, "%02d : %02d : %02d");
+                break;
+            case R.id.btn_confirm:
+                new Command(new Command.Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+
+                    }
+                }).setDateTime(Comm.getServerDateTime(txtDate.getText().toString(), txtTime.getText().toString()));
+                break;
+            case R.id.btn_back:
+                getActivity().onBackPressed();
                 break;
         }
     }

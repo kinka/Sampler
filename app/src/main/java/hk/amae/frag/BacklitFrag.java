@@ -10,10 +10,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import hk.amae.sampler.R;
+import hk.amae.util.Comm;
+import hk.amae.util.Command;
 
-public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     TextView labelNormal;
     TextView labelSaving;
+
+    SeekBar barNormal, barSaving;
 
     public BacklitFrag() {
         // Required empty public constructor
@@ -26,16 +30,18 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
         labelNormal = (TextView) v.findViewById(R.id.label_normal);
         labelSaving = (TextView) v.findViewById(R.id.label_saving);
 
-        SeekBar barNormal = (SeekBar) v.findViewById(R.id.seekBar_normal);
-        SeekBar barSaving = (SeekBar) v.findViewById(R.id.seekBar_saving);
+        barNormal = (SeekBar) v.findViewById(R.id.seekBar_normal);
+        barSaving = (SeekBar) v.findViewById(R.id.seekBar_saving);
 
-        setSeekBar(true, 4);
-        barNormal.setProgress(4);
-        setSeekBar(false, 5);
-        barSaving.setProgress(5);
+        barNormal.setProgress(Comm.getIntSP("normal_backlit"));
+        barSaving.setProgress(Comm.getIntSP("saving_backlit"));
 
         barNormal.setOnSeekBarChangeListener(this);
         barSaving.setOnSeekBarChangeListener(this);
+
+        v.findViewById(R.id.btn_confirm).setOnClickListener(this);
+        v.findViewById(R.id.btn_back).setOnClickListener(this);
+
         return v;
     }
 
@@ -62,5 +68,24 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_confirm:
+                new Command(new Command.Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        Comm.setIntSP("normal_backlit", cmd.NormalBacklit);
+                        Comm.setIntSP("saving_backlit", cmd.SavingBacklit);
+                    }
+                }).setBacklit(barNormal.getProgress(), barSaving.getProgress());
+
+                break;
+            case R.id.btn_back:
+                getActivity().onBackPressed();
+                break;
+        }
     }
 }

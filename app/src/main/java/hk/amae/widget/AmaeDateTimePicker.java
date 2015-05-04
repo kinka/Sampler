@@ -8,6 +8,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import hk.amae.util.Comm;
 
 /**
  * Created by kinka on 4/4/15.
@@ -48,6 +52,7 @@ public class AmaeDateTimePicker {
                     textView.setText(String.format(format, y, m + 1, d));
                 }
             }, year, month, day).show();
+        Comm.hideSoftInput();
     }
 
     public static void showTimeDialog(Context context, final TextView textView, final String format) {
@@ -76,6 +81,7 @@ public class AmaeDateTimePicker {
                         textView.setText(String.format(format, h, m, s));
                     }
                 }, hour, minute, true).show();
+        Comm.hideSoftInput();
     }
 
 }

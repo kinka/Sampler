@@ -7,7 +7,8 @@
     android:id="@+id/whatever"
     android:padding="9dp"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:touchscreenBlocksFocus="false">
 
     <TextView
         android:layout_width="wrap_content"

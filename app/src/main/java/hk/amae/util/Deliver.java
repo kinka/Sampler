@@ -29,7 +29,7 @@ public class Deliver {
         try {
             DatagramChannel channel = DatagramChannel.open();
             DatagramSocket socket = channel.socket();
-//            socket.bind(new InetSocketAddress(localPort));
+            socket.bind(null);
             channel.configureBlocking(true);
             channel.send(data, new InetSocketAddress(server, svrPort));
             socket.setSoTimeout(1000);

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
 import hk.amae.util.SwipeInterface;
 
 
@@ -20,6 +21,9 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
     LinearLayout adjustContainer;
     TextView labelChannel;
     int channel = 1;
+
+    TextView outputPower, dutyCycle, pickPower, pickVoltage;
+    TextView expectPressure, targetSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,17 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
 
         ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);
         adjustContainer.setOnTouchListener(gestureDetector);
+
+        outputPower = (TextView) findViewById(R.id.txt_output);
+        dutyCycle = (TextView) findViewById(R.id.txt_duty_cycle);
+        pickPower = (TextView) findViewById(R.id.txt_pressure);
+        pickVoltage = (TextView) findViewById(R.id.txt_voltage);
+
+        expectPressure = (TextView) findViewById(R.id.txt_expect);
+        targetSpeed = (TextView) findViewById(R.id.txt_target_speed);
+
+        findViewById(R.id.btn_save).setOnClickListener(this);
+        findViewById(R.id.btn_cancel).setOnClickListener(this);
     }
 
     @Override
@@ -50,8 +65,28 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
             case R.id.btn_next:
                 flip(true);
                 break;
+            case R.id.btn_save:
+                doAdjust();
+                break;
+            case R.id.btn_cancel:
+                onBackPressed();
+                break;
         }
 
+    }
+
+    private void doAdjust() {
+        int expect = Integer.valueOf(expectPressure.getText().toString());
+        int speed = Integer.valueOf(targetSpeed.getText().toString());
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                outputPower.setText(cmd.OutputPower + "");
+                dutyCycle.setText("(" + cmd.DutyCycle + "%)");
+                pickPower.setText(cmd.PickPower + "");
+                pickVoltage.setText(String.format("(%.02fV)", cmd.PickVoltage / 100.0));
+            }
+        }).setAdjust(Comm.Channel.init(channel), expect, speed);
     }
 
     boolean switchChannel(boolean add) {
@@ -87,13 +122,13 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
 
     @Override
     public void onLeftWipe(View v) {
-        Comm.logI("LeftWipe");
+//        Comm.logI("LeftWipe");
         flip(false);
     }
 
     @Override
     public void onRightWipe(View v) {
-        Comm.logI("RightWipe");
+//        Comm.logI("RightWipe");
         flip(true);
     }
 }

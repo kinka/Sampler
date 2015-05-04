@@ -107,7 +107,8 @@
                     android:text="0.99L"
                     android:id="@+id/txt_volume"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:singleLine="true" />
 
             <Button
                 android:text="监视器"

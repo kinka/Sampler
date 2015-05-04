@@ -73,8 +73,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         listView = (ListView) findViewById(R.id.list_settings);
 
-        dataList = new ArrayList<>(Channels.length);
-        for (int i=0; i<Channels.length; i++)
+        dataList = new ArrayList<>(8);
+        for (int i=0, len = 8; i<len; i++)
             dataList.add(new SettingItem());
         ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, dataList);
         listView.setAdapter(adapter);
@@ -138,7 +138,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     }
 
     boolean switchChannel(boolean add) {
-        if ((add && channel > Channels.length) || (!add && channel <=0 ))
+        if ((add && channel >= Channels.length - 1) || (!add && channel <=0 ))
             return false;
         channel = add ? channel+1 : channel-1;
         labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
@@ -153,7 +153,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                for (int i=0; i<8; i++) {
+                for (int i=0, len = dataList.size(); i<len; i++) {
                     SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet));
                     dataList.set(i, item);
                 }

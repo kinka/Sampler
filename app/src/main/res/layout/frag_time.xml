@@ -46,12 +46,17 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="9" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="4"
-        android:layout_marginTop="48dp">
+        android:weightSum="4">
 
         <Button
             android:layout_width="48dp"

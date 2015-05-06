@@ -47,6 +47,12 @@
         android:indeterminate="false"
         android:layout_marginBottom="36dp" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="9" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"

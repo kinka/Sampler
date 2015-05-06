@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import hk.amae.sampler.AdjustAct;
 import hk.amae.sampler.ChannelAct;
@@ -136,8 +137,13 @@ public class SettingFrag extends Fragment implements
     public void onClick(DialogInterface dialogInterface, int i) {
         switch (i) {
             case AlertDialog.BUTTON_POSITIVE: {
-                if (!adminPassword.getText().toString().equals("888888"))
+                String password = Comm.getSP(PasswordAct.ADMIN);
+                if (password.length() == 0)
+                    password = "888888";
+                if (!adminPassword.getText().toString().equals(password)) {
+                    Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
                     break;
+                }
                 as_owner = R.id.btn_password;
                 as = new ActionSheet(getActivity());
                 as.setOnASItemClickListener(this);

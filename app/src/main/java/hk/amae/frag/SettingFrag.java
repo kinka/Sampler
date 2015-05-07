@@ -37,7 +37,8 @@ public class SettingFrag extends Fragment implements
     ActionSheet as;
     int as_owner;
 
-    EditText adminPassword;
+    EditText inputPassword;
+    int passwordType = 1;
 
     public SettingFrag() {
         // Required empty public constructor
@@ -88,11 +89,17 @@ public class SettingFrag extends Fragment implements
                 break;
 
             case R.id.btn_password:
-                verifyAdmin();
+                verifyPassword(1);
                 break;
 
             case R.id.btn_adjust:
-                startActivity(new Intent(getActivity(), AdjustAct.class));
+                String password = Comm.getSP(PasswordAct.SP_PWD_ADJUST);
+                if (password.length() == 0) {
+                    Toast.makeText(getActivity(), "请先设置校准密码", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                verifyPassword(2);
                 break;
 
             case R.id.btn_other:
@@ -100,15 +107,18 @@ public class SettingFrag extends Fragment implements
         }
     }
 
-    private boolean verifyAdmin() {
+    private boolean verifyPassword(int type) {
+        passwordType = type;
+
         Activity parent = getActivity();
-        adminPassword = new EditText(parent);
-        adminPassword.setSingleLine();
-        adminPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        adminPassword.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
-        adminPassword.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
-        new AlertDialog.Builder(parent).setTitle("请输入管理员密码")
-                .setView(adminPassword).setPositiveButton("确定", this)
+        inputPassword = new EditText(parent);
+        inputPassword.setSingleLine();
+        inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+        inputPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        String title = String.format("请输入%s密码", type == 1 ? "管理员" : "校准");
+        new AlertDialog.Builder(parent).setTitle(title)
+                .setView(inputPassword).setPositiveButton("确定", this)
                 .setNegativeButton("取消", this).show();
 
         return false;
@@ -137,18 +147,29 @@ public class SettingFrag extends Fragment implements
     public void onClick(DialogInterface dialogInterface, int i) {
         switch (i) {
             case AlertDialog.BUTTON_POSITIVE: {
-                String password = Comm.getSP(PasswordAct.ADMIN);
-                if (password.length() == 0)
-                    password = "888888";
-                if (!adminPassword.getText().toString().equals(password)) {
-                    Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
-                    break;
+                if (passwordType == 1) {
+                    String password = Comm.getSP(PasswordAct.SP_PWD_ADMIN);
+                    if (password.length() == 0)
+                        password = "888888";
+                    if (!inputPassword.getText().toString().equals(password)) {
+                        Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    as_owner = R.id.btn_password;
+                    as = new ActionSheet(getActivity());
+                    as.setOnASItemClickListener(this);
+                    as.addItems(PasswordAct.ADJUST + "密码设定", PasswordAct.ADMIN + "密码设定");
+                    as.showMenu();
+                } else {
+                    String password = Comm.getSP(PasswordAct.SP_PWD_ADJUST);
+                    if (!inputPassword.getText().toString().equals(password)) {
+                        Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                    startActivity(new Intent(getActivity(), AdjustAct.class));
                 }
-                as_owner = R.id.btn_password;
-                as = new ActionSheet(getActivity());
-                as.setOnASItemClickListener(this);
-                as.addItems(PasswordAct.ADJUST + "密码设定", PasswordAct.ADMIN + "密码设定");
-                as.showMenu();
+
             }
                 break;
             case AlertDialog.BUTTON_NEGATIVE:

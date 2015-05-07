@@ -112,8 +112,16 @@ public class Comm {
     }
 
     public static void showSoftInput() {
-        InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+        showSoftInput(0);
+    }
+    public static void showSoftInput(int delay) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+            }
+        }, delay);
     }
 
     public static void hideSoftInput() {

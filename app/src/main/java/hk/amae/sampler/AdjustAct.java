@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
@@ -85,6 +86,7 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
                 dutyCycle.setText("(" + cmd.DutyCycle + "%)");
                 pickPower.setText(cmd.PickPower + "");
                 pickVoltage.setText(String.format("(%.02fV)", cmd.PickVoltage / 100.0));
+                Toast.makeText(AdjustAct.this, String.format("第%d通道已经保存。", channel), Toast.LENGTH_SHORT).show();
             }
         }).setAdjust(Comm.Channel.init(channel), expect, speed);
     }

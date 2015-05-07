@@ -41,6 +41,9 @@ public class PasswordAct extends Activity implements View.OnClickListener {
         txtPassword = (TextView) findViewById(R.id.txt_pwd);
         txtConfirm = (TextView) findViewById(R.id.txt_confirm_pwd);
 
+        txtPassword.setFocusable(true);
+        Comm.showSoftInput(200);
+
         findViewById(R.id.btn_confirm).setOnClickListener(this);
         findViewById(R.id.btn_back).setOnClickListener(this);
     }

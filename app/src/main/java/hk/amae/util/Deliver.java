@@ -23,7 +23,7 @@ public class Deliver {
         System.out.println();
     }
     public static ByteBuffer send(ByteBuffer data) {
-        ByteBuffer recvData = ByteBuffer.allocate(1024);
+        ByteBuffer recvData = ByteBuffer.allocate(1024*8);
         DatagramPacket packet = new DatagramPacket(recvData.array(), recvData.limit());
 
         try {
@@ -34,7 +34,7 @@ public class Deliver {
             channel.send(data, new InetSocketAddress(server, svrPort));
             socket.setSoTimeout(1000);
 
-            socket.receive(packet);
+            socket.receive(packet); // 考虑循环收包的问题
             recvData.limit(packet.getLength());
 //            channel.receive(recvData);
 //            recvData.flip();

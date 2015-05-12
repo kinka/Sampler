@@ -31,7 +31,7 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_adjustment);
 
-        findViewById(R.id.btn_pre).setOnClickListener(this);
+        findViewById(R.id.btn_prev).setOnClickListener(this);
         findViewById(R.id.btn_next).setOnClickListener(this);
 
         labelChannel = (TextView) findViewById(R.id.label_channel);
@@ -60,7 +60,7 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
         view.startAnimation(animation);
 
         switch (view.getId()) {
-            case R.id.btn_pre:
+            case R.id.btn_prev:
                 flip(false);
                 break;
             case R.id.btn_next:

@@ -61,7 +61,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         labelChannel = (TextView) findViewById(R.id.label_channel);
         labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
 
-        ImageButton btnPre = (ImageButton) findViewById(R.id.btn_pre);
+        ImageButton btnPre = (ImageButton) findViewById(R.id.btn_prev);
         ImageButton btnNext = (ImageButton) findViewById(R.id.btn_next);
         if (Channels.length == 1) {
             btnPre.setVisibility(View.INVISIBLE);
@@ -122,7 +122,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         view.startAnimation(animation);
 
         switch (view.getId()) {
-            case R.id.btn_pre:
+            case R.id.btn_prev:
                  flip(false);
                 break;
             case R.id.btn_next:

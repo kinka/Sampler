@@ -24,7 +24,7 @@
         android:scrollbars="none"
         tools:listitem="@layout/mode_setting_item"
         android:layout_marginTop="9dp"
-        android:layout_above="@+id/btn_pre" />
+        android:layout_above="@+id/btn_prev" />
 
     <Button
         android:text="确定"
@@ -55,7 +55,7 @@
     <ImageButton
         android:layout_width="40dp"
         android:layout_height="36dp"
-        android:id="@+id/btn_pre"
+        android:id="@+id/btn_prev"
         android:src="@drawable/pre"
         android:cropToPadding="true"
         android:scaleType="fitCenter"
@@ -77,7 +77,7 @@
         style="@style/AmaeTextMedium"
         android:textColor="@color/amae_primary_text"
         android:height="32dp"
-        android:layout_alignTop="@+id/btn_pre"
+        android:layout_alignTop="@+id/btn_prev"
         android:layout_centerHorizontal="true" />
 
     <ImageButton

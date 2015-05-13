@@ -36,7 +36,6 @@
             android:layout_height="match_parent"
             android:id="@+id/edit_query"
             android:layout_weight="1"
-            android:text="00000"
             android:layout_gravity="center"
             android:layout_marginRight="9dp"
             android:singleLine="true"
@@ -116,14 +115,15 @@
         android:choiceMode="none"
         android:paddingLeft="9dp"
         android:paddingRight="9dp"
-        android:layout_marginBottom="48dp" />
+        android:layout_weight="9" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_gravity="right"
-        android:layout_marginTop="-42dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp">
 
         <Button
             android:layout_width="wrap_content"

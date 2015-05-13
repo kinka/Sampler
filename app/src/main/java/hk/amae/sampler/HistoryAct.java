@@ -3,17 +3,22 @@ package hk.amae.sampler;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import hk.amae.util.Comm;
 import hk.amae.util.Command;
 
 
@@ -24,8 +29,10 @@ public class HistoryAct extends Activity implements View.OnClickListener {
     int currentPage = -1;
     String fmtCurrent = "位号%03d/%d";
     TextView txtPage;
-    ArrayList<HistoryItem> HistoryData = new ArrayList<>(800);
+    static ArrayList<HistoryItem> HistoryData = new ArrayList<>(800);
     ArrayList<HistoryItem> historyItems = new ArrayList<>();
+    ArrayList<HistoryItem> filterItems = new ArrayList<>();
+    boolean isFiltering = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +42,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         listView = (ListView) findViewById(R.id.listView);
 
         fetch(1, 800);
-//        for (int i=0; i<PageSize; i++)
-//            historyItems.add(new HistoryItem());
+
         HistoryArrayAdaptor adaptor = new HistoryArrayAdaptor(this, R.layout.history_item, historyItems);
         listView.setAdapter(adaptor);
 
@@ -45,6 +51,46 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_back).setOnClickListener(this);
 
         txtPage = (TextView) findViewById(R.id.txt_page);
+
+
+        final EditText editText = (EditText) findViewById(R.id.edit_query);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                doSearch(editText.getText().toString());
+            }
+        });
+    }
+
+    private void doSearch(String query) {
+        if (query.length() > 0)
+            isFiltering = true;
+        else
+            isFiltering = false;
+
+        filterItems.clear();
+        if (isFiltering) {
+            for (HistoryItem item: HistoryData) {
+                if (item.title.contains(query))
+                    filterItems.add(item);
+            }
+            PageNum = filterItems.size() / PageSize + (filterItems.size() % PageSize == 0 ? 0 : 1);
+        } else {
+            PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
+        }
+
+        currentPage = -1;
+        next();
     }
 
     @Override
@@ -68,29 +114,28 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         if (currentPage == 0)
             return;
         currentPage--;
-        int len = PageSize;
-        int base = currentPage * PageSize;
-        if (base + PageSize > HistoryData.size())
-            len = HistoryData.size() - base;
-        historyItems.clear();
-        for (int i=0; i<len; i++) {
-            historyItems.add(new HistoryItem(i + 1, HistoryData.get(base + i).title, false));
-        }
 
-        txtPage.setText(String.format(fmtCurrent, currentPage + 1, PageNum));
-        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+        flip();
     }
     private void next() {
         if (currentPage+1 >= PageNum)
             return;
         currentPage += 1;
+        flip();
+    }
+    private void flip() {
         int len = PageSize;
         int base = currentPage * PageSize;
-        if (base + PageSize > HistoryData.size())
-            len = HistoryData.size() - base;
+
+        List<HistoryItem> data = HistoryData;
+        if (isFiltering)
+            data = filterItems;
+
+        if (base + PageSize > data.size())
+            len = data.size() - base;
         historyItems.clear();
         for (int i=0; i<len; i++)
-            historyItems.add(new HistoryItem(i + 1, HistoryData.get(base + i).title, true));
+            historyItems.add(new HistoryItem(i + 1, data.get(base + i).title, false));
 
         txtPage.setText(String.format(fmtCurrent, currentPage + 1, PageNum));
         ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
@@ -100,7 +145,8 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.History = new String[800];
+                cmd.History = new String[(int) Math.round(Math.random()*800)];
+                HistoryData.clear();
                 for (int i=0; i<cmd.History.length; i++)
                     HistoryData.add(new HistoryItem(i+1, "History " + (i+1), true));
                 PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);

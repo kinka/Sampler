@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_back).setOnClickListener(this);
 
         txtPage = (TextView) findViewById(R.id.txt_page);
-
+        findViewById(R.id.btn_print).setOnClickListener(this);
 
         final EditText editText = (EditText) findViewById(R.id.edit_query);
         editText.addTextChangedListener(new TextWatcher() {
@@ -106,8 +108,22 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             case R.id.btn_back:
                 super.onBackPressed();
                 break;
+            case R.id.btn_print:
+                for (HistoryItem item: historyItems)
+                    if (item.print)
+                        doPrint(item.title);
+                break;
         }
 
+    }
+
+    private void doPrint(final String sampleId) {
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                Toast.makeText(HistoryAct.this, "正在打印"+sampleId+"中。。。", Toast.LENGTH_SHORT).show();
+            }
+        }).printSample(sampleId);
     }
 
     private void prev() {
@@ -186,12 +202,13 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             title.setText(item.title);
             print.setChecked(item.print);
 
+            print.setOnCheckedChangeListener(item);
+
             return rowView;
         }
-
     }
 
-    public class HistoryItem {
+    public class HistoryItem implements CheckBox.OnCheckedChangeListener {
         int rowid = 0;
         String title = "201503281518";
         boolean print = false;
@@ -201,6 +218,10 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             this.rowid = id;
             this.title = title;
             this.print = print;
+        }
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+            print = checked;
         }
     }
 }

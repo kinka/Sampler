@@ -10,7 +10,7 @@ import java.nio.channels.DatagramChannel;
  * Created by kinka on 4/12/15.
  */
 public class Deliver {
-    public static String server = "192.168.1.107";
+    public static String server = "192.168.8.1";
     public static int svrPort = 12345;
     public static int localPort = 12346;
     public static void printData(byte[] data) {
@@ -31,6 +31,7 @@ public class Deliver {
             DatagramSocket socket = channel.socket();
             socket.bind(null);
             channel.configureBlocking(true);
+            data.flip();
             channel.send(data, new InetSocketAddress(server, svrPort));
             socket.setSoTimeout(1000);
 

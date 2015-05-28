@@ -76,6 +76,10 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     public int getValue() {
         return value;
     }
+    public void setValue(int v) {
+        value = v;
+        txtValue.setText("" + value);
+    }
 
     @Override
     public void onClick(View view) {

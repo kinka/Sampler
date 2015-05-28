@@ -82,7 +82,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                 tmpDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialogInterface) {
-                        Comm.showSoftInput();
+//                        Comm.showSoftInput(500);
                     }
                 });
                 tmpDialog.show();
@@ -111,7 +111,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                     tmpDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                         @Override
                         public void onShow(DialogInterface dialogInterface) {
-                            Comm.showSoftInput();
+//                            Comm.showSoftInput(500);
                         }
                     });
                     tmpDialog.show();

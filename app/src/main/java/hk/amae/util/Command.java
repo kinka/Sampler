@@ -291,6 +291,7 @@ public class Command {
     public int Elapse; // 已采样时间
     public int TargetDuration; // 设定时间
     public boolean Manual; // 手动/定时
+    public byte Group; // 定时模式 第几组 手动模式为0
     public ByteBuffer reqSampleState() { // 查询当前采样情况
         return build(0x7, null);
     }
@@ -312,6 +313,7 @@ public class Command {
         TargetDuration = reply.getShort();
         Channel = Comm.Channel.init(reply.get());
         Manual = reply.get() == 0;
+        Group = reply.get();
     }
 
     public String[] History;

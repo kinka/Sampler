@@ -130,18 +130,17 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         v.findViewById(R.id.label_cap).setOnClickListener(this);
         v.findViewById(R.id.label_timing).setOnClickListener(this);
 
-        sampleMode = Comm.getIntSP(SP_SAMPLEMODE);
+        spinChannel.setOnItemSelectedListener(this);
+        spinMode.setOnItemSelectedListener(this);
+        // todo 初始化状态应该从服务器获取
+        init();
+
         isSpinnerClick = false;
 
         askBatteryState();
-        spinMode.setSelection(sampleMode);
-        switchSampleMode();
 
         __lastid = MainAct.lastid;
         MainAct.lastid = 0;
-
-        spinChannel.setOnItemSelectedListener(this);
-        spinMode.setOnItemSelectedListener(this);
 
         if (Comm.getIntSP("locked") == 1) {
             isLocked = true;
@@ -149,6 +148,23 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }
 
         return v;
+    }
+
+    void init() {
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                sampleMode = cmd.Manual ? 0 : cmd.SampleMode;
+                sampleMode = Comm.getIntSP(SP_SAMPLEMODE);
+                spinMode.setSelection(sampleMode);
+                //todo 如何判断运行状态？
+                if (cmd.Progress > 0 && cmd.Progress < 100)
+                    runningState = Comm.PLAYING;
+                else
+                    runningState = Comm.STOPPED;
+                switchSampleMode(cmd);
+            }
+        }).reqSampleState();
     }
 
     @Override
@@ -178,6 +194,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }
     }
 
+    // todo 定时刷新
     private void askBatteryState() {
         new Command(new Command.Once() {
             @Override
@@ -219,7 +236,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_CAP);
                 else
                     Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_TIME);
-                switchManualMode();
+                switchManualMode(null);
                 break;
         }
     }
@@ -288,7 +305,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         cycleQuery();
     }
     private void setAuto(int op) {
-        // 获取自动设置并开始倒计时
+        //todo 获取自动设置并开始倒计时
     }
     private void cycleQuery() {
         String selected = spinChannel.getSelectedItem().toString();
@@ -438,7 +455,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 startActivityForResult(intent, 0);
             }
 
-            switchSampleMode();
+            switchSampleMode(null);
             isSpinnerClick = true;
         }
     }
@@ -448,13 +465,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     }
 
-    private void switchSampleMode() {
+    private void switchSampleMode(Command cmd) {
         try {
             if (sampleMode == Comm.MANUAL_SET) {
                 cycleQuery();
                 wrapManual.setVisibility(View.VISIBLE);
                 wrapTiming.setVisibility(View.GONE);
-                switchManualMode();
+                switchManualMode(cmd);
             } else {
                 wrapManual.setVisibility(View.GONE);
                 wrapTiming.setVisibility(View.VISIBLE);
@@ -465,14 +482,21 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     }
 
-    private void switchManualMode() {
+    private void switchManualMode(Command cmd) {
+        // todo 设置 设定流量和设定时长/容量 的值
+        int targetSpeed = cmd == null ? 0 : cmd.TargetSpeed;
+        int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
+
+        npSpeed.setValue(targetSpeed);
         int manualMode = Comm.getIntSP(SP_MANUALMODE);
         if (manualMode == Comm.AUTO_SET_CAP) {
             layoutCap.setVisibility(View.VISIBLE);
             layoutTiming.setVisibility(View.GONE);
+            npVolume.setValue(targetDuration * targetSpeed);
         } else if (manualMode == Comm.AUTO_SET_TIME) {
             layoutCap.setVisibility(View.GONE);
             layoutTiming.setVisibility(View.VISIBLE);
+            npTiming.setValue(targetDuration);
         }
     }
 

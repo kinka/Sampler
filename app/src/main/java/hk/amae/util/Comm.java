@@ -112,7 +112,7 @@ public class Comm {
     }
 
     public static void showSoftInput() {
-        showSoftInput(0);
+        showSoftInput(200);
     }
     public static void showSoftInput(int delay) {
         new Timer().schedule(new TimerTask() {

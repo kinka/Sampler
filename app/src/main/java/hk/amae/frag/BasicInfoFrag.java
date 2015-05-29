@@ -91,9 +91,9 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     }
 
     @Override
-    public void onClick(DialogInterface dialogInterface, int i) {
+    public void onClick(DialogInterface dialogInterface, int btnId) {
         if (!passed) { // 弹的是密码框
-            if (i == AlertDialog.BUTTON_POSITIVE) {
+            if (btnId == AlertDialog.BUTTON_POSITIVE) {
                 if (snPassword.getText().toString().equals("888888")) {
                     passed = true;
 
@@ -123,7 +123,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         } else {
             if (snText == null) return;
             final String newSN = snText.getText().toString();
-            if (newSN.length() == 0 || i == AlertDialog.BUTTON_NEGATIVE) {
+            if (newSN.length() == 0 || btnId == AlertDialog.BUTTON_NEGATIVE) {
                 dialogInterface.dismiss();
             } else {
                 new Command(new Once() {

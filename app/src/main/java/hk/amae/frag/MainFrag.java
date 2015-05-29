@@ -73,6 +73,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     private int __lastid = 0;
 
+    private Timer __battery, __progress;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,12 +134,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         spinChannel.setOnItemSelectedListener(this);
         spinMode.setOnItemSelectedListener(this);
-        // todo 初始化状态应该从服务器获取
-        init();
 
         isSpinnerClick = false;
-
-        askBatteryState();
 
         __lastid = MainAct.lastid;
         MainAct.lastid = 0;
@@ -165,6 +163,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 switchSampleMode(cmd);
             }
         }).reqSampleState();
+
+        askBatteryState();
     }
 
     @Override
@@ -172,6 +172,23 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         super.onAttach(activity);
         parent = activity;
         mCallback = (OnMainFragListener) parent;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        init();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (__battery != null)
+                __battery.cancel();
+        } catch (Exception e) {
+
+        }
     }
 
     private int getChannels() {
@@ -194,16 +211,24 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }
     }
 
-    // todo 定时刷新
     private void askBatteryState() {
-        new Command(new Command.Once() {
+        __battery = new Timer();
+        __battery.schedule(new TimerTask() {
             @Override
-            public void done(boolean verify, Command cmd) {
-                Battery battery = (Battery) parent.findViewById(R.id.battery);
-                battery.setCharging(true);
-                battery.setCapacity(50);
+            public void run() {
+                new Command(new Command.Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        Comm.logI("hello...");
+                        Battery battery = (Battery) parent.findViewById(R.id.battery);
+                        if (battery == null) return;
+
+                        battery.setCharging(true);
+                        battery.setCapacity((int) (Math.round(Math.random()*100)));
+                    }
+                }).reqBattery();
             }
-        }).reqBattery();
+        }, 0, 10*1000);
     }
 
     private void setLock() {
@@ -305,32 +330,44 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         cycleQuery();
     }
     private void setAuto(int op) {
-        //todo 获取自动设置并开始倒计时
+        //todo 获取自动设置并开始倒计时, 一旦开始，则开始轮询进度
     }
     private void cycleQuery() {
-        String selected = spinChannel.getSelectedItem().toString();
-        Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
-        new Command(new Once() {
-            @Override
-            public void done(boolean verify, Command cmd) {
-                progSampling.setProgress((int) Math.round(Math.random()*100));
-                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
-                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
-            }
-        }).reqChannelState(channel);
+        if (__progress != null)
+            __progress.cancel();
 
-        final String[] State = new String[]{"", "正在采样", "等待", "暂停"};
-        new Command(new Once() {
+        if (runningState != Comm.PLAYING)
+            return;
+
+        __progress = new Timer();
+        __progress.schedule(new TimerTask() {
             @Override
-            public void done(boolean verify, Command cmd) {
-                String states = "";
-                for (int i=0; i<8; i++) {
-                    cmd.MachineState[i] = (byte) (Math.round(Math.random()*100)%4);
-                    states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
-                }
-                txtTips.setText(states);
+            public void run() {
+                String selected = spinChannel.getSelectedItem().toString();
+                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
+                new Command(new Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        progSampling.setProgress((int) Math.round(Math.random() * 100));
+                        txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                        txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                    }
+                }).reqChannelState(channel);
+
+                final String[] State = new String[]{"", "正在采样", "等待", "暂停"};
+                new Command(new Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        String states = "";
+                        for (int i = 0; i < 8; i++) {
+                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
+                            states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
+                        }
+                        txtTips.setText(states);
+                    }
+                }).reqMachineState();
             }
-        }).reqMachineState();
+        }, 1000, 1000);
     }
 
     @Override

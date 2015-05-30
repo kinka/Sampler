@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
@@ -150,17 +153,16 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                float atm = 10173 / 100f;
-                float temp = 253 / 10f;
-                ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, atm));
-                ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, temp));
+                ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, cmd.ATM));
+                ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, cmd.TEMP));
             }
         }).reqATM_TEMP();
 
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                ((TextView) parent.findViewById(R.id.txt_datetime)).setText("2015-04-19 17:53:00");
+
+                ((TextView) parent.findViewById(R.id.txt_datetime)).setText(cmd.DateTime);
             }
         }).reqDateTime();
     }

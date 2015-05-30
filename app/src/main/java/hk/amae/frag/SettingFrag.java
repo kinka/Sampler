@@ -25,6 +25,7 @@ import hk.amae.sampler.PasswordAct;
 import hk.amae.sampler.R;
 import hk.amae.sampler.SysInfoAct;
 import hk.amae.util.Comm;
+import hk.amae.util.Deliver;
 import hk.amae.widget.ActionSheet;
 
 
@@ -103,6 +104,8 @@ public class SettingFrag extends Fragment implements
                 break;
 
             case R.id.btn_other:
+                // todo 设置连接服务器
+                Toast.makeText(getActivity(), "server " + Deliver.server + ":" + Deliver.svrPort, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -75,6 +75,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     private Timer __battery, __progress;
 
+    private int MaxSpeed = 1000;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -201,12 +203,16 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         switch (mode) {
             case ChannelAct.MODE_COUPLE:
+                MaxSpeed = 1000 * 2;
                 return R.array.channels_C;
             case ChannelAct.MODE_4IN1:
+                MaxSpeed = 1000 * 4;
                 return R.array.channels_B;
             case ChannelAct.MODE_8IN1:
+                MaxSpeed = 1000 * 8;
                 return R.array.channels_A;
             default:
+                MaxSpeed = 1000;
                 return R.array.channels_CH;
         }
     }
@@ -219,16 +225,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 new Command(new Command.Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
-                        Comm.logI("hello...");
                         Battery battery = (Battery) parent.findViewById(R.id.battery);
                         if (battery == null) return;
 
-                        battery.setCharging(true);
-                        battery.setCapacity((int) (Math.round(Math.random()*100)));
+                        battery.setCharging(cmd.Charging);
+                        battery.setCapacity(cmd.Power);
                     }
                 }).reqBattery();
             }
-        }, 0, 10*1000);
+        }, 0, 60*1000);
     }
 
     private void setLock() {
@@ -312,7 +317,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     private void setManual(int op) {
-        int mode = 0;
         int speed = npSpeed.getValue();
         int manualMode = Comm.getIntSP(SP_MANUALMODE);
         int cap = manualMode == Comm.AUTO_SET_TIME ? npTiming.getValue() : npVolume.getValue();
@@ -323,9 +327,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-
+                progSampling.setProgress(cmd.Progress);
+                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
             }
-        }).setManualChannel(op, mode, channel, speed, cap);
+        }).setManualChannel(op, manualMode, channel, speed, cap);
         // 开始定时查询
         cycleQuery();
     }
@@ -333,6 +339,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         //todo 获取自动设置并开始倒计时, 一旦开始，则开始轮询进度
     }
     private void cycleQuery() {
+        if (true)
+            return;
         if (__progress != null)
             __progress.cancel();
 
@@ -348,7 +356,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 new Command(new Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
-                        progSampling.setProgress((int) Math.round(Math.random() * 100));
+                        progSampling.setProgress(cmd.Progress);
                         txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                         txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
                     }
@@ -449,9 +457,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             new Command(new Once() {
                 @Override
                 public void done(boolean verify, Command cmd) {
-                    cmd.ChannelState = Comm.PLAYING;
-                    cmd.Volume = 880;
-                    cmd.Speed = 300;
+//                    cmd.ChannelState = Comm.PLAYING;
+//                    cmd.Volume = 880;
+//                    cmd.Speed = 300;
                     txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                     txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
                     runningState = cmd.ChannelState;
@@ -525,16 +533,26 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
 
         npSpeed.setValue(targetSpeed);
+        npSpeed.setMax(MaxSpeed);
         int manualMode = Comm.getIntSP(SP_MANUALMODE);
+        if (manualMode == 0) {
+            manualMode = Comm.AUTO_SET_CAP;
+            Comm.setIntSP(SP_MANUALMODE, manualMode);
+        }
+        // todo 流量限制每通道1000mL/min
         if (manualMode == Comm.AUTO_SET_CAP) {
             layoutCap.setVisibility(View.VISIBLE);
             layoutTiming.setVisibility(View.GONE);
             npVolume.setValue(targetDuration * targetSpeed);
+            npVolume.setDelta(100);
         } else if (manualMode == Comm.AUTO_SET_TIME) {
             layoutCap.setVisibility(View.GONE);
             layoutTiming.setVisibility(View.VISIBLE);
             npTiming.setValue(targetDuration);
+            npTiming.setDelta(1);
         }
+
+        switchRunningState(false);
     }
 
     public interface OnMainFragListener {

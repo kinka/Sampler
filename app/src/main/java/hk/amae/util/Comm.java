@@ -47,9 +47,9 @@ public class Comm {
     public final static int MANUAL_SET = 0;
     public final static int AUTO_SET_TIME = 0x1;
     public final static int AUTO_SET_CAP = 0x2;
-    public final static int DO_PLAY = 0x1;
-    public final static int DO_PAUSE = 0x2;
-    public final static int DO_STOP = 0x3;
+    public final static int DO_PLAY = 0x2;
+    public final static int DO_PAUSE = 0x3;
+    public final static int DO_STOP = 0x0;
     public final static int PLAYING = 0x1;
     public final static int PAUSED = 0x2;
     public final static int STOPPED = 0x3;
@@ -60,6 +60,7 @@ public class Comm {
         Comm.ctx = ctx;
         initLogger(pkgName);
         handler = new android.os.Handler();
+        Deliver.init();
     }
 
     public static Logger initLogger(String pkgName) {

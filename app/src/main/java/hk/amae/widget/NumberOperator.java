@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +28,7 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     private EditText txtValue;
     private int value;
     private int delta = 10;
+    private int max = 1000;
     Timer timer = new Timer();
     Handler handler;
 
@@ -62,6 +65,30 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
                 }
             }
         };
+
+        txtValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                int v = 0;
+                try {
+                    v = Integer.valueOf(txtValue.getText().toString());
+                    if (limitValue(value) != v)
+                        setValue(v);
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     private void setAttrs(AttributeSet attrs) {
@@ -76,9 +103,33 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     public int getValue() {
         return value;
     }
+    private int limitValue(int v) {
+        if (v <= 0)
+            value = 0;
+        else if (v >= max)
+            value = max;
+        else
+            value = v;
+
+        return v;
+    }
     public void setValue(int v) {
-        value = v;
+        limitValue(v);
         txtValue.setText("" + value);
+    }
+
+    public int getDelta() {
+        return delta;
+    }
+    public void setDelta(int d) {
+        delta = d;
+    }
+
+    public int getMax() {
+        return max;
+    }
+    public void setMax(int m) {
+        max = m;
     }
 
     @Override
@@ -86,11 +137,10 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
         value = Integer.valueOf(txtValue.getText().toString());
         switch (view.getId()) {
             case R.id.btn_adder:
-                value+=delta;
+                setValue(value + delta);
                 break;
             case R.id.btn_substractor:
-                if (value > 0)
-                    value-=delta;
+                setValue(value - delta);
                 break;
         }
         txtValue.setText("" + value);
@@ -126,11 +176,9 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
             @Override
             public void run() {
                 if (holding == 1)
-                    value += delta;
+                    limitValue(value + delta);
                 else if (holding == -1)
-                    value -= delta;
-                if (value < 0)
-                    value = 0;
+                    limitValue(value - delta);
                 Message msg = new Message();
                 msg.what = holding;
                 handler.sendMessage(msg);

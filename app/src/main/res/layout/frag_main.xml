@@ -268,14 +268,14 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="9dp"
                 android:layout_weight="0.5"
-                components:delta="1"
+                components:delta="100"
                 android:paddingBottom="9dp"
                 android:id="@+id/np_cap"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="  L"
+                android:text=" mL"
                 android:id="@+id/textView8"
                 android:layout_weight="0.2"
                 android:layout_height="wrap_content"

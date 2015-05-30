@@ -63,17 +63,16 @@ public class MonitorAct extends Activity {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                float _atm = 10173 / 100f;
-                float _temp = 253 / 10f;
-                atm.setText(String.format(BasicInfoFrag.atmFormat, _atm));
-                temp.setText(String.format(BasicInfoFrag.tempFormat, _temp));
+                atm.setText(String.format(BasicInfoFrag.atmFormat, cmd.ATM));
+                temp.setText(String.format(BasicInfoFrag.tempFormat, cmd.TEMP));
             }
         }).reqATM_TEMP();
 
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                datetime.setText("2015-04-19 17:53:00".replace(" ", "\n"));
+                if (cmd.DateTime != null)
+                    datetime.setText(cmd.DateTime.replace(" ", "\n"));
             }
         }).reqDateTime();
     }

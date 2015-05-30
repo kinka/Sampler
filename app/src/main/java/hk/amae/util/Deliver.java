@@ -10,8 +10,9 @@ import java.nio.channels.DatagramChannel;
  * Created by kinka on 4/12/15.
  */
 public class Deliver {
-    public static String server = "192.168.1.107";
-    public static int svrPort = 12345;
+    public static final String SP_SVR = "server";
+    public static String server = "192.168.8.147";
+    public static int svrPort = 36500;
     public static int localPort = 12346;
     public static void printData(byte[] data) {
         String s = "0123456789abcdef";
@@ -22,7 +23,16 @@ public class Deliver {
         }
         System.out.println();
     }
-    public static ByteBuffer send(ByteBuffer data) {
+    public static void init() {
+        server = Comm.getSP(SP_SVR);
+        if (server == null || server.length() == 0)
+            server = "192.168.8.147";
+        if (server.contains(":")) {
+            svrPort = Integer.valueOf(server.substring(server.indexOf(":")));
+        }
+        Comm.logI("connected server: " + server + ":" + svrPort);
+    }
+    public static synchronized ByteBuffer send(ByteBuffer data) {
         ByteBuffer recvData = ByteBuffer.allocate(1024*8);
         DatagramPacket packet = new DatagramPacket(recvData.array(), recvData.limit());
 
@@ -35,12 +45,23 @@ public class Deliver {
             channel.send(data, new InetSocketAddress(server, svrPort));
             socket.setSoTimeout(1000);
 
-            socket.receive(packet); // 考虑循环收包的问题
+            socket.receive(packet); // todo 考虑循环收包的问题
             recvData.limit(packet.getLength());
 //            channel.receive(recvData);
 //            recvData.flip();
         } catch (Exception e) {
-            e.printStackTrace();
+            String msg = e.getCause().getMessage();
+            Comm.logE("cause by " + msg);
+            // todo 尝试重试一次
+//            if (msg.contains("EAGAIN")) {
+//                try {
+//                    Thread.sleep(100);
+//                } catch (Exception ex) {
+//
+//                }
+//                return Deliver.send(data);
+//            }
+//            e.printStackTrace();
             recvData.limit(0);
         }
 

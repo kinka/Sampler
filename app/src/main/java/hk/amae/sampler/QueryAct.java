@@ -48,7 +48,7 @@ public class QueryAct extends Activity {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.TargetSpeed = 200;
+//                cmd.TargetSpeed = 200;
                 labelSpeed.setText(String.format("%dmL/min", cmd.Speed));
                 labelTargetSpeed.setText(String.format("%dmL/min", cmd.TargetSpeed));
                 labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");

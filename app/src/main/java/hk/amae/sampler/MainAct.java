@@ -14,12 +14,17 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
@@ -28,6 +33,7 @@ import hk.amae.frag.MainFrag;
 import hk.amae.frag.SettingFrag;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
+import hk.amae.util.Deliver;
 
 /**
  * 这个是入口界面
@@ -119,6 +125,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
             case R.id.btn_query:
                 startActivity(new Intent(this, QueryAct.class));
                 return;
+
             default:
                 ft.replace(R.id.container, new MainFrag());
                 basicInfoFrag.updateInfo();

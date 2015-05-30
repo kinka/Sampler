@@ -83,7 +83,8 @@ public class Command {
     }
     private ByteBuffer build(final int cmd, byte[] data) {
         if (data == null) data = new byte[0];
-
+//if (cmd > 3) return null;
+        Comm.logI("req cmd 0x" + Integer.toHexString(cmd));
         final ByteBuffer buf = ByteBuffer.allocate(3 + 1 + 2 + 2 + data.length + 2);
         buf.order(ByteOrder.BIG_ENDIAN);
         buf.put((byte) 0xaa);
@@ -134,7 +135,8 @@ public class Command {
         reply.getShort();
         reply.get(); // == 0xfa?
         reply.get(); // version
-        reply.getShort(); // cmd
+        int __cmd = reply.getShort(); // cmd
+        Comm.logI("reply cmd 0x" + Integer.toHexString(__cmd));
 
         try {
             int len = reply.getShort();
@@ -230,14 +232,13 @@ public class Command {
         SN = getString(reply);
     }
 
-    public int ATM, TEMP;
+    public float ATM, TEMP;
     public ByteBuffer reqATM_TEMP() { // 查询大气压和温度
         return build(0x2, null);
     }
     public void resolveATM_TEMP(ByteBuffer reply) {
-
-        ATM = reply.getInt();
-        TEMP = reply.getInt();
+        ATM = reply.getInt() / 1000f;
+        TEMP = reply.getInt() / 10f;
     }
 
     public String DateTime;
@@ -306,8 +307,8 @@ public class Command {
         StandardVol = reply.getInt();
         SampleMode = reply.get();
         DateTime = getString(reply);
-        ATM = reply.getInt();
-        TEMP = reply.getInt();
+        ATM = reply.getInt() / 1000f;
+        TEMP = reply.getInt() / 10f;
         Progress = reply.get();
         Elapse = reply.getInt();
         TargetDuration = reply.getShort();
@@ -380,11 +381,11 @@ public class Command {
 
     // 设置采样参数(手动模式)
     public ByteBuffer setManualChannel(int operation, int mode, Channel channel, int speed, int cap) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 4 + 4);
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4);
         buffer.put((byte) operation);
         buffer.put((byte) mode);
         buffer.put(channel.getValue());
-        buffer.putInt(speed);
+        buffer.putShort((short) speed);
         buffer.putInt(cap); // 时长或者容量
         return  build(0x101, buffer.array());
     }

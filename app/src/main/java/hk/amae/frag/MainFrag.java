@@ -185,9 +185,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     @Override
     public void onPause() {
         super.onPause();
+        killTimer();
+    }
+    private void killTimer() {
         try {
             if (__battery != null)
                 __battery.cancel();
+            if (__progress != null)
+                __progress.cancel();
         } catch (Exception e) {
 
         }
@@ -305,6 +310,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         if (runningState == Comm.PAUSED || runningState == Comm.STOPPED) {
             btnRun.setImageResource(R.drawable.play);
             op = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
+            killTimer();
         } else if (runningState == Comm.PLAYING) {
             btnRun.setImageResource(R.drawable.pause);
             op = Comm.DO_PLAY;
@@ -339,8 +345,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         //todo 获取自动设置并开始倒计时, 一旦开始，则开始轮询进度
     }
     private void cycleQuery() {
-        if (true)
-            return;
         if (__progress != null)
             __progress.cancel();
 
@@ -362,20 +366,30 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     }
                 }).reqChannelState(channel);
 
-                final String[] State = new String[]{"", "正在采样", "等待", "暂停"};
+                final String[] State = new String[]{"停止", "等待", "正在采样", "暂停", "完成", "延时等待"};
                 new Command(new Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
+                        if (!verify) return;
+                        String selected = spinChannel.getSelectedItem().toString();
+                        Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                         String states = "";
                         for (int i = 0; i < 8; i++) {
-                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
+//                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
+                            if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0) continue;
+
                             states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
+                            // todo 更新对应通道的状态
+                            if (channel.getValue() == i + 1 && cmd.MachineState[i] == 4) {
+                                runningState = Comm.STOPPED;
+                                switchRunningState(false);
+                            }
                         }
                         txtTips.setText(states);
                     }
                 }).reqMachineState();
             }
-        }, 1000, 1000);
+        }, 1000, 5000);
     }
 
     @Override

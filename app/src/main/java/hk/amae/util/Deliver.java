@@ -11,7 +11,7 @@ import java.nio.channels.DatagramChannel;
  */
 public class Deliver {
     public static final String SP_SVR = "server";
-    public static String server = "192.168.8.147";
+    public static String server = "192.168.8.1";
     public static int svrPort = 36500;
     public static int localPort = 12346;
     public static void printData(byte[] data) {
@@ -26,7 +26,7 @@ public class Deliver {
     public static void init() {
         server = Comm.getSP(SP_SVR);
         if (server == null || server.length() == 0)
-            server = "192.168.8.147";
+            server = "192.168.8.1";
         if (server.contains(":")) {
             svrPort = Integer.valueOf(server.substring(server.indexOf(":")));
         }

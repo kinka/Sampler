@@ -270,7 +270,7 @@ public class Command {
     public void resolveChannelState(ByteBuffer reply) {
         ChannelState = reply.get();
         Channel = Comm.Channel.init(reply.get());
-        Speed = reply.getInt();
+        Speed = reply.getShort();
         Volume = reply.getInt();
         Progress = reply.get();
     }
@@ -480,8 +480,10 @@ public class Command {
     }
 
     // 锁定界面
-    public ByteBuffer setScreenLock() {
-        return build(0x108, null);
+    public ByteBuffer setScreenLock(boolean doLock) {
+        ByteBuffer buffer = ByteBuffer.allocate(1);
+        buffer.put((byte) (doLock ? 1 : 0));
+        return build(0x108, buffer.array());
     }
 
     // 打印某一条数据

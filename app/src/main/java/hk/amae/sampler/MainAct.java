@@ -27,6 +27,8 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import hk.amae.frag.BasicInfoFrag;
 import hk.amae.frag.MainFrag;
@@ -128,7 +130,12 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
             default:
                 ft.replace(R.id.container, new MainFrag());
-                basicInfoFrag.updateInfo();
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        basicInfoFrag.updateInfo();
+                    }
+                }, 0, 10000);
         }
         ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -200,7 +207,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                 }
                 Comm.setIntSP("locked", locked ? 1 : 0);
             }
-        }).setScreenLock();
+        }).setScreenLock(isLocked);
     }
 
     @Override

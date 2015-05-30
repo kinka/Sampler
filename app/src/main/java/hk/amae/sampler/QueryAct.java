@@ -27,7 +27,7 @@ public class QueryAct extends Activity {
         });
 
         labelSpeed = (TextView) findViewById(R.id.label_speed);
-        labelTargetSpeed = (TextView) findViewById(R.id.label_set_speed);
+        labelTargetSpeed = (TextView) findViewById(R.id.label_target_speed);
         labelVolume = (TextView) findViewById(R.id.label_total);
         labelStandardVol = (TextView) findViewById(R.id.label_total_standard);
         labelTime = (TextView) findViewById(R.id.label_local_time);
@@ -51,6 +51,10 @@ public class QueryAct extends Activity {
 //                cmd.TargetSpeed = 200;
                 labelSpeed.setText(String.format("%dmL/min", cmd.Speed));
                 labelTargetSpeed.setText(String.format("%dmL/min", cmd.TargetSpeed));
+                labelVolume.setText(String.format("%dmL", cmd.Volume));
+                labelStandardVol.setText(String.format("%dmL", cmd.StandardVol));
+                labelTime.setText(cmd.DateTime);
+
                 labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");
             }
         }).reqSampleState();

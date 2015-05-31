@@ -33,6 +33,8 @@ import hk.amae.util.Comm.Channel;
 public class ModeSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
     public static String TimingSet = "定时设置";
+    public static final int GROUPCOUNT = 8;
+
     static String FMT_CHANNEL = "%s通道";
 
     private String model = CapacitySet; // 定时设置
@@ -42,7 +44,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
     String[] Channels;
     ArrayList<SettingItem> dataList;
-
+ // todo 时间冲突检查
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +75,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         listView = (ListView) findViewById(R.id.list_settings);
 
-        dataList = new ArrayList<>(8);
-        for (int i=0, len = 8; i<len; i++)
+        dataList = new ArrayList<>(GROUPCOUNT);
+        for (int i=0, len = GROUPCOUNT; i<len; i++)
             dataList.add(new SettingItem());
         ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, dataList);
         listView.setAdapter(adapter);
@@ -148,7 +150,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         return true;
     }
     private void updateList() {
-        int autoMode = model.equals(CapacitySet) ? Comm.AUTO_SET_CAP : Comm.AUTO_SET_TIME;
+        int autoMode = model.equals(CapacitySet) ? Comm.TIMED_SET_CAP : Comm.TIMED_SET_TIME;
 
         new Command(new Command.Once() {
             @Override
@@ -159,7 +161,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 }
                 ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
             }
-        }).reqAutoSetting(autoMode, Channel.valueOf(Channels[channel]), 0); // num from 0 - 7 ? 能否合并成一个请求？
+        }).reqTimedSetting(autoMode, Channel.valueOf(Channels[channel]), 0); // num from 0 - 7 ? 能否合并成一个请求？
     }
 
     void flip(boolean add) {

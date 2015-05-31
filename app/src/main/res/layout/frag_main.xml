@@ -129,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/wrap_state"
         android:id="@+id/wrap_manual"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -326,7 +326,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/wrap_timing"
         android:layout_below="@+id/wrap_state">
 
@@ -335,7 +335,7 @@
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
             android:text="第一组9:00启动 时长：30min 流量：500mL/min\n第二组9:30启动 时长：30min 流量：500mL/min\n第三组9:30启动 时长：30min 流量：500mL/min\n第四组9:30启动 时长：30min 流量：500mL/min\n第五组9:30启动 时长：30min 流量：500mL/min\n第六组9:30启动 时长：30min 流量：500mL/min\n第七组9:30启动 时长：30min 流量：500mL/min\n第八组9:30启动 时长：30min 流量：500mL/min\n"
-            android:id="@+id/txt_timing_groups"
+            android:id="@+id/txt_timed_setting"
             android:maxLines="16"
             android:padding="9dp" />
 

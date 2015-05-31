@@ -173,13 +173,13 @@ public class Command {
                     resolveSysInfo(reply);
                     break;
                 case 0xb:
-                    resolveAutoSetting(reply);
+                    resolveTimedSetting(reply);
                     break;
                 case 0x101:
                     resolveManualChannel(reply);
                     break;
                 case 0x102:
-                    resolveAutoChannel(reply);
+                    resolveTimedChannel(reply);
                     break;
                 case 0x103:
                     resolveBacklit(reply);
@@ -362,15 +362,14 @@ public class Command {
 
     public int SettingNum; // 第几条设置
     public int TargetVolume;
-    public ByteBuffer reqAutoSetting(int mode, Channel channel, int num) { // 查询定时(定容)设置
+    public ByteBuffer reqTimedSetting(int mode, Channel channel, int num) { // 查询定时(定容)设置
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);
         buffer.put((byte) mode);
         buffer.put(channel.getValue());
         buffer.put((byte) num);
         return build(0xb, buffer.array());
     }
-    public void resolveAutoSetting(ByteBuffer reply) {
-
+    public void resolveTimedSetting(ByteBuffer reply) {
         SampleMode = reply.get();
         Channel = Comm.Channel.init(reply.get());
         SettingNum = reply.get();
@@ -394,7 +393,7 @@ public class Command {
     }
 
     // 设置采样参数(定时定容)
-    public ByteBuffer setAutoChannel(boolean doSet, int mode, Channel channel, int num, int speed, int cap, String launchTime) {
+    public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, int num, int speed, int cap, String launchTime) {
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 1 + 4 + 4 + 1 + launchTime.length());
         buffer.put((byte) (doSet ? 1 : 2));
         buffer.put((byte) mode);
@@ -407,7 +406,7 @@ public class Command {
         return build(0x102, buffer.array());
     }
     public boolean DoSet;
-    public void resolveAutoChannel(ByteBuffer reply) {
+    public void resolveTimedChannel(ByteBuffer reply) {
 
         DoSet = reply.get() == 1;
         SampleMode = reply.get();

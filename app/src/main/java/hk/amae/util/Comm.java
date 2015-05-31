@@ -6,7 +6,10 @@ import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.FileHandler;
@@ -45,8 +48,8 @@ public class Comm {
     }
 
     public final static int MANUAL_SET = 0; // 手动模式
-    public final static int AUTO_SET_TIME = 0x1; // 定时模式之定时长
-    public final static int AUTO_SET_CAP = 0x2; // 定时模式之定容量
+    public final static int TIMED_SET_TIME = 0x1; // 定时模式之定时长
+    public final static int TIMED_SET_CAP = 0x2; // 定时模式之定容量
     public final static int DO_PLAY = 0x2;
     public final static int DO_PAUSE = 0x3;
     public final static int DO_STOP = 0x0;
@@ -173,5 +176,31 @@ public class Comm {
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 calendar.get(Calendar.SECOND));
+    }
+
+    public static String getDateDiff(String datetime) {
+        Calendar diff = Calendar.getInstance();
+        String strDiff = "";
+        try {
+            Date toDiff = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(datetime);
+            Date now = Calendar.getInstance().getTime();
+            boolean before = now.before(toDiff);
+            long __diff = 0;
+            if (before) {
+                __diff = (toDiff.getTime() - now.getTime());
+            } else {
+                __diff = (now.getTime() - toDiff.getTime());
+                strDiff = "-";
+            }
+            __diff /= 1000;
+            long y = __diff / 3600;
+            long m = (__diff - y*3600) / 60;
+            long s = (__diff - y*3600) % 60;
+            strDiff += String.format("%.2d:%.2d:%.2d", y, m, s);
+        } catch (Exception e) {
+
+        }
+        Comm.logI("diff " + strDiff);
+        return strDiff;
     }
 }

@@ -62,14 +62,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
         basicInfoFrag = (BasicInfoFrag) getFragmentManager().findFragmentById(R.id.basicinfo_frag);
 
-        connectServer();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (lastid < 0)
-            connectServer();
+//        connectServer();
     }
 
     private void connectServer() {
@@ -147,6 +140,14 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Comm.logI("onResume");
+        if (lastid < 0)
+            connectServer();
     }
 
     @Override

@@ -76,7 +76,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private Timer __battery, __progress;
     private final int durationBattery = 60*1000, durationProgress = 10*1000;
 
-    private int MaxSpeed = 1000;
+    private final int UNITSPEED = 1000; // 单通道最高流量
+    private int MaxSpeed = UNITSPEED;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,9 +127,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         npSpeed = (NumberOperator) v.findViewById(R.id.np_speed);
         npTiming = (NumberOperator) v.findViewById(R.id.np_timing);
         npVolume = (NumberOperator) v.findViewById(R.id.np_cap);
-        npSpeed.setValue(100);
-        npTiming.setValue(1);
-        npVolume.setValue(100);
+        setMaxSpeed(0);
 
         wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
         wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
@@ -213,16 +212,16 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
         switch (mode) {
             case ChannelAct.MODE_COUPLE:
-                MaxSpeed = 1000 * 2;
+                MaxSpeed = UNITSPEED * 2;
                 return R.array.channels_C;
             case ChannelAct.MODE_4IN1:
-                MaxSpeed = 1000 * 4;
+                MaxSpeed = UNITSPEED * 4;
                 return R.array.channels_B;
             case ChannelAct.MODE_8IN1:
-                MaxSpeed = 1000 * 8;
+                MaxSpeed = UNITSPEED * 8;
                 return R.array.channels_A;
             default:
-                MaxSpeed = 1000;
+                MaxSpeed = UNITSPEED;
                 return R.array.channels_CH;
         }
     }
@@ -471,8 +470,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.equals(spinChannel)) {
             String selected = spinChannel.getSelectedItem().toString();
-            if (selected.equals("全选"))
+            if (selected.equals("全选")) {
                 selected = "ALL";
+                setMaxSpeed(8*UNITSPEED);
+            } else {
+                setMaxSpeed(0);
+            }
             new Command(new Once() {
                 @Override
                 public void done(boolean verify, Command cmd) {
@@ -546,11 +549,18 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
 
     }
 
+    private void setMaxSpeed(int maxSpeed) {
+        if (maxSpeed == 0)
+            npSpeed.setMax(MaxSpeed);
+        else
+            npSpeed.setMax(maxSpeed);
+        if (npSpeed.getValue() > npSpeed.getMax())
+            npSpeed.setValue(npSpeed.getValue());
+    }
+
     private void switchManualMode(Command cmd) {
         int targetSpeed = cmd == null ? 0 : cmd.TargetSpeed;
         int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
-
-        npSpeed.setMax(MaxSpeed);
 
         if (targetSpeed == 0 || targetSpeed > npSpeed.getMax())
             targetSpeed = npSpeed.getValue();

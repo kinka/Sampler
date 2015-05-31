@@ -44,9 +44,9 @@ public class Comm {
         }
     }
 
-    public final static int MANUAL_SET = 0;
-    public final static int AUTO_SET_TIME = 0x1;
-    public final static int AUTO_SET_CAP = 0x2;
+    public final static int MANUAL_SET = 0; // 手动模式
+    public final static int AUTO_SET_TIME = 0x1; // 定时模式之定时长
+    public final static int AUTO_SET_CAP = 0x2; // 定时模式之定容量
     public final static int DO_PLAY = 0x2;
     public final static int DO_PAUSE = 0x3;
     public final static int DO_STOP = 0x0;

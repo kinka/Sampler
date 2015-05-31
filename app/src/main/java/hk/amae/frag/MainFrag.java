@@ -3,7 +3,6 @@ package hk.amae.frag;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,6 +58,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     TextView txtTimingGroups;
     TextView txtTips;
 
+    private Channel currChannel;
     private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
     private int sampleMode;
@@ -153,19 +152,34 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         return v;
     }
 
-    void init() {
-        // todo 改用reqChannelState
+    // 查询并初始化当前通道的运行状态
+    void initChannelState() {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                sampleMode = cmd.Manual ? 0 : cmd.SampleMode;
-                sampleMode = Comm.getIntSP(SP_SAMPLEMODE);
+//                    cmd.ChannelState = Comm.PLAYING;
+//                    cmd.Volume = 880;
+//                    cmd.Speed = 300;
+                progSampling.setProgress(cmd.Progress);
+                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                runningState = cmd.ChannelState;
+//                runningState = Comm.PLAYING;
+                checkRunningState(false);
+            }
+        }).reqChannelState(currChannel);
+    }
+
+    void init() {
+        initChannelState();
+
+        // 主要是想知道是手动模式还是定时模式(定时长/定容量)
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                sampleMode = cmd.Manual ? Comm.MANUAL_SET : cmd.SampleMode;
+                sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
-                //todo 如何判断运行状态？
-                if (cmd.Progress > 0 && cmd.Progress < 100)
-                    runningState = Comm.PLAYING;
-                else
-                    runningState = Comm.STOPPED;
                 switchSampleMode(cmd);
             }
         }).reqSampleState();
@@ -202,7 +216,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }
     }
 
-    private int getChannels() {
+    private int getMode() {
         String s_mode = Comm.getSP(ChannelAct.SP_CHANNELMODE);
         int mode = 0;
         if (s_mode.length() == 0)
@@ -210,18 +224,27 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         else
             mode = Integer.valueOf(s_mode);
 
+        return mode;
+    }
+    private int getChannels() {
+        int mode = getMode();
+
         switch (mode) {
             case ChannelAct.MODE_COUPLE:
                 MaxSpeed = UNITSPEED * 2;
+                currChannel = Channel.C1;
                 return R.array.channels_C;
             case ChannelAct.MODE_4IN1:
                 MaxSpeed = UNITSPEED * 4;
+                currChannel = Channel.B1;
                 return R.array.channels_B;
             case ChannelAct.MODE_8IN1:
                 MaxSpeed = UNITSPEED * 8;
+                currChannel = Channel.A1;
                 return R.array.channels_A;
             default:
                 MaxSpeed = UNITSPEED;
+                currChannel = Channel.CH1;
                 return R.array.channels_CH;
         }
     }
@@ -275,7 +298,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_CAP);
                 else
                     Comm.setIntSP(SP_MANUALMODE, Comm.AUTO_SET_TIME);
-                switchManualMode(null);
+                initManualMode(null);
                 break;
         }
     }
@@ -300,7 +323,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     } else {
                         runningState = Comm.PLAYING;
                     }
-                    switchRunningState(true);
+                    checkRunningState(true);
                     break;
             }
         }
@@ -309,7 +332,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     /**
      * runningState 反映当前运行状态，但是图标展示的是下一步能进行的操作
      */
-    private void switchRunningState(boolean sendCmd) {
+    private void checkRunningState(boolean sendCmd) {
         int op = Comm.DO_PLAY;
         if (runningState == Comm.PAUSED || runningState == Comm.STOPPED) {
             btnRun.setImageResource(R.drawable.play);
@@ -320,6 +343,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             op = Comm.DO_PLAY;
         }
         if (!sendCmd) return;
+
         if (sampleMode == Comm.MANUAL_SET)
             setManual(op);
         else
@@ -343,12 +367,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             }
         }).setManualChannel(op, manualMode, channel, speed, cap);
         // 开始定时查询
-        cycleQuery();
+        pollManualState();
     }
     private void setAuto(int op) {
         //todo 获取自动设置并开始倒计时, 一旦开始，则开始轮询进度
     }
-    private void cycleQuery() {
+    // 查询手动设置下当前采样状态
+    private void pollManualState() {
         if (__progress != null)
             __progress.cancel();
 
@@ -359,35 +384,37 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         __progress.schedule(new TimerTask() {
             @Override
             public void run() {
-                String selected = spinChannel.getSelectedItem().toString();
-                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
+//                String selected = spinChannel.getSelectedItem().toString();
+//                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                 new Command(new Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
                         progSampling.setProgress(cmd.Progress);
                         txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                         txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                        if (cmd.Progress >= 100) {
+                            runningState = Comm.STOPPED;
+                            checkRunningState(false);
+                        }
                     }
-                }).reqChannelState(channel);
+                }).reqChannelState(currChannel);
 
                 final String[] State = new String[]{"停止", "等待", "正在采样", "暂停", "完成", "延时等待"};
                 new Command(new Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
                         if (!verify) return;
-                        String selected = spinChannel.getSelectedItem().toString();
-                        Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                         String states = "";
                         for (int i = 0; i < 8; i++) {
 //                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0) continue;
 
                             states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
-                            // todo 更新对应通道的状态
-                            if (channel.getValue() == i + 1 && cmd.MachineState[i] == 4) {
-                                runningState = Comm.STOPPED;
-                                switchRunningState(false);
-                            }
+                            // 如果reqChannelState的进度条不可靠的话，则重新考虑如何更新对应通道的状态
+//                            if (currChannel.getValue() == i + 1 && cmd.MachineState[i] == 4) {
+//                                runningState = Comm.STOPPED;
+//                                checkRunningState(false);
+//                            }
                         }
                         txtTips.setText(states);
                     }
@@ -435,7 +462,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                         clickTask = null;
                         runningState = Comm.STOPPED;
                         Toast.makeText(parent, "停止提醒", Toast.LENGTH_SHORT).show();
-                        switchRunningState(true);
+                        checkRunningState(true);
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
@@ -476,18 +503,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             } else {
                 setMaxSpeed(0);
             }
-            new Command(new Once() {
-                @Override
-                public void done(boolean verify, Command cmd) {
-//                    cmd.ChannelState = Comm.PLAYING;
-//                    cmd.Volume = 880;
-//                    cmd.Speed = 300;
-                    txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
-                    txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
-                    runningState = cmd.ChannelState;
-                    switchRunningState(false);
-                }
-            }).reqChannelState(Channel.valueOf(selected));
+            currChannel = Channel.valueOf(selected);
+            initChannelState();
 
         } else if (parent.equals(spinMode)) {
             String selected = spinMode.getSelectedItem().toString();
@@ -498,7 +515,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 case "手动":
                     sampleMode = Comm.MANUAL_SET;
                     runningState = Comm.STOPPED; // 强制切换状态为停止
-                    switchRunningState(false);
+                    checkRunningState(false);
                     intent = null;
                     break;
                 case "定时模式":
@@ -535,13 +552,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private void switchSampleMode(Command cmd) {
         try {
             if (sampleMode == Comm.MANUAL_SET) {
-                cycleQuery();
+                pollManualState();
                 wrapManual.setVisibility(View.VISIBLE);
                 wrapTiming.setVisibility(View.GONE);
-                switchManualMode(cmd);
+                initManualMode(cmd);
             } else {
                 wrapManual.setVisibility(View.GONE);
                 wrapTiming.setVisibility(View.VISIBLE);
+                checkRunningState(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -558,7 +576,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             npSpeed.setValue(npSpeed.getValue());
     }
 
-    private void switchManualMode(Command cmd) {
+    /**
+     * 手动模式下的相关设置，切换模式为"设定时长"或"设定容量"， 以及最大流量/时长/容量等限制
+     * @param cmd
+     */
+    private void initManualMode(Command cmd) {
         int targetSpeed = cmd == null ? 0 : cmd.TargetSpeed;
         int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
 
@@ -587,7 +609,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             npTiming.setDelta(1);
         }
 
-        switchRunningState(false);
+        checkRunningState(false);
     }
 
     public interface OnMainFragListener {

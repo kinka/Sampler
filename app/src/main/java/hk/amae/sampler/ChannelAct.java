@@ -35,6 +35,7 @@ public class ChannelAct extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_confirm:
                 Comm.setSP(SP_CHANNELMODE, String.valueOf(ChannelMode));
+                // todo 保存到服务器
                 // fall through
             case R.id.btn_back:
                 super.onBackPressed();

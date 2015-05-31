@@ -12,5 +12,6 @@
     </declare-styleable>
     <declare-styleable name="NumberOperator">
         <attr name="delta" format="integer"></attr>
+        <attr name="value" format="integer"></attr>
     </declare-styleable>
 </resources>

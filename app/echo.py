@@ -3,7 +3,7 @@ import socket, traceback, time, struct
 import sys
 
 host = ''
-port = 36500 
+port = 36500
 
 if len(sys.argv) > 1:
     dstHost = sys.argv[1]

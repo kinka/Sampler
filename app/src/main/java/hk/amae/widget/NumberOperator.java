@@ -26,9 +26,9 @@ import hk.amae.util.Comm;
 public class NumberOperator extends FrameLayout implements View.OnClickListener, View.OnTouchListener {
     private Button btnAdder, btnSubstractor;
     private EditText txtValue;
-    private int value;
+    private int value, defaultValue;
     private int delta = 10;
-    private int max = 1000;
+    private int max = 1000*1000*1000;
     Timer timer = new Timer();
     Handler handler;
 
@@ -97,7 +97,13 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.NumberOperator, 0, 0);
         delta = a.getInt(R.styleable.NumberOperator_delta, 0);
+        defaultValue = a.getInt(R.styleable.NumberOperator_value, 0);
+        setValue(defaultValue);
         a.recycle();
+    }
+
+    public int getDefault() {
+        return defaultValue;
     }
 
     public int getValue() {

@@ -74,6 +74,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     private int __lastid = 0;
 
     private Timer __battery, __progress;
+    private final int durationBattery = 60*1000, durationProgress = 10*1000;
 
     private int MaxSpeed = 1000;
 
@@ -125,6 +126,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         npSpeed = (NumberOperator) v.findViewById(R.id.np_speed);
         npTiming = (NumberOperator) v.findViewById(R.id.np_timing);
         npVolume = (NumberOperator) v.findViewById(R.id.np_cap);
+        npSpeed.setValue(100);
+        npTiming.setValue(1);
+        npVolume.setValue(100);
 
         wrapManual = (LinearLayout) v.findViewById(R.id.wrap_manual);
         wrapTiming = (LinearLayout) v.findViewById(R.id.wrap_timing);
@@ -151,6 +155,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     void init() {
+        // todo 改用reqChannelState
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
@@ -238,7 +243,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     }
                 }).reqBattery();
             }
-        }, 0, 60*1000);
+        }, 0, durationBattery);
     }
 
     private void setLock() {
@@ -389,7 +394,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                     }
                 }).reqMachineState();
             }
-        }, 1000, 5000);
+        }, 500, durationProgress);
     }
 
     @Override
@@ -542,18 +547,24 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     }
 
     private void switchManualMode(Command cmd) {
-        // todo 设置 设定流量和设定时长/容量 的值
         int targetSpeed = cmd == null ? 0 : cmd.TargetSpeed;
         int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
 
-        npSpeed.setValue(targetSpeed);
         npSpeed.setMax(MaxSpeed);
+
+        if (targetSpeed == 0 || targetSpeed > npSpeed.getMax())
+            targetSpeed = npSpeed.getValue();
+        if (targetDuration == 0)
+            targetDuration = npTiming.getDefault();
+
+        npSpeed.setValue(targetSpeed);
+
         int manualMode = Comm.getIntSP(SP_MANUALMODE);
         if (manualMode == 0) {
             manualMode = Comm.AUTO_SET_CAP;
             Comm.setIntSP(SP_MANUALMODE, manualMode);
         }
-        // todo 流量限制每通道1000mL/min
+
         if (manualMode == Comm.AUTO_SET_CAP) {
             layoutCap.setVisibility(View.VISIBLE);
             layoutTiming.setVisibility(View.GONE);

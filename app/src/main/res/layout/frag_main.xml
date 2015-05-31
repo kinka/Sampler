@@ -157,7 +157,7 @@
                 android:layout_height="24dp"
                 android:id="@+id/prog_sampling"
                 android:layout_gravity="center_vertical"
-                android:progress="50"
+                android:progress="0"
                 android:max="100"
                 android:progressDrawable="@drawable/amae_progressbar"
                 components:textSize="18sp"
@@ -188,6 +188,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="match_parent"
                 components:delta="100"
+                components:value="100"
                 android:paddingTop="9dp"
                 android:paddingBottom="9dp"
                 android:id="@+id/np_speed"/>
@@ -229,13 +230,14 @@
                 android:paddingTop="9dp"
                 android:layout_weight="0.5"
                 components:delta="1"
+                components:value="1"
                 android:paddingBottom="9dp"
                 android:id="@+id/np_timing"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="  min"
+                android:text=" min"
                 android:id="@+id/textView16"
                 android:layout_weight="0.2"
                 android:layout_height="wrap_content"
@@ -269,6 +271,7 @@
                 android:paddingTop="9dp"
                 android:layout_weight="0.5"
                 components:delta="100"
+                components:value="100"
                 android:paddingBottom="9dp"
                 android:id="@+id/np_cap"/>
 
@@ -310,7 +313,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="tips here....\nanother line"
+                android:text="\n"
                 android:id="@+id/txt_tips"
                 android:layout_weight="0.7"
                 android:textColor="@color/amae_secondary_text"

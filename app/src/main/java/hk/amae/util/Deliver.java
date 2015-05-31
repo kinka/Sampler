@@ -10,10 +10,10 @@ import java.nio.channels.DatagramChannel;
  * Created by kinka on 4/12/15.
  */
 public class Deliver {
+    private static String defaultSvr = "192.168.1.107";
     public static final String SP_SVR = "server";
-    public static String server = "192.168.8.1";
+    public static String server = defaultSvr;
     public static int svrPort = 36500;
-    public static int localPort = 12346;
     public static void printData(byte[] data) {
         String s = "0123456789abcdef";
         for (byte d:data) {
@@ -26,7 +26,7 @@ public class Deliver {
     public static void init() {
         server = Comm.getSP(SP_SVR);
         if (server == null || server.length() == 0)
-            server = "192.168.8.1";
+            server = defaultSvr;
         if (server.contains(":")) {
             svrPort = Integer.valueOf(server.substring(server.indexOf(":")));
         }
@@ -79,6 +79,7 @@ public class Deliver {
         printData(buffer.array());
 
 //        System.out.println(String.format("%x", Command.crc16(new byte[]{0x12, 0x34, 0x56, 0x78})));
+/*
 
         final int cnt = 0;
 
@@ -92,6 +93,7 @@ public class Deliver {
                 }
             }).reqDateTime();
         }
+*/
 
     }
 }

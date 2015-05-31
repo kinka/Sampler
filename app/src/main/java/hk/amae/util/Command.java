@@ -136,7 +136,7 @@ public class Command {
         reply.get(); // == 0xfa?
         reply.get(); // version
         int __cmd = reply.getShort(); // cmd
-        Comm.logI("reply cmd 0x" + Integer.toHexString(__cmd));
+        Comm.logI("reply cmd 0x" + Integer.toHexString(cmd));
 
         try {
             int len = reply.getShort();
@@ -294,7 +294,7 @@ public class Command {
     public boolean Manual; // 手动/定时
     public byte Group; // 定时模式 第几组 手动模式为0
     public ByteBuffer reqSampleState() { // 查询当前采样情况
-        return build(0x7, null);
+        return build(0x9, null); // 0x7 和 0x9 改用同一命令字
     }
     public void resolveSampleState(ByteBuffer reply) {
         int len = reply.get();

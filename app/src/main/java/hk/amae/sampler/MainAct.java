@@ -45,6 +45,9 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     BasicInfoFrag basicInfoFrag;
     public static int lastid = -1;
 
+    private Timer __basicInfo;
+    private int durationBasicInfo = 60*1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,17 +133,40 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
             default:
                 ft.replace(R.id.container, new MainFrag());
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        basicInfoFrag.updateInfo();
-                    }
-                }, 0, 10000);
         }
         ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
         lastid = id;
+    }
+
+    void killTimer() {
+        try {
+            if (__basicInfo != null)
+                __basicInfo.cancel();
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Comm.logI("onStart...");
+        __basicInfo = new Timer();
+        __basicInfo.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                basicInfoFrag.updateInfo();
+            }
+        }, 0, durationBasicInfo);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Comm.logI("onStop...");
+        killTimer();
     }
 
     @Override

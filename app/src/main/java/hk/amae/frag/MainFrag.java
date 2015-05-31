@@ -261,7 +261,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 Comm.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        txtCountDown.setText(String.format("第%d组 启动倒计时 %s", waitingGroup+1, Comm.getDateDiff(timedLaunchAt[waitingGroup])));
+                        if (waitingGroup == -1) return;
+
+                        String diff = Comm.getDateDiff(timedLaunchAt[waitingGroup]);
+                        txtCountDown.setText(String.format("第%d组 启动倒计时 %s", waitingGroup+1, diff));
+                        if (diff.indexOf("-") == 0) { // 下一组
+                            startCountDown();
+                        }
                     }
                 });
             }
@@ -391,6 +397,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             op = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
             killTimer();
         } else if (runningState == Comm.PLAYING) {
+            int manualMode = Comm.getIntSP(SP_MANUALMODE);
+            int cap = manualMode == Comm.TIMED_SET_TIME ? npTiming.getValue() : npVolume.getValue();
+            boolean invalid = npSpeed.getValue() == 0 || cap == 0;
+            if (sampleMode == Comm.MANUAL_SET && invalid) {
+                runningState = Comm.STOPPED;
+                Toast.makeText(getActivity(), "参数非法，请检查流量等参数是否为0", Toast.LENGTH_SHORT).show();
+                return;
+            }
             btnRun.setImageResource(R.drawable.pause);
             op = Comm.DO_PLAY;
         }
@@ -429,7 +443,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         pollManualState();
     }
     private void setTimed(int op) {
-        //todo 获取自动设置并开始倒计时, 一旦开始，则开始轮询进度
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                progSampling.setProgress(cmd.Progress);
+                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+            }
+        }).setManualChannel(op, 0, currChannel, 0, 0);
+        pollTimedState();
     }
 
     private void reqChannelState() {
@@ -442,11 +464,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 if (cmd.Progress >= 100) {
                     runningState = Comm.STOPPED;
                     updateRunningState();
-
-                    if (sampleMode != Comm.MANUAL_SET) {
-                        stopCountDown();
-                        startCountDown();
-                    }
                 }
             }
         }).reqChannelState(currChannel);
@@ -707,7 +724,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 String strMode = isSetCap ? "容量" : "时长";
                 String strUnit = isSetCap ? "mL" : "min";
                 String strFmt = "第%d组 %s启动 " + strMode + "：%d" + strUnit + " 流量：%dmL/min\n";
-                cmd.DateTime = "2015-05-31 22:30";
+                cmd.DateTime = "2015-05-31 22:35";
                 cmd.TargetVolume = 1000;
                 cmd.TargetSpeed = 100;
                 cmd.TargetDuration = 1;
@@ -720,6 +737,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 }
                 txtTimedSetting.setText(str);
 
+                timedLaunchAt[0] = "2015-05-31 22:09";
                 startCountDown();
             }
         }).reqTimedSetting(sampleMode, currChannel, 0);

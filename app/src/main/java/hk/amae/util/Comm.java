@@ -196,7 +196,7 @@ public class Comm {
             long y = __diff / 3600;
             long m = (__diff - y*3600) / 60;
             long s = (__diff - y*3600) % 60;
-            strDiff += String.format("%.2d:%.2d:%.2d", y, m, s);
+            strDiff += String.format("%02d:%02d:%02d", y, m, s);
         } catch (Exception e) {
 
         }

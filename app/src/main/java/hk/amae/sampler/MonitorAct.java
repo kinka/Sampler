@@ -51,9 +51,9 @@ public class MonitorAct extends Activity {
                     TextView speed = rows[r][1];
                     TextView volume = rows[r][2];
                     TextView progress = rows[r][3];
-                    speed.setText(String.format("%d", Math.round(Math.random()*1000)));
-                    volume.setText(String.format("%.2f", Math.random()));
-                    progress.setText(String.format("%d%%", Math.round(Math.random()*100)));
+                    speed.setText(String.format("%d", cmd.Speed));
+                    volume.setText(String.format("%.2f", cmd.Volume / 1000f));
+                    progress.setText(String.format("%d%%", cmd.Progress));
                 }
             }).reqChannelState(Comm.Channel.init(i+1)); // CH1 - CH8
         }

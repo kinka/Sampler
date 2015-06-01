@@ -125,7 +125,8 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                 return;
 
             default:
-                ft.replace(R.id.container, new MainFrag());
+                if (lastid != id) // 避免重复
+                    ft.replace(R.id.container, new MainFrag());
         }
         ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

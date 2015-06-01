@@ -135,6 +135,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         txtTimedSetting.setMovementMethod(new ScrollingMovementMethod());
 
         txtCountDown = (TextView) v.findViewById(R.id.txt_countdown);
+        txtCountDown.setText("");
 
         txtTips = (TextView) v.findViewById(R.id.txt_tips);
 
@@ -249,10 +250,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
             break;
         }
 
-        if (waitingGroup < 0) return;
-
         if (__launch != null)
             __launch.cancel();
+
+        if (waitingGroup < 0) {
+            txtCountDown.setText("定时任务已经全部完成");
+            return;
+        }
 
         __launch = new Timer();
         __launch.schedule(new TimerTask() {
@@ -724,7 +728,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 String strMode = isSetCap ? "容量" : "时长";
                 String strUnit = isSetCap ? "mL" : "min";
                 String strFmt = "第%d组 %s启动 " + strMode + "：%d" + strUnit + " 流量：%dmL/min\n";
-                cmd.DateTime = "2015-05-31 22:35";
+                cmd.DateTime = "2015-06-01 23:22";
                 cmd.TargetVolume = 1000;
                 cmd.TargetSpeed = 100;
                 cmd.TargetDuration = 1;

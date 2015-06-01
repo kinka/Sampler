@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="100%"
-                    android:id="@+id/label_sample_prog"
+                    android:id="@+id/label_sampled_prog"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>
@@ -268,7 +268,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="00H01M00S"
-                    android:id="@+id/label_sample_time"
+                    android:id="@+id/label_sampled_time"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="00H01M"
-                    android:id="@+id/label_set_time"
+                    android:id="@+id/label_duration"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>
@@ -362,7 +362,7 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="通道数"
+                    android:text="通道"
                     android:textColor="@color/amae_secondary_text"
                     android:layout_weight="0"
                     android:gravity="center" />
@@ -371,7 +371,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="2"
+                    android:text="CH1"
                     android:id="@+id/label_channel"
                     android:layout_weight="3"
                     android:gravity="center" />

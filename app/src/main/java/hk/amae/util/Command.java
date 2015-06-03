@@ -2,8 +2,12 @@ package hk.amae.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Date;
 
+import hk.amae.sampler.ModeSettingAct;
 import hk.amae.util.Comm.Channel;
+
+import hk.amae.sampler.ModeSettingAct.SettingItem;
 
 /**
  * Created by kinka on 4/11/15.
@@ -362,20 +366,34 @@ public class Command {
 
     public int SettingNum; // 第几条设置
     public int TargetVolume;
-    public ByteBuffer reqTimedSetting(int mode, Channel channel, int num) { // 查询定时(定容)设置
+    public SettingItem[] SettingItems;
+    public ByteBuffer reqTimedSetting(int mode, Channel channel) { // 查询定时(定容)设置
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);
         buffer.put((byte) mode);
         buffer.put(channel.getValue());
-        buffer.put((byte) num);
         return build(0xb, buffer.array());
     }
     public void resolveTimedSetting(ByteBuffer reply) {
-        SampleMode = reply.get();
-        Channel = Comm.Channel.init(reply.get());
-        SettingNum = reply.get();
-        TargetSpeed = reply.getInt();
-        TargetVolume = TargetDuration = reply.getInt(); // 根据SampleMode 再去作区分吧
-        DateTime = getString(reply);
+        SettingItems = new SettingItem[ModeSettingAct.GROUPCOUNT];
+
+        for (int i=0; i<SettingItems.length; i++)
+            SettingItems[i] = new SettingItem(i+1);
+
+        try {
+            SampleMode = reply.get();
+            Channel = Comm.Channel.init(reply.get());
+            for (SettingItem item:SettingItems) {
+                item.isSet = reply.get() == 1;
+                item.targetSpeed = reply.getInt();
+                item.targetVol = item.targetDuration = reply.getInt(); // 根据SampleMode 再去作区分吧
+                DateTime = getString(reply);
+                int pos = DateTime.indexOf(" ");
+                item.date = DateTime.substring(0, pos);
+                item.time = DateTime.substring(pos+1);
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     // 设置采样参数(手动模式)

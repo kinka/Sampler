@@ -8,8 +8,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import hk.amae.util.Comm;
 
@@ -18,7 +16,15 @@ import hk.amae.util.Comm;
  */
 public class AmaeDateTimePicker {
 
+    public interface Picker {
+        void onPick(String value);
+    }
+
     public static void showDateDialog(Context context, final TextView textView, final String format, String style) {
+        showDateDialog(context, textView, format, style, null);
+    }
+
+    public static void showDateDialog(Context context, final TextView textView, final String format, String style, final Picker picker) {
         int year = 0;
         int month = 0;
         int day = 1;
@@ -49,7 +55,10 @@ public class AmaeDateTimePicker {
             new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePicker, int y, int m, int d) {
-                    textView.setText(String.format(format, y, m + 1, d));
+                    String value = String.format(format, y, m + 1, d);
+                    textView.setText(value);
+                    if (picker != null)
+                        picker.onPick(value);
                 }
             }, year, month, day).show();
         Comm.hideSoftInput();

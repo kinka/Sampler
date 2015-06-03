@@ -42,6 +42,8 @@ import hk.amae.widget.TextProgressBar;
 
 import hk.amae.util.Command.Once;
 
+import hk.amae.sampler.ModeSettingAct.SettingItem;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -728,23 +730,25 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 String strMode = isSetCap ? "容量" : "时长";
                 String strUnit = isSetCap ? "mL" : "min";
                 String strFmt = "第%d组 %s启动 " + strMode + "：%d" + strUnit + " 流量：%dmL/min\n";
-                cmd.DateTime = "2015-06-01 23:22";
-                cmd.TargetVolume = 1000;
-                cmd.TargetSpeed = 100;
-                cmd.TargetDuration = 1;
-                for (int i=0; i<ModeSettingAct.GROUPCOUNT; i++) {
-                    timedLaunchAt[i] = cmd.DateTime;
-                    timedDuration[i] = cmd.TargetDuration;
-                    timedVolume[i] = cmd.TargetVolume;
-                    timedSpeed[i] = cmd.TargetSpeed;
-                    str += String.format(strFmt, (i+1), cmd.DateTime, isSetCap ? cmd.TargetVolume : cmd.TargetDuration, cmd.TargetSpeed);
+//                cmd.DateTime = "2015-06-01 23:22";
+//                cmd.TargetVolume = 1000;
+//                cmd.TargetSpeed = 100;
+//                cmd.TargetDuration = 1;
+                int i = 0;
+                for (SettingItem item:cmd.SettingItems) {
+                    timedLaunchAt[i] = item.date + " " + item.time;
+                    timedDuration[i] = item.targetDuration;
+                    timedVolume[i] = item.targetVol;
+                    timedSpeed[i] = item.targetSpeed;
+                    str += String.format(strFmt, (i+1), timedLaunchAt[i], isSetCap ? item.targetVol: item.targetDuration, item.targetSpeed);
+                    i++;
                 }
                 txtTimedSetting.setText(str);
 
                 timedLaunchAt[0] = "2015-05-31 22:09";
                 startCountDown();
             }
-        }).reqTimedSetting(sampleMode, currChannel, 0);
+        }).reqTimedSetting(sampleMode, currChannel);
     }
 
     public interface OnMainFragListener {

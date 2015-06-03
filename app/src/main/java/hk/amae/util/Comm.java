@@ -200,7 +200,7 @@ public class Comm {
         } catch (Exception e) {
 
         }
-        Comm.logI("diff " + strDiff);
+//        Comm.logI("diff " + strDiff);
         return strDiff;
     }
 }

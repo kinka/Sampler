@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
@@ -44,6 +45,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
     String[] Channels;
     ArrayList<SettingItem> dataList;
+    SettingArrayAdapter listAdapter;
  // todo 时间冲突检查
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +79,9 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         dataList = new ArrayList<>(GROUPCOUNT);
         for (int i=0, len = GROUPCOUNT; i<len; i++)
-            dataList.add(new SettingItem());
-        ListAdapter adapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, dataList);
-        listView.setAdapter(adapter);
+            dataList.add(new SettingItem(i+1));
+        listAdapter = new SettingArrayAdapter(this, R.layout.mode_setting_item, dataList);
+        listView.setAdapter(listAdapter);
 
         ActivityGestureDetector gestureDetector = new ActivityGestureDetector(this, this);
         listView.setOnTouchListener(gestureDetector);
@@ -87,7 +89,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         findViewById(R.id.btn_save).setOnClickListener(this);
         findViewById(R.id.btn_cancel).setOnClickListener(this);
 
-        updateList();
+        fetchSetting();
     }
 
     private String[] getChannels() {
@@ -131,6 +133,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 flip(true);
                 break;
             case R.id.btn_save: // channel one by one to save
+                for (int i=0; i<dataList.size(); i++)
+                    Comm.logI(" " + dataList.get(i));
                 break;
             case R.id.btn_cancel:
                 super.onBackPressed();
@@ -145,23 +149,23 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         channel = add ? channel+1 : channel-1;
         labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
 
-        updateList();
+        fetchSetting();
 
         return true;
     }
-    private void updateList() {
-        int autoMode = model.equals(CapacitySet) ? Comm.TIMED_SET_CAP : Comm.TIMED_SET_TIME;
+    private void fetchSetting() {
+        int timedMode = model.equals(CapacitySet) ? Comm.TIMED_SET_CAP : Comm.TIMED_SET_TIME;
 
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
                 for (int i=0, len = dataList.size(); i<len; i++) {
-                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet));
-                    dataList.set(i, item);
+//                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet));
+                    dataList.set(i, cmd.SettingItems[i]);
                 }
                 ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
             }
-        }).reqTimedSetting(autoMode, Channel.valueOf(Channels[channel]), 0); // num from 0 - 7 ? 能否合并成一个请求？
+        }).reqTimedSetting(timedMode, Channel.valueOf(Channels[channel]));
     }
 
     void flip(boolean add) {
@@ -203,6 +207,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         private final Context context;
         private final ArrayList<SettingItem> values;
         private final int rowLayout;
+        private ViewGroup myList;
 
         public SettingArrayAdapter(Context context, int resource, ArrayList<SettingItem> values) {
             super(context, resource, values);
@@ -213,8 +218,10 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+            myList = parent;
+
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            SettingItem item = values.get(position);
+            final SettingItem item = values.get(position);
 
             View rowView;
             if (convertView == null) {
@@ -224,35 +231,63 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
             }
             TextView rowId = (TextView) rowView.findViewById(R.id.txt_rowid);
             CheckBox checkBox = (CheckBox) rowView.findViewById(R.id.checkBox);
-            EditText total = (EditText) rowView.findViewById(R.id.txt_total);
-            EditText speed = (EditText) rowView.findViewById(R.id.txt_speed);
+            final EditText total = (EditText) rowView.findViewById(R.id.txt_total);
+            final EditText speed = (EditText) rowView.findViewById(R.id.txt_speed);
             TextView labelTotal = (TextView) rowView.findViewById(R.id.label_total);
             TextView labelUnit = (TextView) rowView.findViewById(R.id.label_total_unit);
-            if (item.isCapacitySet) {
+            if (item.isSetCap) {
                 labelTotal.setText("容量");
-                labelUnit.setText("L");
+                labelUnit.setText("mL");
             } else {
                 labelTotal.setText("时长");
                 labelUnit.setText("min");
             }
 
-            rowView.findViewById(R.id.txt_datepicker).setOnClickListener(this);
-            rowView.findViewById(R.id.txt_timepicker).setOnClickListener(this);
+            final TextView datepicker = (TextView) rowView.findViewById(R.id.txt_datepicker);
+            final TextView timepicker = (TextView) rowView.findViewById(R.id.txt_timepicker);
+            datepicker.setOnClickListener(this);
+            timepicker.setOnClickListener(this);
 
-            rowId.setText(String.valueOf(item.rowid));
-            checkBox.setChecked(item.checked);
-            total.setText(String.valueOf(item.total/1000.0));
-            speed.setText(String.valueOf(item.speed));
+            datepicker.setText(item.date);
+            timepicker.setText(item.time);
+
+            rowId.setText(String.valueOf(item.id));
+            checkBox.setChecked(item.isSet);
+            total.setText(String.valueOf(item.targetVol));
+            speed.setText(String.valueOf(item.targetSpeed));
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    item.isSet = checked;
+                }
+            });
+
+            if (convertView == null) {
+                total.addTextChangedListener(new TextWatcher(rowView, total.getId(), position));
+                speed.addTextChangedListener(new TextWatcher(rowView, speed.getId(), position));
+            }
 
             return rowView;
         }
 
+        int getRowId(View view) {
+            TextView rowId = (TextView) view.findViewById(R.id.txt_rowid);
+
+            return Integer.valueOf(rowId.getText().toString());
+        }
+
         @Override
         public void onClick(final View view) {
-            Calendar calendar = Calendar.getInstance();
             switch (view.getId()) {
                 case R.id.txt_datepicker:
-                    AmaeDateTimePicker.showDateDialog(context, (TextView) view, "%d-%02d-%02d", "--");
+                    AmaeDateTimePicker.showDateDialog(context, (TextView) view, "%d-%02d-%02d", "--", new AmaeDateTimePicker.Picker() {
+                        @Override
+                        public void onPick(String value) {
+
+                            Comm.logI("pos " + getRowId((GridLayout) view.getParent()));
+                        }
+                    });
                     break;
 
                 case R.id.txt_timepicker:
@@ -260,27 +295,69 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                     break;
             }
         }
+
+        class TextWatcher implements android.text.TextWatcher {
+            int resId;
+            int pos;
+            View row;
+
+            public TextWatcher(View row, int resId, int rowId) {
+                this.row = row;
+                this.pos = rowId;
+                this.resId = resId;
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                try {
+                    SettingItem item = values.get(pos);
+                    switch (resId) {
+                        case R.id.txt_total:
+                            if (editable.length() > 0 && getRowId(row) == pos + 1) {
+                                item.targetVol = item.targetDuration = Integer.valueOf(editable.toString());
+                                Comm.logI("total " + item.targetVol);
+                            }
+                            break;
+                        case R.id.txt_speed:
+                            if (editable.length() > 0 && getRowId(row) == pos + 1) {
+                                item.targetSpeed = Integer.valueOf(editable.toString());
+                            }
+                            break;
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 
-    public class SettingItem {
-        int rowid = 0;
-        int total;
-        int speed;
-        boolean checked;
-        boolean isCapacitySet; // 容量设置 或者 定时设置
-        int year;
-        int month;
-        int dayOfMonth;
+    public static class SettingItem {
+        public int id = 0;
+        public int targetVol;
+        public int targetDuration;
+        public int targetSpeed;
+        public boolean isSet;
+        public boolean isSetCap; // 容量设置 或者 定时设置
+        public String date = "2015-06-02";
+        public String time = "00:00";
 
-        public SettingItem(int id, int total, int speed, boolean checked, boolean isCapacitySet) {
-            this.rowid = id;
-            this.total = total;
-            this.speed = speed;
-            this.checked = checked;
-            this.isCapacitySet = isCapacitySet;
+        @Override
+        public String toString() {
+            return String.format("[%d]%b (V: %d D: %d S: %d) %s %s", id, isSet, targetVol, targetDuration, targetSpeed, date, time);
         }
-        public SettingItem() {
 
+        public SettingItem(int id) {
+            this.id = id;
         }
     }
 }

@@ -20,11 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,12 +37,13 @@ import hk.amae.widget.TextProgressBar;
 
 import hk.amae.util.Command.Once;
 
-import hk.amae.sampler.ModeSettingAct.SettingItem;
+import hk.amae.widget.SettingItem;
+import hk.amae.util.AmaeClickDetector;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFrag extends Fragment implements View.OnClickListener, View.OnTouchListener, AdapterView.OnItemSelectedListener {
+public class MainFrag extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     OnMainFragListener mCallback;
 
     Spinner spinChannel;
@@ -124,7 +120,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         btnLock.setOnClickListener(this);
 
         btnRun = (ImageButton) v.findViewById(R.id.toggle_run);
-        btnRun.setOnTouchListener(this);
+        btnRun.setOnTouchListener(new AmaeClickDetector(new ClickHandler()));
 
         v.findViewById(R.id.btn_setting).setOnClickListener(this);
         v.findViewById(R.id.btn_connect).setOnClickListener(this);
@@ -367,32 +363,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
         }
     }
 
-    TimerTask poweroffTask = null;
-    TimerTask clickTask = null;
-    int clickCnt = 0;
-    long lastupTime = 0;
-    long touchStartTime = 0;
-
-    private Timer btnRunTimer = new Timer();
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    if (runningState == Comm.PLAYING) {
-                        runningState = Comm.PAUSED;
-                    } else {
-                        runningState = Comm.PLAYING;
-                    }
-                    switchRunningState();
-                    break;
-            }
-        }
-    };
-
     /**
      * runningState 反映当前运行状态，但是图标展示的是下一步能进行的操作
      */
@@ -528,71 +498,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
                 }).reqMachineState();
             }
         }, 500, durationProgress);
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (view.getId()) {
-            case R.id.toggle_run:
-                if (poweroffTask == null)
-                    poweroffTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 1;
-                            handler.sendMessage(msg);
-                            poweroffTask = null;
-                        }
-                    };
-                if (clickTask == null)
-                    clickTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = 2;
-                            handler.sendMessage(msg);
-                            clickTask = null;
-                            clickCnt = 0;
-                        }
-                    };
-
-                final int CLICKGAP = 150, DBLCLICKGAP = 150;
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    btnRunTimer.schedule(poweroffTask, 3000);
-
-                    touchStartTime = System.currentTimeMillis();
-
-//                    Comm.logI("gap " + (touchStartTime - lastupTime));
-                    if (clickCnt==1 && touchStartTime - lastupTime < DBLCLICKGAP) { // 触发双击
-                        clickCnt++;
-                        clickTask.cancel();
-                        clickTask = null;
-                        runningState = Comm.STOPPED;
-                        Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
-                        switchRunningState();
-                    }
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-
-                    long touchEndTime = System.currentTimeMillis();
-//                    Comm.logI("passed time " + (touchEndTime - touchStartTime));
-                    if (touchEndTime - touchStartTime < 3000) {
-                        poweroffTask.cancel();
-                        poweroffTask = null;
-                    }
-
-                    if (touchEndTime - touchStartTime <= CLICKGAP) { // click
-                        clickCnt++;
-                        if (clickCnt == 1)
-                            btnRunTimer.schedule(clickTask, DBLCLICKGAP);
-                        else
-                            clickCnt = 0;
-                    }
-
-                    lastupTime = System.currentTimeMillis();
-                }
-                break;
-        }
-        return false;
     }
 
     @Override
@@ -754,5 +659,29 @@ public class MainFrag extends Fragment implements View.OnClickListener, View.OnT
     public interface OnMainFragListener {
         void onLockToggled(boolean locked);
         void onButtonClick(int id);
+    }
+
+    class ClickHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AmaeClickDetector.MSG_PRESSED_3:
+                    Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
+                    break;
+                case AmaeClickDetector.MSG_CLICK:
+                    if (runningState == Comm.PLAYING) {
+                        runningState = Comm.PAUSED;
+                    } else {
+                        runningState = Comm.PLAYING;
+                    }
+                    switchRunningState();
+                    break;
+                case AmaeClickDetector.MSG_DBLCLICK:
+                    runningState = Comm.STOPPED;
+                    switchRunningState();
+                    Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
 }

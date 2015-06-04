@@ -7,7 +7,7 @@ import java.util.Date;
 import hk.amae.sampler.ModeSettingAct;
 import hk.amae.util.Comm.Channel;
 
-import hk.amae.sampler.ModeSettingAct.SettingItem;
+import hk.amae.widget.SettingItem;
 
 /**
  * Created by kinka on 4/11/15.

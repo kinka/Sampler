@@ -65,6 +65,9 @@ public class AmaeDateTimePicker {
     }
 
     public static void showTimeDialog(Context context, final TextView textView, final String format) {
+        showTimeDialog(context, textView, format, null);
+    }
+    public static void showTimeDialog(Context context, final TextView textView, final String format, final Picker picker) {
         int hour = 0;
         int minute = 0;
         int second = 0;
@@ -87,7 +90,10 @@ public class AmaeDateTimePicker {
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int h, int m) {
-                        textView.setText(String.format(format, h, m, s));
+                        String value = String.format(format, h, m, s);
+                        textView.setText(value);
+                        if (picker != null)
+                            picker.onPick(value);
                     }
                 }, hour, minute, true).show();
         Comm.hideSoftInput();

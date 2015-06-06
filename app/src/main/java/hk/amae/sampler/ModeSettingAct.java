@@ -21,8 +21,12 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
@@ -48,7 +52,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     String[] Channels;
     ArrayList<SettingItem> dataList;
     SettingArrayAdapter listAdapter;
- // todo 时间冲突检查
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,14 +139,68 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 flip(true);
                 break;
             case R.id.btn_save: // channel one by one to save
-                for (int i=0; i<dataList.size(); i++)
-                    Comm.logI(" " + dataList.get(i));
+                checkValid();
                 break;
             case R.id.btn_cancel:
                 super.onBackPressed();
                 break;
         }
 
+    }
+
+    boolean checkValid() {
+        for (int i=0; i<dataList.size(); i++) {
+            SettingItem item = dataList.get(i);
+            if (!item.isSet)
+                continue;
+
+            if (item.targetSpeed == 0) {
+                Toast.makeText(this, String.format("第%d组流量不能为空", i+1), Toast.LENGTH_LONG).show();
+                return false;
+            }
+            // todo max limit
+            if (item.isSetCap && item.targetVol == 0) {
+                Toast.makeText(this, String.format("第%d组容量不能为空", i+1), Toast.LENGTH_LONG).show();
+                return false;
+            }
+            if (!item.isSetCap && item.targetDuration == 0) {
+                Toast.makeText(this, String.format("第%d组容量不能为空", i+1), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        try {
+            for (int i=0; i<dataList.size(); i++) {
+                SettingItem itemA = dataList.get(i);
+                if (!itemA.isSet) continue;
+
+                Date startA = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(itemA.date + " " + itemA.time);
+                long durationA = (itemA.isSetCap ? itemA.targetVol / itemA.targetSpeed : itemA.targetDuration) * 60 * 1000;
+                Date endA = new Date(startA.getTime());
+                endA.setTime(startA.getTime() + durationA);
+                for (int j=0; j<dataList.size(); i++) {
+                    if (i<=j) continue;
+
+                    SettingItem itemB = dataList.get(j);
+                    if (!itemB.isSet) continue;
+
+                    Date startB = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(itemB.date + " " + itemB.time);
+                    long durationB = (itemB.isSetCap ? itemB.targetVol / itemB.targetSpeed : itemB.targetDuration) * 60 * 1000;
+                    Date endB = new Date(startB.getTime());
+                    endB.setTime(startB.getTime() + durationB);
+                    if (endA.getTime() < startB.getTime()
+                            || startA.getTime() > endB.getTime()) {
+                        continue;
+                    } else {
+                        Toast.makeText(this, "invalid time " + (i+1) + "<=>" + (j+1), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 
     boolean switchChannel(boolean add) {

@@ -305,8 +305,8 @@ public class Command {
         byte[] data = new byte[len];
         reply.get(data);
         SampleID = new String(data);
-        Speed = reply.getInt();
-        TargetSpeed = reply.getInt();
+        Speed = reply.getShort();
+        TargetSpeed = reply.getShort();
         Volume = reply.getShort();
         StandardVol = reply.getInt();
         SampleMode = reply.get();
@@ -384,7 +384,7 @@ public class Command {
             Channel = Comm.Channel.init(reply.get());
             for (SettingItem item:SettingItems) {
                 item.isSet = reply.get() == 1;
-                item.targetSpeed = reply.getInt();
+                item.targetSpeed = reply.getShort();
                 item.targetVol = item.targetDuration = reply.getInt(); // 根据SampleMode 再去作区分吧
                 DateTime = getString(reply);
                 int pos = DateTime.indexOf(" ");
@@ -411,28 +411,29 @@ public class Command {
     }
 
     // 设置采样参数(定时定容)
-    public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, int num, int speed, int cap, String launchTime) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 1 + 4 + 4 + 1 + launchTime.length());
+    public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, SettingItem[] items) {
+        int len = 1 + 1 + 1 + (1+2+4+16);
+        ByteBuffer buffer = ByteBuffer.allocate(len);
         buffer.put((byte) (doSet ? 1 : 2));
         buffer.put((byte) mode);
         buffer.put(channel.getValue());
-        buffer.put((byte) num);
-        buffer.putInt(speed);
-        buffer.putInt(cap);
-        buffer.put((byte) launchTime.length());
-        buffer.put(launchTime.getBytes());
+
+        for (SettingItem item:items) {
+            buffer.put((byte) (item.isSet ? 1 : 2));
+            buffer.putShort((short) item.targetSpeed);
+            buffer.putInt(mode == Comm.TIMED_SET_CAP ? item.targetVol : item.targetDuration);
+            String datetime = item.date + " " + item.time;
+            buffer.put((byte) datetime.length());
+            buffer.put(datetime.getBytes());
+        }
+
         return build(0x102, buffer.array());
     }
     public boolean DoSet;
     public void resolveTimedChannel(ByteBuffer reply) {
-
         DoSet = reply.get() == 1;
-        SampleMode = reply.get();
-        Channel = Comm.Channel.init(reply.get());
-        SettingNum = reply.get();
-        Speed = reply.getInt();
-        TargetVolume = TargetDuration = reply.getInt();
-        DateTime = getString(reply);
+
+        resolveTimedSetting(reply);
     }
 
     // 设置背光

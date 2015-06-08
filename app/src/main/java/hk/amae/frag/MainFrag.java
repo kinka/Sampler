@@ -80,8 +80,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private Timer __battery, __progress, __launch;
     private final int durationBattery = 60*1000, durationProgress = 10*1000;
 
-    private final int UNITSPEED = 1000; // 单通道最高流量
-    private int MaxSpeed = UNITSPEED;
+    private static final int UNITSPEED = 1000; // 单通道最高流量
+    public static int MaxSpeed = UNITSPEED;
 
     private String[] timedLaunchAt = new String[8];
     private int[] timedDuration = new int[8];
@@ -630,6 +630,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
                 String str = "";
                 boolean isSetCap = sampleMode == Comm.TIMED_SET_CAP;
                 String strMode = isSetCap ? "容量" : "时长";

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import hk.amae.frag.MainFrag;
 import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
@@ -139,7 +140,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 flip(true);
                 break;
             case R.id.btn_save: // channel one by one to save
-                checkValid();
+                if (checkValid())
+                    saveSetting();
                 break;
             case R.id.btn_cancel:
                 super.onBackPressed();
@@ -149,16 +151,23 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     }
 
     boolean checkValid() {
+        int cntEmpt = 0;
         for (int i=0; i<dataList.size(); i++) {
             SettingItem item = dataList.get(i);
-            if (!item.isSet)
+            if (!item.isSet) {
+                cntEmpt++;
                 continue;
+            }
 
             if (item.targetSpeed == 0) {
                 Toast.makeText(this, String.format("第%d组流量不能为空", i+1), Toast.LENGTH_LONG).show();
                 return false;
             }
-            // todo max limit
+            if (item.targetSpeed > MainFrag.MaxSpeed) {
+                Toast.makeText(this, String.format("第%d组流量超出限制", i+1), Toast.LENGTH_LONG).show();
+                return false;
+            }
+
             if (item.isSetCap && item.targetVol == 0) {
                 Toast.makeText(this, String.format("第%d组容量不能为空", i+1), Toast.LENGTH_LONG).show();
                 return false;
@@ -167,6 +176,10 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 Toast.makeText(this, String.format("第%d组容量不能为空", i+1), Toast.LENGTH_LONG).show();
                 return false;
             }
+        }
+        if (cntEmpt == dataList.size()) {
+            Toast.makeText(this, "还没有勾选任何设置", Toast.LENGTH_LONG).show();
+            return false;
         }
         try {
             for (int i=0; i<dataList.size(); i++) {
@@ -177,9 +190,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 long durationA = (itemA.isSetCap ? itemA.targetVol / itemA.targetSpeed : itemA.targetDuration) * 60 * 1000;
                 Date endA = new Date(startA.getTime());
                 endA.setTime(startA.getTime() + durationA);
-                for (int j=0; j<dataList.size(); i++) {
-                    if (i<=j) continue;
-
+                for (int j=i+1; j<dataList.size(); j++) {
                     SettingItem itemB = dataList.get(j);
                     if (!itemB.isSet) continue;
 
@@ -191,7 +202,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                             || startA.getTime() > endB.getTime()) {
                         continue;
                     } else {
-                        Toast.makeText(this, "invalid time " + (i+1) + "<=>" + (j+1), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, String.format("时间设置冲突 第%d组 和 第%d组", i+1, j+1), Toast.LENGTH_LONG).show();
                         return false;
                     }
                 }
@@ -201,6 +212,20 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         }
 
         return true;
+    }
+
+    void saveSetting() {
+        int mode = model.equals(TimingSet) ? Comm.TIMED_SET_TIME : Comm.TIMED_SET_CAP;
+        SettingItem[] items = new SettingItem[8];
+        dataList.toArray(items);
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                if (!verify)
+                    return;
+                Toast.makeText(ModeSettingAct.this, "定时设置已经保存", Toast.LENGTH_SHORT).show();
+            }
+        }).setTimedChannel(true, mode, Channel.init(channel), items);
     }
 
     boolean switchChannel(boolean add) {

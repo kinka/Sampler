@@ -412,7 +412,7 @@ public class Command {
 
     // 设置采样参数(定时定容)
     public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, SettingItem[] items) {
-        int len = 1 + 1 + 1 + (1+2+4+16);
+        int len = 1 + 1 + 1 + (1+2+4+1+16)*8;
         ByteBuffer buffer = ByteBuffer.allocate(len);
         buffer.put((byte) (doSet ? 1 : 2));
         buffer.put((byte) mode);

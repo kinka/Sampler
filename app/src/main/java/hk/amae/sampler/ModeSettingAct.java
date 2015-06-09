@@ -3,21 +3,12 @@ package hk.amae.sampler;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +24,6 @@ import hk.amae.util.ActivityGestureDetector;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
 import hk.amae.util.SwipeInterface;
-import hk.amae.widget.AmaeDateTimePicker;
 import hk.amae.util.Comm.Channel;
 import hk.amae.widget.SettingArrayAdapter;
 import hk.amae.widget.SettingItem;
@@ -45,7 +35,8 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
 
     static String FMT_CHANNEL = "%s通道";
 
-    private String model = CapacitySet; // 定时设置
+    private String strSampleMode = CapacitySet; // 定时设置
+    int sampleMode = Comm.TIMED_SET_CAP;
     ListView listView;
     TextView labelChannel;
     int channel;
@@ -60,14 +51,16 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         setContentView(R.layout.act_mode_setting);
 
         Intent intent = getIntent();
-        model = intent.getStringExtra("model");
-        if (model == null)
-            model = TimingSet;
+        strSampleMode = intent.getStringExtra("mode");
+        if (strSampleMode == null)
+            strSampleMode = TimingSet;
+        if (TimingSet.equals(strSampleMode))
+            sampleMode = Comm.TIMED_SET_TIME;
 
         Channels = getChannels();
 
         TextView labelModel = (TextView) findViewById(R.id.label_model);
-        labelModel.setText(model);
+        labelModel.setText(strSampleMode);
 
         labelChannel = (TextView) findViewById(R.id.label_channel);
         labelChannel.setText(String.format(FMT_CHANNEL, Channels[channel]));
@@ -215,7 +208,6 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     }
 
     void saveSetting() {
-        int mode = model.equals(TimingSet) ? Comm.TIMED_SET_TIME : Comm.TIMED_SET_CAP;
         SettingItem[] items = new SettingItem[8];
         dataList.toArray(items);
         new Command(new Command.Once() {
@@ -225,7 +217,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                     return;
                 Toast.makeText(ModeSettingAct.this, "定时设置已经保存", Toast.LENGTH_SHORT).show();
             }
-        }).setTimedChannel(true, mode, Channel.init(channel), items);
+        }).setTimedChannel(true, sampleMode, Channel.init(channel), items);
     }
 
     boolean switchChannel(boolean add) {
@@ -239,13 +231,17 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         return true;
     }
     private void fetchSetting() {
-        int timedMode = model.equals(CapacitySet) ? Comm.TIMED_SET_CAP : Comm.TIMED_SET_TIME;
+        int timedMode = strSampleMode.equals(CapacitySet) ? Comm.TIMED_SET_CAP : Comm.TIMED_SET_TIME;
 
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
                 for (int i=0, len = dataList.size(); i<len; i++) {
-//                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, model.equals(CapacitySet));
+//                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, strSampleMode.equals(CapacitySet));
+                    if (sampleMode == Comm.TIMED_SET_CAP)
+                        cmd.SettingItems[i].isSetCap = true;
+                    else
+                        cmd.SettingItems[i].isSetCap = false;
                     dataList.set(i, cmd.SettingItems[i]);
                 }
                 ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();

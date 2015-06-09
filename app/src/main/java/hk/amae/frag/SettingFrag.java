@@ -133,7 +133,7 @@ public class SettingFrag extends Fragment implements
         switch (as_owner) {
             case R.id.btn_model: {
                 Intent intent = new Intent(getActivity(), ModeSettingAct.class);
-                intent.putExtra("model", position == 0 ? ModeSettingAct.CapacitySet : ModeSettingAct.TimingSet);
+                intent.putExtra("mode", position == 0 ? ModeSettingAct.CapacitySet : ModeSettingAct.TimingSet);
                 startActivity(intent);
             }
             break;

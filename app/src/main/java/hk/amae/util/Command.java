@@ -364,8 +364,8 @@ public class Command {
         HardwareVer = getString(reply);
     }
 
-    public int SettingNum; // 第几条设置
-    public int TargetVolume;
+//    public int SettingNum; // 第几条设置
+//    public int TargetVolume;
     public SettingItem[] SettingItems;
     public ByteBuffer reqTimedSetting(int mode, Channel channel) { // 查询定时(定容)设置
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);

@@ -533,12 +533,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 case "定时模式":
                     sampleMode = Comm.TIMED_SET_TIME;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
-                    intent.putExtra("model", ModeSettingAct.TimingSet);
+                    intent.putExtra("mode", ModeSettingAct.TimingSet);
                     break;
                 case "定容模式":
                     sampleMode = Comm.TIMED_SET_CAP;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
-                    intent.putExtra("model", ModeSettingAct.CapacitySet);
+                    intent.putExtra("mode", ModeSettingAct.CapacitySet);
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);

@@ -533,12 +533,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 case "定时模式":
                     sampleMode = Comm.TIMED_SET_TIME;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
-                    intent.putExtra("mode", ModeSettingAct.TimingSet);
+                    intent.putExtra(ModeSettingAct.KEY_MODE, ModeSettingAct.TimingSet);
                     break;
                 case "定容模式":
                     sampleMode = Comm.TIMED_SET_CAP;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
-                    intent.putExtra("mode", ModeSettingAct.CapacitySet);
+                    intent.putExtra(ModeSettingAct.KEY_MODE, ModeSettingAct.CapacitySet);
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
@@ -651,7 +651,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 }
                 txtTimedSetting.setText(str);
 
-                timedLaunchAt[0] = "2015-05-31 22:09";
+//                timedLaunchAt[0] = "2015-05-31 22:09";
                 startCountDown();
             }
         }).reqTimedSetting(sampleMode, currChannel);

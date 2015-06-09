@@ -1,6 +1,7 @@
 package hk.amae.sampler;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,10 +16,16 @@ public class QueryAct extends Activity {
         labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration,
         labelSampleMode, labelLaunchMode, labelChannel, labelGroup;
 
+    public static final String KEY_ITEM = "itemID";
+    String itemID = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_query);
+
+        Intent intent = getIntent();
+        itemID = intent.getStringExtra(KEY_ITEM);
 
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +78,6 @@ public class QueryAct extends Activity {
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());
                 labelGroup.setText(cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
             }
-        }).reqSampleState();
+        }).reqSampleData(itemID);
     }
 }

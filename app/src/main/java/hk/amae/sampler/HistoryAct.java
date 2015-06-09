@@ -2,6 +2,7 @@ package hk.amae.sampler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -112,6 +113,10 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 for (HistoryItem item: historyItems)
                     if (item.print)
                         doPrint(item.title);
+            case R.id.label_title:{
+                String id = ((TextView) view).getText().toString();
+                showDetail(id);
+            }
                 break;
         }
 
@@ -124,6 +129,13 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 Toast.makeText(HistoryAct.this, "正在打印"+sampleId+"中。。。", Toast.LENGTH_SHORT).show();
             }
         }).printSample(sampleId);
+    }
+
+    private void showDetail(String id) {
+        Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(HistoryAct.this, QueryAct.class);
+        intent.putExtra(QueryAct.KEY_ITEM, id);
+        startActivity(intent);
     }
 
     private void prev() {
@@ -164,7 +176,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 cmd.History = new String[(int) Math.round(Math.random()*800)];
                 HistoryData.clear();
                 for (int i=0; i<cmd.History.length; i++)
-                    HistoryData.add(new HistoryItem(i+1, "History " + (i+1), true));
+                    HistoryData.add(new HistoryItem(i+1, "2015060922" + (i+1), true));
                 PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
                 next();
             }
@@ -203,6 +215,8 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             print.setChecked(item.print);
 
             print.setOnCheckedChangeListener(item);
+
+            title.setOnClickListener(HistoryAct.this);
 
             return rowView;
         }

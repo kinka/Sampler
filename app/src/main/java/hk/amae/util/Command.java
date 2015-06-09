@@ -338,6 +338,8 @@ public class Command {
     }
 
     public ByteBuffer reqSampleData(String item) { // 查询编号对应数据
+        if (item == null || item.isEmpty())
+            return build(0x9,null);
         ByteBuffer buffer = ByteBuffer.allocate(1 + item.length());
         buffer.put((byte) item.length());
         buffer.put(item.getBytes());

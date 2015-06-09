@@ -31,6 +31,7 @@ import hk.amae.widget.SettingItem;
 public class ModeSettingAct extends Activity implements View.OnClickListener, SwipeInterface {
     public static String CapacitySet = "定容设置";
     public static String TimingSet = "定时设置";
+    public static final String KEY_MODE = "mode";
     public static final int GROUPCOUNT = 8;
 
     static String FMT_CHANNEL = "%s通道";
@@ -51,7 +52,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         setContentView(R.layout.act_mode_setting);
 
         Intent intent = getIntent();
-        strSampleMode = intent.getStringExtra("mode");
+        strSampleMode = intent.getStringExtra(KEY_MODE);
         if (strSampleMode == null)
             strSampleMode = TimingSet;
         if (TimingSet.equals(strSampleMode))

@@ -45,7 +45,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.Progress = (byte) Comm.getIntSP(SP_RESTORE);
+                cmd.Progress = (byte) Comm.getIntSP(SP_RESTORE); // todo 使用后台返回结果
                 if (cmd.Progress == 0) {
                     new AlertDialog.Builder(getActivity()).setTitle("确认恢复出厂设置？")
                             .setCancelable(false).setPositiveButton("清空", RestoreFrag.this)
@@ -54,7 +54,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
                     cycleQuery();
                 }
             }
-        }).setClearSample(doSet);
+        }).setRestore(doSet);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
                         Comm.setIntSP(SP_RESTORE, cmd.Progress);
 
                     }
-                }).setClearSample(false);
+                }).setRestore(false);
             }
         }, 0, 1000);
     }

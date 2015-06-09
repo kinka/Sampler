@@ -51,6 +51,10 @@
         </activity>
         <activity
             android:launchMode="singleTask"
+            android:name=".MiscAct" >
+        </activity>
+        <activity
+            android:launchMode="singleTask"
             android:name=".PasswordAct" >
         </activity>
         <activity

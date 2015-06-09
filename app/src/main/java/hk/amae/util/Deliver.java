@@ -10,10 +10,11 @@ import java.nio.channels.DatagramChannel;
  * Created by kinka on 4/12/15.
  */
 public class Deliver {
-    private static String defaultSvr = "192.168.1.107";
+    public static final String DefaultSvr = "192.168.8.1:36500";
     public static final String SP_SVR = "server";
-    public static String server = defaultSvr;
-    public static int svrPort = 36500;
+
+    static String svrHost = "192.168.8.1";
+    static int svrPort = 36500;
     public static void printData(byte[] data) {
         String s = "0123456789abcdef";
         for (byte d:data) {
@@ -24,13 +25,16 @@ public class Deliver {
         System.out.println();
     }
     public static void init() {
-        server = Comm.getSP(SP_SVR);
+        String server = Comm.getSP(SP_SVR);
         if (server == null || server.length() == 0)
-            server = defaultSvr;
+            server = DefaultSvr;
+
         if (server.contains(":")) {
-            svrPort = Integer.valueOf(server.substring(server.indexOf(":")));
+            int pos = server.indexOf(":");
+            svrHost = server.substring(0, pos);
+            svrPort = Integer.valueOf(server.substring(pos + 1));
         }
-        Comm.logI("connected server: " + server + ":" + svrPort);
+        Comm.logI("connected server: " + svrHost + ":" + svrPort);
     }
     public static synchronized ByteBuffer send(ByteBuffer data) {
         ByteBuffer recvData = ByteBuffer.allocate(1024*8);
@@ -42,7 +46,7 @@ public class Deliver {
             socket.bind(null);
             channel.configureBlocking(true);
             data.flip();
-            channel.send(data, new InetSocketAddress(server, svrPort));
+            channel.send(data, new InetSocketAddress(svrHost, svrPort));
             socket.setSoTimeout(1000);
 
             socket.receive(packet); // todo 考虑循环收包的问题
@@ -50,8 +54,12 @@ public class Deliver {
 //            channel.receive(recvData);
 //            recvData.flip();
         } catch (Exception e) {
-            String msg = e.getCause().getMessage();
-            Comm.logE("cause by " + msg);
+            if (e.getCause() != null) {
+                String msg = e.getCause().getMessage();
+                Comm.logE("cause by " + msg);
+            } else {
+                e.printStackTrace();
+            }
             // todo 尝试重试一次
 //            if (msg.contains("EAGAIN")) {
 //                try {

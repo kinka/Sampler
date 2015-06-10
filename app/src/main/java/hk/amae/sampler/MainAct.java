@@ -107,7 +107,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
     private void switchPanel(int id) {
         FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        final FragmentTransaction ft = fm.beginTransaction();
         switch (id) {
             case R.id.btn_setting:
                 ft.replace(R.id.container, new SettingFrag());
@@ -130,8 +130,23 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
         }
         ft.addToBackStack("xxx" + id);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.commit();
         lastid = id;
+        if (id == 0) {
+            new Command(new Command.Once() {
+                @Override
+                public void done(boolean verify, Command cmd) {
+                    if (cmd.ChannelMode == 0 || cmd.ChannelMode > ChannelAct.MODE_8IN1)
+                        cmd.ChannelMode = ChannelAct.MODE_SINGLE;
+                    // todo 暂时使用本地保存的设置
+                    cmd.ChannelMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
+                    Comm.setIntSP(ChannelAct.SP_CHANNELMODE, cmd.ChannelMode);
+                    ft.commit();
+                }
+            }).reqChannelMode();
+        } else {
+            ft.commit();
+        }
+
     }
 
     void killTimer() {

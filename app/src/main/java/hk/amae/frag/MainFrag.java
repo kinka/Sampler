@@ -276,18 +276,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         }, 0, 5*1000);
     }
 
-    private int getMode() {
-        String s_mode = Comm.getSP(ChannelAct.SP_CHANNELMODE);
-        int mode = 0;
-        if (s_mode.length() == 0)
-            mode = ChannelAct.MODE_SINGLE;
-        else
-            mode = Integer.valueOf(s_mode);
-
-        return mode;
-    }
     private int getChannels() {
-        int mode = getMode();
+        int mode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
 
         switch (mode) {
             case ChannelAct.MODE_COUPLE:

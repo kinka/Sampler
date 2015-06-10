@@ -94,12 +94,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     }
 
     private String[] getChannels() {
-        String s_mode = Comm.getSP(ChannelAct.SP_CHANNELMODE);
-        int mode = 0;
-        if (s_mode.length() == 0)
-            mode = ChannelAct.MODE_SINGLE;
-        else
-            mode = Integer.valueOf(s_mode);
+        int mode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
 
         int res;
         switch (mode) {

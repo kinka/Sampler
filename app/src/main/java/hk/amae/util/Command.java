@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Date;
 
+import hk.amae.sampler.ChannelAct;
 import hk.amae.sampler.ModeSettingAct;
 import hk.amae.util.Comm.Channel;
 
@@ -196,6 +197,10 @@ public class Command {
                     break;
                 case 0x107:
                     resolveAdjust(reply);
+                    break;
+                case 0xc:
+                case 0x10c:
+                    resolveChannelMode(reply);
                     break;
             }
 
@@ -396,6 +401,21 @@ public class Command {
         } catch (Exception e) {
 
         }
+    }
+
+    public int ChannelMode;
+    // 查询通道合并模式
+    public ByteBuffer reqChannelMode() {
+        return build(0xc, null);
+    }
+    public void resolveChannelMode(ByteBuffer reply) {
+        ChannelMode = reply.get();
+    }
+
+    public ByteBuffer setChannelMode(int channelMode) {
+        ByteBuffer buffer = ByteBuffer.allocate(1);
+        buffer.put((byte) channelMode);
+        return build(0x10d, buffer.array());
     }
 
     // 设置采样参数(手动模式)

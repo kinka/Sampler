@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import hk.amae.frag.BacklitFrag;
 import hk.amae.frag.ClearSampleFrag;
@@ -18,13 +19,14 @@ import hk.amae.frag.RestoreFrag;
 import hk.amae.frag.SetDateTimeFrag;
 import hk.amae.frag.SetPowerOffFrag;
 import hk.amae.util.Comm;
+import hk.amae.util.Command;
 
 
 public class ChannelAct extends Activity implements View.OnClickListener {
-    public final static int MODE_8IN1 = 3;
-    public final static int MODE_4IN1 = 2;
-    public final static int MODE_COUPLE = 1;
-    public final static int MODE_SINGLE = 0;
+    public final static int MODE_8IN1 = 4;
+    public final static int MODE_4IN1 = 3;
+    public final static int MODE_COUPLE = 2;
+    public final static int MODE_SINGLE = 1;
     public static int ChannelMode = MODE_SINGLE;
     public static final String SP_CHANNELMODE = "channel_mode";
 
@@ -34,9 +36,15 @@ public class ChannelAct extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-                Comm.setSP(SP_CHANNELMODE, String.valueOf(ChannelMode));
-                // todo 保存到服务器
-                // fall through
+                new Command(new Command.Once() {
+                    @Override
+                    public void done(boolean verify, Command cmd) {
+                        Comm.setIntSP(SP_CHANNELMODE, ChannelMode);
+                        Toast.makeText(ChannelAct.this, "通道设置已经保存", Toast.LENGTH_SHORT).show();
+                        ChannelAct.super.onBackPressed();
+                    }
+                }).setChannelMode(ChannelMode);
+                break;
             case R.id.btn_back:
                 super.onBackPressed();
                 break;
@@ -65,9 +73,9 @@ public class ChannelAct extends Activity implements View.OnClickListener {
 
         enableCombine = (CheckBox) findViewById(R.id.chk_enable);
 
-        String mode = Comm.getSP(SP_CHANNELMODE);
-        if (mode.length() != 0)
-            ChannelMode = Integer.valueOf(mode);
+        ChannelMode = Comm.getIntSP(SP_CHANNELMODE);
+        if (ChannelMode == 0 || ChannelMode > MODE_8IN1)
+            ChannelMode = MODE_SINGLE;
 
         enableCombine.setChecked(ChannelMode != MODE_SINGLE);
 
@@ -116,7 +124,7 @@ public class ChannelAct extends Activity implements View.OnClickListener {
     }
 
     void onModeChange() {
-        imgChannelMode.setImageResource(mode_res[ChannelMode]);
+        imgChannelMode.setImageResource(mode_res[ChannelMode-1]);
         radio_p2.setEnabled(enableCombine.isChecked());
         radio_p4.setEnabled(enableCombine.isChecked());
         radio_p8.setEnabled(enableCombine.isChecked());

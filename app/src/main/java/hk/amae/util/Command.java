@@ -2,9 +2,7 @@ package hk.amae.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Date;
 
-import hk.amae.sampler.ChannelAct;
 import hk.amae.sampler.ModeSettingAct;
 import hk.amae.util.Comm.Channel;
 
@@ -80,11 +78,18 @@ public class Command {
         return (short) (crc & 0xffff);
     }
 
-    private String getString(ByteBuffer reply) {
+    private String getString(ByteBuffer reply, String encoding) {
         int len = reply.get();
         byte[] data = new byte[len];
         reply.get(data);
-        return new String(data);
+        try {
+            return encoding == null ? new String(data) : new String(data, encoding);
+        } catch (Exception e) {
+            return new String(data);
+        }
+    }
+    private String getString(ByteBuffer reply) {
+        return getString(reply, null);
     }
     private ByteBuffer build(final int cmd, byte[] data) {
         if (data == null) data = new byte[0];
@@ -279,8 +284,8 @@ public class Command {
     public void resolveChannelState(ByteBuffer reply) {
         ChannelState = reply.get();
         Channel = Comm.Channel.init(reply.get());
-        Speed = reply.getShort();
-        Volume = reply.getInt();
+        TargetSpeed = Speed = reply.getShort();
+        TargetVolume = Volume = reply.getInt();
         Progress = reply.get();
     }
 
@@ -295,6 +300,7 @@ public class Command {
 
     public String SampleID; // 采样编号
     public int TargetSpeed; // 设定流量/流速
+    public int TargetVolume; // 设定容量
     public int SampleMode; // 采样模式(定时or定容)
     public int StandardVol; // 累计标体(临时命名)
     public byte Progress; // 采样进度
@@ -303,16 +309,13 @@ public class Command {
     public boolean Manual; // 手动/定时
     public byte Group; // 定时模式 第几组 手动模式为0
     public ByteBuffer reqSampleState() { // 查询当前采样情况
-        return build(0x9, null); // 0x7 和 0x9 改用同一命令字
+        return build(0x7, null);
     }
     public void resolveSampleState(ByteBuffer reply) {
-        int len = reply.get();
-        byte[] data = new byte[len];
-        reply.get(data);
-        SampleID = new String(data);
+        SampleID = getString(reply);
         Speed = reply.getShort();
         TargetSpeed = reply.getShort();
-        Volume = reply.getShort();
+        Volume = reply.getInt();
         StandardVol = reply.getInt();
         SampleMode = reply.get();
         DateTime = getString(reply);
@@ -320,7 +323,7 @@ public class Command {
         TEMP = reply.getInt() / 10f;
         Progress = reply.get();
         Elapse = reply.getInt();
-        TargetDuration = reply.getShort();
+        TargetDuration = reply.getInt();
         Channel = Comm.Channel.init(reply.get());
         Manual = reply.get() == 0;
         Group = reply.get();
@@ -329,10 +332,9 @@ public class Command {
     public String[] History;
     public ByteBuffer reqSampleHistory(int start, int end) { // 查询历史采样数据编号
         ByteBuffer buffer = ByteBuffer.allocate(2 + 2);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.putShort((short) start);
         buffer.putShort((short) end);
-        return build(0x8, null);
+        return build(0x8, buffer.array());
     }
     public void resolveSampleHistory(ByteBuffer reply) {
         int len = reply.getShort();
@@ -365,7 +367,8 @@ public class Command {
     public void resolveSysInfo(ByteBuffer reply) {
         Model = getString(reply);
         SoftwareVer = getString(reply);
-        ChannelCount = getString(reply);
+        ChannelCount = getString(reply, "gbk");
+
         ChannelCap = getString(reply);
         Storage = getString(reply);
         HardwareVer = getString(reply);
@@ -399,7 +402,7 @@ public class Command {
                 item.time = DateTime.substring(pos+1);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -459,8 +462,9 @@ public class Command {
     }
 
     // 设置背光
-    public ByteBuffer setBacklit(int normal, int saving) {
-        ByteBuffer buffer = ByteBuffer.allocate(2);
+    public ByteBuffer setBacklit(boolean doSet, int normal, int saving) {
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 2);
+        buffer.put((byte) (doSet ? 1 : 0));
         buffer.put((byte) normal);
         buffer.put((byte) saving);
         return build(0x103, buffer.array());
@@ -474,7 +478,7 @@ public class Command {
 
     // 设置时间
     public ByteBuffer setDateTime(String dateTime) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + dateTime.length());
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + dateTime.length());
         buffer.put((byte) dateTime.length());
         buffer.put(dateTime.getBytes());
         return build(0x104, buffer.array());
@@ -511,12 +515,16 @@ public class Command {
     public int DutyCycle; // 占空比
     public int PickPower; // 采集压力
     public int PickVoltage; // 电压
+    public int ExpectPressure;
+    public int AdjustSpeed;
     public void resolveAdjust(ByteBuffer reply) {
         Channel = Comm.Channel.init(reply.get());
         OutputPower = reply.getShort();
-        DutyCycle = reply.getInt();
+        DutyCycle = reply.getShort();
         PickPower = reply.getShort();
         PickVoltage = reply.getShort();
+        ExpectPressure = reply.getShort();
+        AdjustSpeed = reply.getShort();
     }
 
     // 锁定界面

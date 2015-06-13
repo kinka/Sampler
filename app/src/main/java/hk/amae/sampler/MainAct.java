@@ -138,7 +138,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                     if (cmd.ChannelMode == 0 || cmd.ChannelMode > ChannelAct.MODE_8IN1)
                         cmd.ChannelMode = ChannelAct.MODE_SINGLE;
                     // todo 暂时使用本地保存的设置
-                    cmd.ChannelMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
+//                    cmd.ChannelMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
                     Comm.setIntSP(ChannelAct.SP_CHANNELMODE, cmd.ChannelMode);
                     ft.commit();
                 }
@@ -198,7 +198,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (isLocked) { // think about scrolling
+        if (isLocked) {
             int statusHeight = 75;
             try {
                 Class c = Class.forName("com.android.internal.R$dimen");
@@ -231,6 +231,9 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
             boolean isInLock = eX < rectSrc.right && eX > rectSrc.left && eY < rectSrc.bottom && eY > rectSrc.top;
             if (!isInLock)
                 return true;
+        } else {
+            FrameLayout container = (FrameLayout) findViewById(R.id.container);
+            container.requestFocus();
         }
         return super.dispatchTouchEvent(ev);
     }

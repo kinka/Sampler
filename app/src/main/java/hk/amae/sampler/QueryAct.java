@@ -49,7 +49,11 @@ public class QueryAct extends Activity {
         labelChannel = (TextView) findViewById(R.id.label_channel);
         labelGroup = (TextView) findViewById(R.id.label_set_group);
 
-        doQuery();
+        try {
+            doQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void doQuery() {
@@ -57,7 +61,7 @@ public class QueryAct extends Activity {
             @Override
             public void done(boolean verify, Command cmd) {
 //                cmd.TargetSpeed = 200;
-                cmd.DateTime = "2015-06-01 23:33";
+//                cmd.DateTime = "2015-06-01 23:33";
                 labelSpeed.setText(String.format("%dmL/min", cmd.Speed));
                 labelTargetSpeed.setText(String.format("%dmL/min", cmd.TargetSpeed));
                 labelVolume.setText(String.format("%dmL", cmd.Volume));
@@ -67,14 +71,13 @@ public class QueryAct extends Activity {
                 labelATM.setText(String.format(BasicInfoFrag.atmFormat, cmd.ATM));
                 labelTEMP.setText(String.format(BasicInfoFrag.tempFormat, cmd.TEMP));
 
-                labelProgress.setText(cmd.Progress + "%"); // H M S
+                labelProgress.setText(cmd.Progress + "%");
                 labelElapse.setText(cmd.Elapse + "s");
                 labelDuration.setText(cmd.TargetDuration + "min");
 
                 labelSampleMode.setText(cmd.SampleMode == Comm.TIMED_SET_CAP ? "定容量":"定时长");
                 labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");
 
-//                cmd.Channel = Comm.Channel.CH1; // todo 使用服务器返回值
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());
                 labelGroup.setText(cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
             }

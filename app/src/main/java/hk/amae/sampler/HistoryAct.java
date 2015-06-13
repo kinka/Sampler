@@ -173,10 +173,12 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.History = new String[(int) Math.round(Math.random()*800)];
+//                cmd.History = new String[(int) Math.round(Math.random()*800)];
+                if (cmd.History == null)
+                    return;
                 HistoryData.clear();
                 for (int i=0; i<cmd.History.length; i++)
-                    HistoryData.add(new HistoryItem(i+1, "2015060922" + (i+1), true));
+                    HistoryData.add(new HistoryItem(i+1, cmd.History[i], true));
                 PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
                 next();
             }
@@ -227,7 +229,6 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         String title = "201503281518";
         boolean print = false;
 
-        public HistoryItem() {}
         public HistoryItem(int id, String title, boolean print) {
             this.rowid = id;
             this.title = title;

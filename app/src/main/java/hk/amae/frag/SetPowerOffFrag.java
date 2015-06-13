@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
@@ -62,6 +63,7 @@ public class SetPowerOffFrag extends Fragment implements View.OnClickListener {
                     @Override
                     public void done(boolean verify, Command cmd) {
                         Comm.setSP("shutdown_time", shutdownTime);
+                        Toast.makeText(getActivity(), "定时关机已经设置", Toast.LENGTH_SHORT).show();
                     }
                 }).setShutdown(shutdownTime);
                 break;

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,7 +36,7 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
         progressBar = (TextProgressBar) v.findViewById(R.id.prog_clearing);
 
         doClearSample(false); // 先查询，看是否仍在清空数据中。。。
-
+        // todo 为什么进来了两次？
         return v;
     }
 
@@ -43,8 +44,8 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR);
-                if (cmd.Progress == 0) {
+                int progress = Comm.getIntSP(SP_CLEAR);
+                if (progress == 0) {
                     new AlertDialog.Builder(getActivity()).setTitle("确认清空采样数据？")
                             .setCancelable(false).setPositiveButton("清空", ClearSampleFrag.this)
                             .setNegativeButton("取消", ClearSampleFrag.this).show();
@@ -70,15 +71,14 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
     }
 
     private void cycleQuery() {
-
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 new Command(new Command.Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
-                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR);
-                        cmd.Progress += 10;
+//                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR);
+//                        cmd.Progress += 10;
 
                         progressBar.setProgress(cmd.Progress);
 
@@ -87,10 +87,19 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
                             cmd.Progress = 0;
                         }
                         Comm.setIntSP(SP_CLEAR, cmd.Progress);
-
                     }
                 }).setClearSample(false);
             }
         }, 0, 1000);
+    }
+
+    @Override
+    public void onPause() {
+        try {
+            timer.cancel();
+        } catch (Exception e) {
+
+        }
+        super.onPause();
     }
 }

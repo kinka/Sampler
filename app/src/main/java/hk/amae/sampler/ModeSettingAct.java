@@ -212,8 +212,9 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 if (!verify)
                     return;
                 Toast.makeText(ModeSettingAct.this, "定时设置已经保存", Toast.LENGTH_SHORT).show();
+                updateSetting(cmd);
             }
-        }).setTimedChannel(true, sampleMode, Channel.init(channel), items);
+        }).setTimedChannel(true, sampleMode, Channel.valueOf(Channels[channel]), items);
     }
 
     boolean switchChannel(boolean add) {
@@ -232,17 +233,22 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                for (int i=0, len = dataList.size(); i<len; i++) {
-//                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, strSampleMode.equals(CapacitySet));
-                    if (sampleMode == Comm.TIMED_SET_CAP)
-                        cmd.SettingItems[i].isSetCap = true;
-                    else
-                        cmd.SettingItems[i].isSetCap = false;
-                    dataList.set(i, cmd.SettingItems[i]);
-                }
-                ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                if (!verify) return;
+                updateSetting(cmd);
             }
         }).reqTimedSetting(timedMode, Channel.valueOf(Channels[channel]));
+    }
+
+    private void updateSetting(Command cmd) {
+        for (int i=0, len = dataList.size(); i<len; i++) {
+//                    SettingItem item = new SettingItem(i+1, (int) (Math.random()*10000), (int) (Math.random()*1000), Math.random() < 0.5, strSampleMode.equals(CapacitySet));
+            if (sampleMode == Comm.TIMED_SET_CAP)
+                cmd.SettingItems[i].isSetCap = true;
+            else
+                cmd.SettingItems[i].isSetCap = false;
+            dataList.set(i, cmd.SettingItems[i]);
+        }
+        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
     }
 
     void flip(boolean add) {

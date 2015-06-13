@@ -42,6 +42,8 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
         v.findViewById(R.id.btn_confirm).setOnClickListener(this);
         v.findViewById(R.id.btn_back).setOnClickListener(this);
 
+        setBacklit(false, 0, 0); // query
+
         return v;
     }
 
@@ -74,18 +76,23 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirm:
-                new Command(new Command.Once() {
-                    @Override
-                    public void done(boolean verify, Command cmd) {
-                        Comm.setIntSP("normal_backlit", cmd.NormalBacklit);
-                        Comm.setIntSP("saving_backlit", cmd.SavingBacklit);
-                    }
-                }).setBacklit(barNormal.getProgress(), barSaving.getProgress());
-
+                setBacklit(true, barNormal.getProgress(), barSaving.getProgress());
                 break;
             case R.id.btn_back:
                 getActivity().onBackPressed();
                 break;
         }
+    }
+
+    private void setBacklit(boolean doSet, final int normal, final int saving) {
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+//                Comm.setIntSP("normal_backlit", cmd.NormalBacklit);
+//                Comm.setIntSP("saving_backlit", cmd.SavingBacklit);
+                setSeekBar(true, cmd.NormalBacklit);
+                setSeekBar(false, cmd.SavingBacklit);
+            }
+        }).setBacklit(doSet, normal, saving);
     }
 }

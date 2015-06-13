@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +27,7 @@ import hk.amae.util.Comm;
 public class NumberOperator extends FrameLayout implements View.OnClickListener, View.OnTouchListener {
     private Button btnAdder, btnSubstractor;
     private EditText txtValue;
+    private TextView dummy;
     private int value, defaultValue;
     private int delta = 10;
     private int max = 1000*1000*1000;
@@ -47,6 +49,8 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
         btnAdder = (Button) findViewById(R.id.btn_adder);
         btnSubstractor = (Button) findViewById(R.id.btn_substractor);
         txtValue = (EditText) findViewById(R.id.txt_value);
+
+        dummy = (TextView) findViewById(R.id.dummy);
 
         btnAdder.setOnClickListener(this);
         btnAdder.setOnTouchListener(this);
@@ -82,11 +86,18 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
                 int v = 0;
                 try {
                     v = Integer.valueOf(txtValue.getText().toString());
-                    if (limitValue(value) != v)
+                    if (limitValue(v) != v)
                         setValue(v);
+                    value = limitValue(v);
                 } catch (Exception e) {
 
                 }
+            }
+        });
+        txtValue.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focus) {
+                Comm.logI("focus " + focus);
             }
         });
     }
@@ -111,16 +122,14 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     }
     private int limitValue(int v) {
         if (v <= 0)
-            value = 0;
+            v = 0;
         else if (v >= max)
-            value = max;
-        else
-            value = v;
+            v = max;
 
         return v;
     }
     public void setValue(int v) {
-        limitValue(v);
+        value = limitValue(v);
         txtValue.setText("" + value);
     }
 
@@ -150,6 +159,8 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
                 break;
         }
         txtValue.setText("" + value);
+        txtValue.clearFocus();
+        dummy.requestFocus();
     }
 
     int holding = 0;
@@ -182,9 +193,9 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
             @Override
             public void run() {
                 if (holding == 1)
-                    limitValue(value + delta);
+                    value = limitValue(value + delta);
                 else if (holding == -1)
-                    limitValue(value - delta);
+                    value = limitValue(value - delta);
                 Message msg = new Message();
                 msg.what = holding;
                 handler.sendMessage(msg);

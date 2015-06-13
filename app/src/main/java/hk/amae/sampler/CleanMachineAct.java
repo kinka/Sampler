@@ -24,7 +24,7 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     Timer timer;
     static int progress = 0;
 
-    int total = 60 * 15 * 1000;
+    int total = 60 * 3 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +77,21 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     }
 
     private void back() {
-        if (progress == 100)
+        if (progress >= 100)
             super.onBackPressed();
         else
-            new AlertDialog.Builder(this).setTitle("清洁中").setMessage("正在清洁中，15分钟后自动关机")
+            new AlertDialog.Builder(this).setTitle("清洁中").setMessage("正在清洁中...")
                 .setPositiveButton("离开", this).setNegativeButton("留下", this).setCancelable(false).show();
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            timer.cancel();
+        } catch (Exception e) {
+
+        }
+        super.onPause();
     }
 
     @Override

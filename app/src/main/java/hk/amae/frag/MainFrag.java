@@ -78,7 +78,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private int __lastid = 0;
 
     private Timer __battery, __progress, __launch;
-    private final int durationBattery = 60*1000, durationProgress = 10*1000;
+    private final int durationBattery = 60*1000, durationProgress = 3*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;
@@ -173,7 +173,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             public void done(boolean verify, Command cmd) {
 //                    cmd.ChannelState = Comm.PLAYING;
 //                    cmd.Volume = 880;
-//                    cmd.Speed = 300;
+//                    cmd.Speed = 300; todo 从监视器回来会有问题
                 progSampling.setProgress(cmd.Progress);
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
@@ -366,7 +366,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             int manualMode = Comm.getIntSP(SP_MANUALMODE);
             int cap = manualMode == Comm.TIMED_SET_TIME ? npTiming.getValue() : npVolume.getValue();
             boolean invalid = npSpeed.getValue() == 0 || cap == 0;
-            if (sampleMode == Comm.MANUAL_SET && invalid) {
+            if (sendCmd && sampleMode == Comm.MANUAL_SET && invalid) {
                 runningState = Comm.STOPPED;
                 Toast.makeText(getActivity(), "参数非法，请检查流量等参数是否为0", Toast.LENGTH_SHORT).show();
                 return;
@@ -400,9 +400,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                currChannel = cmd.Channel;
                 progSampling.setProgress(cmd.Progress);
-                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
-                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+//                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+//                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                npSpeed.setValue(cmd.TargetSpeed);
+                npVolume.setValue(cmd.TargetVolume);
             }
         }).setManualChannel(op, manualMode, currChannel, speed, cap);
         // 开始定时查询

@@ -93,6 +93,16 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
                     }
                 }).setRestore(false);
             }
-        }, 0, 1000);
+        }, 0, 100);
+    }
+
+    @Override
+    public void onPause() {
+        try {
+            timer.cancel();
+        } catch (Exception e) {
+
+        }
+        super.onPause();
     }
 }

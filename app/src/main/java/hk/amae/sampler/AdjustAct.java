@@ -85,7 +85,9 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
                 outputPower.setText(cmd.OutputPower + "");
                 dutyCycle.setText("(" + cmd.DutyCycle + "%)");
                 pickPower.setText(cmd.PickPower + "");
-                pickVoltage.setText(String.format("(%.02fV)", cmd.PickVoltage / 100.0));
+                pickVoltage.setText(String.format("(%.02fV)", cmd.PickVoltage / 1000.0));
+                expectPressure.setText(cmd.ExpectPressure + "");
+                targetSpeed.setText(cmd.AdjustSpeed + "");
                 Toast.makeText(AdjustAct.this, String.format("第%d通道已经保存。", channel), Toast.LENGTH_SHORT).show();
             }
         }).setAdjust(Comm.Channel.init(channel), expect, speed);

@@ -24,10 +24,10 @@
             android:scaleType="fitCenter"
             android:cropToPadding="false"
             android:padding="9dp"
-            android:src="@drawable/unlock"
-            android:background="@null"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"
+            android:src="@drawable/unlock"
+            android:background="@null" />
 
         <Spinner
             android:layout_width="36dp"
@@ -91,9 +91,7 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="@null"
-            android:padding="9dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:padding="9dp" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -129,7 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/wrap_state"
         android:id="@+id/wrap_manual"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -191,7 +189,7 @@
                 components:value="100"
                 android:paddingTop="9dp"
                 android:paddingBottom="9dp"
-                android:id="@+id/np_speed"/>
+                android:id="@+id/np_speed" />
 
             <TextView
                 android:layout_width="0dp"
@@ -203,7 +201,9 @@
                 android:textColor="@color/amae_secondary_text"
                 android:singleLine="true"
                 android:padding="0dp"
-                android:gravity="center" />
+                android:gravity="center"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -326,7 +326,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/wrap_timing"
         android:layout_below="@+id/wrap_state">
 

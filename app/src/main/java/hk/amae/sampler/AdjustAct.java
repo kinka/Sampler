@@ -97,6 +97,10 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
         if ((add && channel >= 8) || (!add && channel <=1 ))
             return false;
         channel = add ? channel+1 : channel-1;
+        outputPower.setText("0");
+        dutyCycle.setText("(0%)");
+        pickPower.setText("0");
+        pickVoltage.setText("(0.00)");
         labelChannel.setText(String.format(FMT_CHANNEL, channel));
         return true;
     }

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -74,6 +73,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     private final String SP_MANUALMODE = "manual_mode"; // 手动情况下设定时长还是设定容量
     private final String SP_SAMPLEMODE = "sample_mode";
+
+    private int lastManualMode;
 
     private int __lastid = 0;
 
@@ -173,7 +174,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             public void done(boolean verify, Command cmd) {
 //                    cmd.ChannelState = Comm.PLAYING;
 //                    cmd.Volume = 880;
-//                    cmd.Speed = 300; todo 从监视器回来会有问题
+//                    cmd.Speed = 300;
                 progSampling.setProgress(cmd.Progress);
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
@@ -185,7 +186,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     }
 
     void init() {
-        initChannelState();
+//        initChannelState(); // 好像是没必要的
 
         // 主要是想知道是手动模式还是定时模式(定时长/定容量)
         new Command(new Once() {
@@ -195,7 +196,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 Comm.logI("svr sampleMode " + sampleMode);
                 sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
-                switchSampleMode(cmd);
+//                switchSampleMode(cmd); // todo 好像也用不着了
             }
         }).reqSampleState();
 
@@ -345,11 +346,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 break;
             case R.id.label_timing:
             case R.id.label_cap:
+                lastManualMode = Comm.getIntSP(SP_MANUALMODE);
                 if (view.getId() == R.id.label_timing) // toggle
                     Comm.setIntSP(SP_MANUALMODE, Comm.TIMED_SET_CAP);
                 else
                     Comm.setIntSP(SP_MANUALMODE, Comm.TIMED_SET_TIME);
-                initManualMode(null);
+                initManualMode();
                 break;
         }
     }
@@ -401,12 +403,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                currChannel = cmd.Channel;
+                if (Channel.ALL.equals(currChannel))
+                    spinChannel.setSelection(0);
+
                 progSampling.setProgress(cmd.Progress);
-//                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
-//                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
                 npSpeed.setValue(cmd.TargetSpeed);
-                npVolume.setValue(cmd.TargetVolume);
+                npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长？
+                npTiming.setValue(cmd.TargetDuration);
             }
         }).setManualChannel(op, manualMode, currChannel, speed, cap);
         // 开始定时查询
@@ -420,7 +423,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
             }
-        }).setManualChannel(op, 0, currChannel, 0, 0);
+        }).setManualChannel(op, 0, currChannel, 0, 0); // 定时模式下切换运行状态
         pollTimedState();
     }
 
@@ -436,7 +439,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     updateRunningState();
                 }
             }
-        }).reqChannelState(currChannel);
+        }).reqChannelState(Channel.ALL.equals(currChannel) ? Channel.CH1 : currChannel);
     }
     // 定时模式下的采样状态轮询
     private void pollTimedState() {
@@ -562,7 +565,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 wrapTiming.setVisibility(View.GONE);
                 stopCountDown();
                 pollManualState();
-                initManualMode(cmd);
+                initManualMode();
             } else {
                 wrapManual.setVisibility(View.GONE);
                 wrapTiming.setVisibility(View.VISIBLE);
@@ -587,16 +590,18 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     /**
      * 手动模式下的相关设置，切换模式为"设定时长"或"设定容量"， 以及最大流量/时长/容量等限制
-     * @param cmd
      */
-    private void initManualMode(Command cmd) {
-        int targetSpeed = cmd == null ? 0 : cmd.TargetSpeed;
-        int targetDuration = cmd == null ? 0 : cmd.TargetDuration;
+    private void initManualMode() {
+        int targetSpeed = npSpeed.getValue();
+        int targetDuration = npTiming.getValue();
+        int targetVolume = npVolume.getValue();
 
-        if (targetSpeed == 0 || targetSpeed > npSpeed.getMax())
-            targetSpeed = npSpeed.getValue();
+        if (targetSpeed == 0)
+            targetSpeed = npSpeed.getDefault();
         if (targetDuration == 0)
             targetDuration = npTiming.getDefault();
+        if (targetVolume == 0)
+            targetVolume = npVolume.getDefault();
 
         npSpeed.setValue(targetSpeed);
 
@@ -607,11 +612,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         }
 
         if (manualMode == Comm.TIMED_SET_CAP) {
+            if (lastManualMode == Comm.TIMED_SET_TIME)
+                targetVolume = targetSpeed * targetDuration;
             layoutCap.setVisibility(View.VISIBLE);
             layoutTiming.setVisibility(View.GONE);
-            npVolume.setValue(targetDuration * targetSpeed);
+            npVolume.setValue(targetVolume);
             npVolume.setDelta(100);
         } else if (manualMode == Comm.TIMED_SET_TIME) {
+            if (lastManualMode == Comm.TIMED_SET_CAP)
+                targetDuration = targetVolume / targetSpeed;
             layoutCap.setVisibility(View.GONE);
             layoutTiming.setVisibility(View.VISIBLE);
             npTiming.setValue(targetDuration);
@@ -662,6 +671,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             switch (msg.what) {
                 case AmaeClickDetector.MSG_PRESSED_3:
                     Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
+                    // 发送当前时间
                     break;
                 case AmaeClickDetector.MSG_CLICK:
                     if (runningState == Comm.PLAYING) {

@@ -30,13 +30,13 @@
         <item>C2</item>
         <item>C3</item>
         <item>C4</item>
-        <item>全选</item>
+        <!--<item>全选</item>-->
     </string-array>
 
     <string-array name="channels_B">
         <item>B1</item>
         <item>B2</item>
-        <item>全选</item>
+        <!--<item>全选</item>-->
     </string-array>
     <string-array name="channels_A">
         <item>A1</item>

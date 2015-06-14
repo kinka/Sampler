@@ -284,8 +284,8 @@ public class Command {
     public void resolveChannelState(ByteBuffer reply) {
         ChannelState = reply.get();
         Channel = Comm.Channel.init(reply.get());
-        TargetSpeed = Speed = reply.getShort();
-        TargetVolume = Volume = reply.getInt();
+        Speed = reply.getShort();
+        Volume = reply.getInt();
         Progress = reply.get();
     }
 
@@ -300,7 +300,6 @@ public class Command {
 
     public String SampleID; // 采样编号
     public int TargetSpeed; // 设定流量/流速
-    public int TargetVolume; // 设定容量
     public int SampleMode; // 采样模式(定时or定容)
     public int StandardVol; // 累计标体(临时命名)
     public byte Progress; // 采样进度
@@ -323,7 +322,7 @@ public class Command {
         TEMP = reply.getInt() / 10f;
         Progress = reply.get();
         Elapse = reply.getInt();
-        TargetDuration = reply.getInt();
+        TargetVolume = TargetDuration = reply.getInt();
         Channel = Comm.Channel.init(reply.get());
         Manual = reply.get() == 0;
         Group = reply.get();
@@ -422,6 +421,7 @@ public class Command {
     }
 
     // 设置采样参数(手动模式)
+    public int TargetVolume; // 设定容量
     public ByteBuffer setManualChannel(int operation, int mode, Channel channel, int speed, int cap) {
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4);
         buffer.put((byte) operation);
@@ -432,7 +432,10 @@ public class Command {
         return  build(0x101, buffer.array());
     }
     public void resolveManualChannel(ByteBuffer reply) {
-        resolveChannelState(reply);
+        ChannelState = reply.get();
+        Channel = Comm.Channel.init(reply.get());
+        TargetSpeed = reply.getShort();
+        TargetDuration = TargetVolume = reply.getInt();
     }
 
     // 设置采样参数(定时定容)

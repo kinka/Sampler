@@ -148,6 +148,14 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     }
 
     @Override
+    public void setEnabled(boolean enable) {
+        super.setEnabled(enable);
+        btnAdder.setEnabled(enable);
+        btnSubstractor.setEnabled(enable);
+        txtValue.setEnabled(enable);
+    }
+
+    @Override
     public void onClick(View view) {
         value = Integer.valueOf(txtValue.getText().toString());
         switch (view.getId()) {
@@ -166,6 +174,8 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     int holding = 0;
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (!isEnabled()) return false;
+
         if (view.getId() == R.id.btn_adder)
             holding = 1;
         else if(view.getId() == R.id.btn_substractor)

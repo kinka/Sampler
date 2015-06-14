@@ -232,6 +232,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
             if (!isInLock)
                 return true;
         } else {
+            // 主要是因为NumberOperator在键盘隐藏之后仍然保持焦点的问题
             FrameLayout container = (FrameLayout) findViewById(R.id.container);
             container.requestFocus();
         }

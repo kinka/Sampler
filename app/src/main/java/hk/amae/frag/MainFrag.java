@@ -360,10 +360,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
      * runningState 反映当前运行状态，但是图标展示的是下一步能进行的操作
      */
     private void __updateRunningState(boolean sendCmd) {
-        int op = Comm.DO_PLAY;
+        int toDo = Comm.DO_PLAY;
         if (runningState == Comm.PAUSED || runningState == Comm.STOPPED) {
+            npEnable(true);
             btnRun.setImageResource(R.drawable.play);
-            op = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
+            toDo = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
             killTimer();
         } else if (runningState == Comm.PLAYING) {
             int manualMode = Comm.getIntSP(SP_MANUALMODE);
@@ -375,14 +376,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 return;
             }
             btnRun.setImageResource(R.drawable.pause);
-            op = Comm.DO_PLAY;
+            npEnable(false);
         }
         if (!sendCmd) return;
 
         if (sampleMode == Comm.MANUAL_SET)
-            setManual(op);
+            setManual(toDo);
         else
-            setTimed(op);
+            setTimed(toDo);
     }
     private void updateRunningState() {
         __updateRunningState(false);
@@ -419,9 +420,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                progSampling.setProgress(cmd.Progress);
-                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
-                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+//                progSampling.setProgress(cmd.Progress);
+//                txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
+//                txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
             }
         }).setManualChannel(op, 0, currChannel, 0, 0); // 定时模式下切换运行状态
         pollTimedState();
@@ -586,6 +587,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             npSpeed.setMax(maxSpeed);
         if (npSpeed.getValue() > npSpeed.getMax())
             npSpeed.setValue(npSpeed.getValue());
+        npTiming.setMax(1000);
+        npVolume.setMax(npSpeed.getMax() * npTiming.getMax());
     }
 
     /**
@@ -626,6 +629,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             npTiming.setValue(targetDuration);
             npTiming.setDelta(1);
         }
+    }
+    private void npEnable(boolean enable) {
+        npSpeed.setEnabled(enable);
+        npVolume.setEnabled(enable);
+        npTiming.setEnabled(enable);
     }
 
     private void initTimedMode() {

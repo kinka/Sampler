@@ -16,17 +16,13 @@
             android:layout_height="wrap_content"
             android:name="hk.amae.frag.BasicInfoFrag"
             android:id="@+id/basicinfo_frag"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             tools:layout="@layout/frag_basic_info" />
 
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/basicinfo_frag"
-            android:id="@+id/container"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentLeft="false"></FrameLayout>
+            android:id="@+id/container">
+
+        </FrameLayout>
     </LinearLayout>
 </ScrollView>

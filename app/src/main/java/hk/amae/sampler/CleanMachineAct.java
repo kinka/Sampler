@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,8 +46,13 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
             progress += 1;
             progClean.setProgress(progress);
             if (progress == 100) {
-                timer.cancel();
-                progress = 0;
+                try {
+                    timer.cancel();
+                    timer.purge();
+                    Toast.makeText(CleanMachineAct.this, "清洗完毕", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+
+                }
             }
         }
     };
@@ -77,17 +83,20 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     }
 
     private void back() {
-        if (progress >= 100)
+        if (progress >= 100) {
+            progress = 0;
             super.onBackPressed();
-        else
+        } else {
             new AlertDialog.Builder(this).setTitle("清洁中").setMessage("正在清洁中...")
-                .setPositiveButton("离开", this).setNegativeButton("留下", this).setCancelable(false).show();
+                    .setPositiveButton("离开", this).setNegativeButton("留下", this).setCancelable(false).show();
+        }
     }
 
     @Override
     protected void onPause() {
         try {
             timer.cancel();
+            timer.purge();
         } catch (Exception e) {
 
         }

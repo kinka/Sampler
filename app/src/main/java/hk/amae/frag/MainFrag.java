@@ -192,6 +192,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             @Override
             public void done(boolean verify, Command cmd) {
                 sampleMode = cmd.Manual ? Comm.MANUAL_SET : cmd.SampleMode;
+                Comm.logI("svr sampleMode " + sampleMode);
                 sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
                 switchSampleMode(cmd);

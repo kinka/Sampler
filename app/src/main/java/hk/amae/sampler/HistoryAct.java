@@ -113,6 +113,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 for (HistoryItem item: historyItems)
                     if (item.print)
                         doPrint(item.title);
+                break;
             case R.id.label_title:{
                 String id = ((TextView) view).getText().toString();
                 showDetail(id);
@@ -123,6 +124,8 @@ public class HistoryAct extends Activity implements View.OnClickListener {
     }
 
     private void doPrint(final String sampleId) {
+        if (sampleId == null) return;
+
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {

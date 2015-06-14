@@ -36,11 +36,11 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
         progressBar = (TextProgressBar) v.findViewById(R.id.prog_clearing);
 
         doClearSample(false); // 先查询，看是否仍在清空数据中。。。
-        // todo 为什么进来了两次？
+
         return v;
     }
 
-    void doClearSample(boolean doSet) {
+    void doClearSample(final boolean doSet) {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
@@ -60,9 +60,8 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
     public void onClick(DialogInterface dialogInterface, int i) {
         switch (i) {
             case DialogInterface.BUTTON_POSITIVE:
-                doClearSample(true);
                 Comm.setIntSP(SP_CLEAR, 1);
-                cycleQuery();
+                doClearSample(true);
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 getActivity().onBackPressed();
@@ -77,13 +76,14 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
                 new Command(new Command.Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
-//                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR);
-//                        cmd.Progress += 10;
+                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR); // todo 使用机器返回的进度
+                        cmd.Progress += 10;
 
                         progressBar.setProgress(cmd.Progress);
 
                         if (cmd.Progress >= 100) {
                             timer.cancel();
+                            timer.purge();
                             cmd.Progress = 0;
                         }
                         Comm.setIntSP(SP_CLEAR, cmd.Progress);

@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import hk.amae.frag.BasicInfoFrag;
 import hk.amae.util.Comm;
@@ -16,8 +20,13 @@ public class QueryAct extends Activity {
         labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration,
         labelSampleMode, labelLaunchMode, labelChannel, labelGroup;
 
+    private LinearLayout wrapSampleMode, wrapLaunchMode;
+
     public static final String KEY_ITEM = "itemID";
     String itemID = null;
+    boolean isHistory = false;
+    Command.Once onceDone;
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +35,8 @@ public class QueryAct extends Activity {
 
         Intent intent = getIntent();
         itemID = intent.getStringExtra(KEY_ITEM);
+        if (itemID != null)
+            isHistory = true;
 
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,15 +60,10 @@ public class QueryAct extends Activity {
         labelChannel = (TextView) findViewById(R.id.label_channel);
         labelGroup = (TextView) findViewById(R.id.label_set_group);
 
-        try {
-            doQuery();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+        wrapLaunchMode = (LinearLayout) findViewById(R.id.wrapLaunchMode);
+        wrapSampleMode = (LinearLayout) findViewById(R.id.wrapSampleMode);
 
-    private void doQuery() {
-        new Command(new Command.Once() {
+        onceDone = new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
 //                cmd.TargetSpeed = 200;
@@ -75,12 +81,53 @@ public class QueryAct extends Activity {
                 labelElapse.setText(cmd.Elapse + "s");
                 labelDuration.setText(cmd.TargetDuration + "min");
 
-                labelSampleMode.setText(cmd.SampleMode == Comm.TIMED_SET_CAP ? "定容量":"定时长");
-                labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");
+                if (isHistory) {
+                    wrapLaunchMode.setVisibility(View.GONE);
+                    wrapSampleMode.setVisibility(View.GONE);
+                } else {
+                    wrapLaunchMode.setVisibility(View.VISIBLE);
+                    wrapSampleMode.setVisibility(View.VISIBLE);
+                    labelSampleMode.setText(cmd.SampleMode == Comm.TIMED_SET_CAP ? "定容量":"定时长");
+                    labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");
+                }
 
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());
                 labelGroup.setText(cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
             }
-        }).reqSampleData(itemID);
+        };
+
+        try {
+            doQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void doQuery() {
+        if (isHistory)
+            new Command(onceDone).reqSampleData(itemID);
+        else
+            realtimeQuery();
+    }
+
+    private void realtimeQuery() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                new Command(onceDone).reqSampleState();
+            }
+        }, 0, 5000);
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            if (timer != null)
+                timer.cancel();
+        } catch (Exception e) {
+
+        }
+        super.onPause();
     }
 }

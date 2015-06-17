@@ -267,7 +267,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="00H01M00S"
+                    android:text="0s"
                     android:id="@+id/label_sampled_time"
                     android:layout_weight="3"
                     android:gravity="center" />
@@ -293,7 +293,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="00H01M"
+                    android:text="0min"
                     android:id="@+id/label_duration"
                     android:layout_weight="3"
                     android:gravity="center" />
@@ -304,7 +304,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
                 android:gravity="center"
-                android:background="@drawable/amae_border">
+                android:background="@drawable/amae_border"
+                android:id="@+id/wrapSampleMode">
 
                 <TextView
                     android:layout_width="120dp"
@@ -330,7 +331,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
                 android:gravity="center"
-                android:background="@drawable/amae_border">
+                android:background="@drawable/amae_border"
+                android:id="@+id/wrapLaunchMode">
 
                 <TextView
                     android:layout_width="120dp"

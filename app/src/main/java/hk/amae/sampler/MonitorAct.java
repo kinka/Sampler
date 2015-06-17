@@ -5,6 +5,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import hk.amae.frag.BasicInfoFrag;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
@@ -18,6 +21,9 @@ public class MonitorAct extends Activity {
     TextView[][] rows = new TextView[8][4];
 
     TextView atm, datetime, temp;
+
+    Timer timer = new Timer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +43,14 @@ public class MonitorAct extends Activity {
             }
         }
 
-        updateInfo();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                query();
 
-        query();
+                updateInfo();
+            }
+        }, 0, 5000);
     }
 
     private void query() {
@@ -75,5 +86,15 @@ public class MonitorAct extends Activity {
                     datetime.setText(cmd.DateTime.replace(" ", "\n"));
             }
         }).reqDateTime();
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            timer.cancel();
+        } catch (Exception e) {
+
+        }
+        super.onPause();
     }
 }

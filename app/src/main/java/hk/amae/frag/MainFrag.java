@@ -78,8 +78,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     private int __lastid = 0;
 
-    private Timer __battery, __progress, __launch;
-    private final int durationBattery = 60*1000, durationProgress = 3*1000;
+    private Timer __battery, __progress, __launch, __state;
+    private final int durationBattery = 60*1000, durationProgress = 3*1000, durationState = 3*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;
@@ -201,6 +201,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         }).reqSampleState();
 
         askBatteryState();
+
+        reqMachineState();
     }
 
     @Override
@@ -226,8 +228,18 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         try {
             if (__battery != null)
                 __battery.cancel();
+        } catch (Exception e) {
+
+        }
+        try {
             if (__progress != null)
                 __progress.cancel();
+        } catch (Exception e) {
+
+        }
+        try {
+            if (__state != null)
+                __state.cancel();
         } catch (Exception e) {
 
         }
@@ -473,7 +485,18 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 //                String selected = spinChannel.getSelectedItem().toString();
 //                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                 reqChannelState();
+            }
+        }, 500, durationProgress);
+    }
 
+    private void reqMachineState() {
+        if (__state != null)
+            __state.cancel();
+
+        __state = new Timer();
+        __state.schedule(new TimerTask() {
+            @Override
+            public void run() {
                 final String[] State = new String[]{"停止", "等待", "正在采样", "暂停", "完成", "延时等待"};
                 new Command(new Once() {
                     @Override
@@ -482,7 +505,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         String states = "";
                         for (int i = 0; i < 8; i++) {
 //                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
-                            if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0) continue;
+                            if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
+                                cmd.MachineState[i] = 0;
 
                             states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
                             // 如果reqChannelState的进度条不可靠的话，则重新考虑如何更新对应通道的状态
@@ -495,7 +519,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     }
                 }).reqMachineState();
             }
-        }, 500, durationProgress);
+        }, 0, durationState);
     }
 
     @Override

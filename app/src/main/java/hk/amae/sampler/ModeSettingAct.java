@@ -249,6 +249,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
             dataList.set(i, cmd.SettingItems[i]);
         }
         ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+        Comm.setIntSP(MainFrag.SP_SAMPLEMODE, sampleMode);
     }
 
     void flip(boolean add) {

@@ -50,7 +50,7 @@ public class MonitorAct extends Activity {
 
                 updateInfo();
             }
-        }, 0, 5000);
+        }, 0, 3000);
     }
 
     private void query() {

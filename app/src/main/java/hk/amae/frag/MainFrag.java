@@ -66,20 +66,20 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
     private int sampleMode;
-    private boolean isSpinnerClick = false;
+    private boolean isSpinnerClick = true;
 
     private String fmtSpeed = "%d\nmL/min";
     private String fmtVolume = "%.2fL";
 
     private final String SP_MANUALMODE = "manual_mode"; // 手动情况下设定时长还是设定容量
-    private final String SP_SAMPLEMODE = "sample_mode";
+    public static final String SP_SAMPLEMODE = "sample_mode";
 
     private int lastManualMode;
 
     private int __lastid = 0;
 
     private Timer __battery, __progress, __launch, __state;
-    private final int durationBattery = 60*1000, durationProgress = 3*1000, durationState = 3*1000;
+    private final int durationBattery = 60*1000, durationProgress = 2*1000, durationState = 3*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;
@@ -151,11 +151,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         v.findViewById(R.id.label_cap).setOnClickListener(this);
         v.findViewById(R.id.label_timing).setOnClickListener(this);
 
-        spinChannel.setOnItemSelectedListener(this);
-        spinMode.setOnItemSelectedListener(this);
-
-        isSpinnerClick = false;
-
         __lastid = MainAct.lastid;
         MainAct.lastid = 0;
 
@@ -188,15 +183,19 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     void init() {
 //        initChannelState(); // 好像是没必要的
 
+//        isSpinnerClick = false;
         // 主要是想知道是手动模式还是定时模式(定时长/定容量)
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                spinChannel.setOnItemSelectedListener(MainFrag.this);
+                spinMode.setOnItemSelectedListener(MainFrag.this);
+
                 sampleMode = cmd.Manual ? Comm.MANUAL_SET : cmd.SampleMode;
                 Comm.logI("svr sampleMode " + sampleMode);
                 sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
-//                switchSampleMode(cmd); // todo 好像也用不着了
+                switchSampleMode();
             }
         }).reqSampleState();
 
@@ -287,7 +286,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     }
                 });
             }
-        }, 0, 5*1000);
+        }, 0, 1*1000);
     }
 
     private int getChannels() {
@@ -556,11 +555,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     sampleMode = Comm.TIMED_SET_TIME;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     intent.putExtra(ModeSettingAct.KEY_MODE, ModeSettingAct.TimingSet);
+                    if (Channel.ALL.equals(currChannel))
+                        spinChannel.setSelection(0);
                     break;
                 case "定容模式":
                     sampleMode = Comm.TIMED_SET_CAP;
                     Comm.setIntSP(SP_MANUALMODE, sampleMode);
                     intent.putExtra(ModeSettingAct.KEY_MODE, ModeSettingAct.CapacitySet);
+                    if (Channel.ALL.equals(currChannel))
+                        spinChannel.setSelection(0);
                     break;
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
@@ -573,7 +576,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 startActivityForResult(intent, 0);
             }
 
-            switchSampleMode(null);
+            switchSampleMode();
             isSpinnerClick = true;
         }
     }
@@ -583,7 +586,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     }
 
-    private void switchSampleMode(Command cmd) {
+    private void switchSampleMode() {
         try {
             if (sampleMode == Comm.MANUAL_SET) {
                 wrapManual.setVisibility(View.VISIBLE);

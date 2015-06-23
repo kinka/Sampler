@@ -80,6 +80,8 @@ public class Command {
 
     private String getString(ByteBuffer reply, String encoding) {
         int len = reply.get();
+        if (len <= 0)
+            return "";
         byte[] data = new byte[len];
         reply.get(data);
         try {

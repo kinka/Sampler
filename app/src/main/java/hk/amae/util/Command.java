@@ -424,6 +424,7 @@ public class Command {
 
     // 设置采样参数(手动模式)
     public int TargetVolume; // 设定容量
+    public int ManualMode; // 手动模式下的定时长/定容量
     public ByteBuffer setManualChannel(int operation, int mode, Channel channel, int speed, int cap) {
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4);
         buffer.put((byte) operation);
@@ -435,6 +436,7 @@ public class Command {
     }
     public void resolveManualChannel(ByteBuffer reply) {
         ChannelState = reply.get();
+        ManualMode = reply.get();
         Channel = Comm.Channel.init(reply.get());
         TargetSpeed = reply.getShort();
         TargetDuration = TargetVolume = reply.getInt();

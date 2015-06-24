@@ -406,7 +406,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     private void setManual(int op) {
         int speed = npSpeed.getValue();
-        int manualMode = Comm.getIntSP(SP_MANUALMODE);
+        final int manualMode = Comm.getIntSP(SP_MANUALMODE);
         int cap = manualMode == Comm.TIMED_SET_TIME ? npTiming.getValue() : npVolume.getValue();
         // 发送状态切换命令
         // 根据通道设置分配手动设置参数
@@ -418,10 +418,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 if (Channel.ALL.equals(currChannel))
                     spinChannel.setSelection(0);
 
-                progSampling.setProgress(cmd.Progress);
                 npSpeed.setValue(cmd.TargetSpeed);
                 npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长？
                 npTiming.setValue(cmd.TargetDuration);
+
+                if (manualMode != cmd.ManualMode) {
+                    Comm.setIntSP(SP_MANUALMODE, cmd.ManualMode);
+                    initManualMode();
+                }
             }
         }).setManualChannel(op, manualMode, currChannel, speed, cap);
         // 开始定时查询

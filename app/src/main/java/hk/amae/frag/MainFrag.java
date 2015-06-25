@@ -76,8 +76,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     private int lastManualMode;
 
-    private int __lastid = 0;
-
     private Timer __battery, __progress, __launch, __state;
     private final int durationBattery = 60*1000, durationProgress = 2*1000, durationState = 3*1000;
 
@@ -150,9 +148,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         layoutTiming = (LinearLayout) v.findViewById(R.id.layout_timing);
         v.findViewById(R.id.label_cap).setOnClickListener(this);
         v.findViewById(R.id.label_timing).setOnClickListener(this);
-
-        __lastid = MainAct.lastid;
-        MainAct.lastid = 0;
 
         if (Comm.getIntSP("locked") == 1) {
             isLocked = true;
@@ -572,9 +567,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             }
             Comm.setIntSP(SP_SAMPLEMODE, sampleMode);
 
-            if (__lastid > 0 || lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
+            if (lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
-            __lastid = 0; // 仅用于区分初次调用是否从其它frag切换回来
 
             if (intent != null && isSpinnerClick) {
                 startActivityForResult(intent, 0);

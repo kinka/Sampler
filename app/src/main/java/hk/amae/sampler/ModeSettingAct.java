@@ -166,10 +166,10 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
                 return false;
             }
         }
-        if (cntEmpt == dataList.size()) {
-            Toast.makeText(this, "还没有勾选任何设置", Toast.LENGTH_LONG).show();
-            return false;
-        }
+//        if (cntEmpt == dataList.size()) {
+//            Toast.makeText(this, "还没有勾选任何设置", Toast.LENGTH_LONG).show();
+//            return false;
+//        }
         try {
             for (int i=0; i<dataList.size(); i++) {
                 SettingItem itemA = dataList.get(i);

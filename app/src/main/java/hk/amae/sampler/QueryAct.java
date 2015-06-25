@@ -17,10 +17,10 @@ import hk.amae.util.Command;
 
 public class QueryAct extends Activity {
     private TextView labelSpeed, labelTargetSpeed, labelVolume, labelStandardVol,
-        labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration,
+        labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration, labelTargetVolume,
         labelSampleMode, labelLaunchMode, labelChannel, labelGroup;
 
-    private LinearLayout wrapSampleMode, wrapLaunchMode;
+    private LinearLayout wrapSampleMode, wrapLaunchMode, wrapTargetDuration, wrapTargetVolume;
 
     public static final String KEY_ITEM = "itemID";
     String itemID = null;
@@ -54,7 +54,12 @@ public class QueryAct extends Activity {
         labelTEMP = (TextView) findViewById(R.id.label_temp);
         labelProgress = (TextView) findViewById(R.id.label_sampled_prog);
         labelElapse = (TextView) findViewById(R.id.label_sampled_time);
+
         labelDuration = (TextView) findViewById(R.id.label_duration);
+        labelTargetVolume = (TextView) findViewById(R.id.label_target_volume);
+        wrapTargetDuration = (LinearLayout) findViewById(R.id.label_wrap_duration);
+        wrapTargetVolume = (LinearLayout) findViewById(R.id.label_wrap_volume);
+
         labelSampleMode = (TextView) findViewById(R.id.label_sample_mode);
         labelLaunchMode = (TextView) findViewById(R.id.label_launch_mode);
         labelChannel = (TextView) findViewById(R.id.label_channel);
@@ -79,7 +84,16 @@ public class QueryAct extends Activity {
 
                 labelProgress.setText(cmd.Progress + "%");
                 labelElapse.setText(cmd.Elapse + "s");
-                labelDuration.setText(cmd.TargetDuration + "min");
+
+                if (cmd.SampleMode == Comm.TIMED_SET_CAP) {
+                    wrapTargetDuration.setVisibility(View.GONE);
+                    wrapTargetVolume.setVisibility(View.VISIBLE);
+                    labelTargetVolume.setText(cmd.TargetVolume + "mL");
+                } else {
+                    wrapTargetDuration.setVisibility(View.VISIBLE);
+                    wrapTargetVolume.setVisibility(View.GONE);
+                    labelDuration.setText(cmd.TargetDuration + "min");
+                }
 
                 if (isHistory) {
                     wrapLaunchMode.setVisibility(View.GONE);

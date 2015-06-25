@@ -278,7 +278,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
                 android:gravity="center"
-                android:background="@drawable/amae_border">
+                android:background="@drawable/amae_border"
+                android:id="@+id/label_wrap_duration">
 
                 <TextView
                     android:layout_width="120dp"
@@ -295,6 +296,34 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="0min"
                     android:id="@+id/label_duration"
+                    android:layout_weight="3"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:gravity="center"
+                android:background="@drawable/amae_border"
+                android:id="@+id/label_wrap_volume">
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="设定容量"
+                    android:textColor="@color/amae_secondary_text"
+                    android:layout_weight="0"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="0mL"
+                    android:id="@+id/label_target_volume"
                     android:layout_weight="3"
                     android:gravity="center" />
             </LinearLayout>

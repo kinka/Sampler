@@ -86,6 +86,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
 
                         if (cmd.Progress >= 100) {
                             timer.cancel();
+                            timer.purge();
                             cmd.Progress = 0;
                         }
                         Comm.setIntSP(SP_RESTORE, cmd.Progress);
@@ -100,6 +101,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
     public void onPause() {
         try {
             timer.cancel();
+            timer.purge();
         } catch (Exception e) {
 
         }

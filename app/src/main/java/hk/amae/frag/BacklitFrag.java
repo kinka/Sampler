@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
@@ -18,6 +19,9 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
     TextView labelSaving;
 
     SeekBar barNormal, barSaving;
+
+    final String SP_NORMAL = "normal_backlit";
+    final String SP_SAVING = "saving_backlit";
 
     public BacklitFrag() {
         // Required empty public constructor
@@ -33,25 +37,25 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
         barNormal = (SeekBar) v.findViewById(R.id.seekBar_normal);
         barSaving = (SeekBar) v.findViewById(R.id.seekBar_saving);
 
-        barNormal.setProgress(Comm.getIntSP("normal_backlit"));
-        barSaving.setProgress(Comm.getIntSP("saving_backlit"));
-
         barNormal.setOnSeekBarChangeListener(this);
         barSaving.setOnSeekBarChangeListener(this);
 
         v.findViewById(R.id.btn_confirm).setOnClickListener(this);
         v.findViewById(R.id.btn_back).setOnClickListener(this);
 
-        setBacklit(false, 0, 0); // query
+        setBacklit(false, -1, -1); // query
 
         return v;
     }
 
-    private void setSeekBar(boolean normal, int i) {
-        if (normal)
-            labelNormal.setText(String.format("正常背光(%d%%)", i*10));
-        else
-            labelSaving.setText(String.format("节能背光(%d%%)", i*10));
+    private void setSeekBar(boolean normalBacklit, int i) {
+        if (normalBacklit) {
+            barNormal.setProgress(i);
+            labelNormal.setText(String.format("正常背光(%d%%)", i * 10));
+        } else {
+            labelSaving.setText(String.format("节能背光(%d%%)", i * 10));
+            barSaving.setProgress(i);
+        }
     }
 
     @Override
@@ -84,12 +88,22 @@ public class BacklitFrag extends Fragment implements SeekBar.OnSeekBarChangeList
         }
     }
 
-    private void setBacklit(boolean doSet, final int normal, final int saving) {
+    private void setBacklit(final boolean doSet, final int normal, final int saving) {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-//                Comm.setIntSP("normal_backlit", cmd.NormalBacklit);
-//                Comm.setIntSP("saving_backlit", cmd.SavingBacklit);
+                if (doSet) {
+                    Toast.makeText(getActivity(), "背光设置保存成功", Toast.LENGTH_SHORT).show();
+                } else {
+//                    cmd.NormalBacklit = (byte) Comm.getIntSP(SP_NORMAL);
+//                    cmd.SavingBacklit = (byte) Comm.getIntSP(SP_SAVING);
+                    setSeekBar(true, cmd.NormalBacklit);
+                    setSeekBar(false, cmd.SavingBacklit);
+                }
+
+//                Comm.setIntSP(SP_NORMAL, cmd.NormalBacklit);
+//                Comm.setIntSP(SP_SAVING, cmd.SavingBacklit);
+
                 setSeekBar(true, cmd.NormalBacklit);
                 setSeekBar(false, cmd.SavingBacklit);
             }

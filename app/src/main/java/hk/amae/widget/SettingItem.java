@@ -14,7 +14,7 @@ public class SettingItem {
     public int targetSpeed;
     public boolean isSet;
     public boolean isSetCap; // 容量设置 或者 定时设置
-    public String date = "2015-06-02";
+    public String date = "2015-07-02";
     public String time = "00:00";
 
     @Override

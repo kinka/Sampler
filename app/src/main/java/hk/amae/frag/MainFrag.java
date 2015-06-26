@@ -259,6 +259,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__launch != null)
             __launch.cancel();
 
+        updateTimedStatus();
+
         if (waitingGroup < 0) {
             txtCountDown.setText("定时任务已经全部完成");
             return;
@@ -667,30 +669,36 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             @Override
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
-                String str = "";
-                boolean isSetCap = sampleMode == Comm.TIMED_SET_CAP;
-                String strMode = isSetCap ? "容量" : "时长";
-                String strUnit = isSetCap ? "mL" : "min";
-                String strFmt = "第%d组 %s启动 " + strMode + "：%d" + strUnit + " 流量：%dmL/min\n";
-//                cmd.DateTime = "2015-06-01 23:22";
-//                cmd.TargetVolume = 1000;
-//                cmd.TargetSpeed = 100;
-//                cmd.TargetDuration = 1;
-                int i = 0;
+
                 for (SettingItem item:cmd.SettingItems) {
+                    int i = item.id - 1;
                     timedLaunchAt[i] = item.date + " " + item.time;
                     timedDuration[i] = item.targetDuration;
                     timedVolume[i] = item.targetVol;
                     timedSpeed[i] = item.targetSpeed;
-                    str += String.format(strFmt, (i+1), timedLaunchAt[i], isSetCap ? item.targetVol: item.targetDuration, item.targetSpeed);
-                    i++;
                 }
-                txtTimedSetting.setText(str);
-
-//                timedLaunchAt[0] = "2015-05-31 22:09";
+//                timedLaunchAt[0] = "2015-06-26 22:38";
+//                timedLaunchAt[1] = "2015-06-26 22:39";
                 startCountDown();
             }
         }).reqTimedSetting(sampleMode, currChannel);
+    }
+    private void updateTimedStatus() {
+        String str = "";
+        boolean isSetCap = sampleMode == Comm.TIMED_SET_CAP;
+        String strMode = isSetCap ? "容量" : "时长";
+        String strUnit = isSetCap ? "mL" : "min";
+        String strFmt = "第%d组 %s启动 " + strMode + "：%d" + strUnit + " 流量：%dmL/min\n";
+
+        if (waitingGroup < 0) {
+            txtTimedSetting.setText("\n");
+            return;
+        }
+
+        for (int i=waitingGroup, len = timedDuration.length; i<len; i++) {
+            str += String.format(strFmt, (i+1), timedLaunchAt[i], isSetCap ? timedVolume[i]: timedDuration[i], timedSpeed[i]);
+        }
+        txtTimedSetting.setText(str);
     }
 
     public interface OnMainFragListener {

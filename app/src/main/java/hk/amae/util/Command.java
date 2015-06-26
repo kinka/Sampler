@@ -12,6 +12,8 @@ import hk.amae.widget.SettingItem;
  * Created by kinka on 4/11/15.
  */
 public class Command {
+    public static int CHANNELCOUNT = 8;
+
     private final static Object __TOTAL = new Object();
     private final static Object __SUCC = new Object();
     private static int __total = 0;

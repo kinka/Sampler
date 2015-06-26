@@ -82,10 +82,10 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;
 
-    private String[] timedLaunchAt = new String[8];
-    private int[] timedDuration = new int[8];
-    private int[] timedVolume = new int[8];
-    private int[] timedSpeed = new int[8];
+    private String[] timedLaunchAt = new String[ModeSettingAct.GROUPCOUNT];
+    private int[] timedDuration = new int[ModeSettingAct.GROUPCOUNT];
+    private int[] timedVolume = new int[ModeSettingAct.GROUPCOUNT];
+    private int[] timedSpeed = new int[ModeSettingAct.GROUPCOUNT];
     private int waitingGroup = -1;
 
     @Override
@@ -238,6 +238,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
         }
     }
+    private void stopProgress() {
+        try {
+            if (__progress != null)
+                __progress.cancel();
+        } catch (Exception e) {
+
+        }
+    }
     private void stopCountDown() {
         try {
             if (__launch != null)
@@ -373,7 +381,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             npEnable(true);
             btnRun.setImageResource(R.drawable.play);
             toDo = runningState == Comm.PAUSED ? Comm.DO_PAUSE : Comm.DO_STOP;
-            killTimer();
+            stopProgress();
         } else if (runningState == Comm.PLAYING) {
             int manualMode = Comm.getIntSP(SP_MANUALMODE);
             int cap = manualMode == Comm.TIMED_SET_TIME ? npTiming.getValue() : npVolume.getValue();
@@ -468,7 +476,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             public void run() {
                 reqChannelState();
             }
-        }, 500, durationProgress);
+        }, 0, durationProgress);
     }
     // 查询手动设置下当前采样状态
     private void pollManualState() {
@@ -486,7 +494,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 //                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                 reqChannelState();
             }
-        }, 500, durationProgress);
+        }, 0, durationProgress);
     }
 
     private void reqMachineState() {
@@ -497,13 +505,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         __state.schedule(new TimerTask() {
             @Override
             public void run() {
+                Comm.logI("what ?!");
                 final String[] State = new String[]{"停止", "等待", "正在采样", "暂停", "完成", "延时等待"};
                 new Command(new Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
                         if (!verify) return;
                         String states = "";
-                        for (int i = 0; i < 8; i++) {
+                        for (int i = 0; i < Command.CHANNELCOUNT; i++) {
 //                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
@@ -516,6 +525,23 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 //                            }
                         }
                         txtTips.setText(states);
+                        // todo 判断当前通道通行状态，确定是否开始轮询
+/*                            int channel = currChannel.getValue();
+                            if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
+                                if (cmd.MachineState[channel - 1] != 2)
+                                    return;
+                            } else if (channel >= Channel.C1.getValue() && channel <= Channel.C4.getValue()) {
+
+                            } else if (channel >= Channel.B1.getValue() && channel <= Channel.B2.getValue()) {
+
+                            } else if (channel == Channel.A1.getValue()) {
+
+                            }*/
+
+                        if (sampleMode == Comm.MANUAL_SET)
+                            pollManualState();
+                        else
+                            pollTimedState();
                     }
                 }).reqMachineState();
             }
@@ -533,7 +559,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             String selected = spinChannel.getSelectedItem().toString();
             if (selected.equals("全选")) {
                 selected = "ALL";
-                setMaxSpeed(8*UNITSPEED);
+                setMaxSpeed(Command.CHANNELCOUNT*UNITSPEED);
             } else {
                 setMaxSpeed(0);
             }

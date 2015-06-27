@@ -101,8 +101,8 @@ public class QueryAct extends Activity {
                 } else {
                     wrapLaunchMode.setVisibility(View.VISIBLE);
                     wrapSampleMode.setVisibility(View.VISIBLE);
-                    labelSampleMode.setText(cmd.SampleMode == Comm.TIMED_SET_CAP ? "定容量":"定时长");
-                    labelLaunchMode.setText(cmd.SampleMode == Comm.MANUAL_SET ? "手动":"定时");
+                    labelSampleMode.setText(cmd.ManualMode == Comm.TIMED_SET_CAP ? "定容量":"定时长");
+                    labelLaunchMode.setText(cmd.Manual ? "手动":"定时");
                 }
 
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());

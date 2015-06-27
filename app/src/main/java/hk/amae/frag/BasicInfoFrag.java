@@ -14,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +38,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     String modelFormat;
     public static String atmFormat;
     public static String tempFormat;
+
+    public final static String SP_TIMEFIX = "TIMEFIX";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -168,6 +175,22 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                 if (!verify)
                     return;
                 ((TextView) parent.findViewById(R.id.txt_datetime)).setText(cmd.DateTime);
+                Date toDiff = null;
+                try {
+                    toDiff = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(cmd.DateTime);
+                    Date now = Calendar.getInstance().getTime();
+                    boolean before = now.before(toDiff);
+                    long __diff = 0;
+                    if (before) {
+                        __diff = (toDiff.getTime() - now.getTime());
+                    } else {
+                        __diff = (now.getTime() - toDiff.getTime());
+                    }
+                    Comm.setIntSP(SP_TIMEFIX, (int) __diff);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         }).reqDateTime();
     }

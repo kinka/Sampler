@@ -19,6 +19,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
 
+import hk.amae.frag.BasicInfoFrag;
+
 /**
  * Created by kinka on 2/8/15.
  */
@@ -184,6 +186,8 @@ public class Comm {
         try {
             Date toDiff = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(datetime);
             Date now = Calendar.getInstance().getTime();
+            int diffToSvr = Comm.getIntSP(BasicInfoFrag.SP_TIMEFIX); // client ahead of server
+            now.setTime(now.getTime() - diffToSvr); // get server time
             boolean before = now.before(toDiff);
             long __diff = 0;
             if (before) {

@@ -139,7 +139,8 @@ public class Command {
 
         ByteBuffer reply = Deliver.send(buf);
         reply.order(ByteOrder.BIG_ENDIAN);
-
+        if (cmd == 0x101)
+            Comm.logI("limit " + reply.limit());
         if (reply.limit() == 0) return false;
 
         synchronized (__SUCC) {
@@ -320,7 +321,7 @@ public class Command {
         TargetSpeed = reply.getShort();
         Volume = reply.getInt();
         StandardVol = reply.getInt();
-        SampleMode = reply.get();
+        SampleMode = ManualMode = reply.get();
         DateTime = getString(reply);
         ATM = reply.getInt() / 1000f;
         TEMP = reply.getInt() / 10f;
@@ -328,7 +329,7 @@ public class Command {
         Elapse = reply.getInt();
         TargetVolume = TargetDuration = reply.getInt();
         Channel = Comm.Channel.init(reply.get());
-        Manual = reply.get() == 0;
+        Manual = reply.get() == 1;
         Group = reply.get();
     }
 

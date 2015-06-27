@@ -86,6 +86,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private int[] timedDuration = new int[ModeSettingAct.GROUPCOUNT];
     private int[] timedVolume = new int[ModeSettingAct.GROUPCOUNT];
     private int[] timedSpeed = new int[ModeSettingAct.GROUPCOUNT];
+    private boolean[] timedSet = new boolean[ModeSettingAct.GROUPCOUNT];
     private int waitingGroup = -1;
 
     @Override
@@ -176,9 +177,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     }
 
     void init() {
-//        initChannelState(); // 好像是没必要的
+        initChannelState();
 
-//        isSpinnerClick = false;
         // 主要是想知道是手动模式还是定时模式(定时长/定容量)
         new Command(new Once() {
             @Override
@@ -187,8 +187,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 spinMode.setOnItemSelectedListener(MainFrag.this);
 
                 sampleMode = cmd.Manual ? Comm.MANUAL_SET : cmd.SampleMode;
+                Comm.setIntSP(SP_MANUALMODE, cmd.ManualMode);
+                npSpeed.setValue(cmd.TargetSpeed);
+                npVolume.setValue(cmd.TargetVolume);
+                npTiming.setValue(cmd.TargetDuration);
                 Comm.logI("svr sampleMode " + sampleMode);
-                sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
+//                sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
                 switchSampleMode();
             }
@@ -423,6 +427,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 if (Channel.ALL.equals(currChannel))
                     spinChannel.setSelection(0);
 
+                if (!verify) return;
+
                 npSpeed.setValue(cmd.TargetSpeed);
                 npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长？
                 npTiming.setValue(cmd.TargetDuration);
@@ -452,6 +458,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
+
                 progSampling.setProgress(cmd.Progress); // todo 也许定时模式也应该显示进度条的
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
@@ -505,7 +513,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         __state.schedule(new TimerTask() {
             @Override
             public void run() {
-                Comm.logI("what ?!");
                 final String[] State = new String[]{"停止", "等待", "正在采样", "暂停", "完成", "延时等待"};
                 new Command(new Once() {
                     @Override
@@ -702,6 +709,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     timedDuration[i] = item.targetDuration;
                     timedVolume[i] = item.targetVol;
                     timedSpeed[i] = item.targetSpeed;
+                    timedSet[i] = item.isSet;
                 }
 //                timedLaunchAt[0] = "2015-06-26 22:38";
 //                timedLaunchAt[1] = "2015-06-26 22:39";
@@ -722,7 +730,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         }
 
         for (int i=waitingGroup, len = timedDuration.length; i<len; i++) {
-            str += String.format(strFmt, (i+1), timedLaunchAt[i], isSetCap ? timedVolume[i]: timedDuration[i], timedSpeed[i]);
+            if (timedSet[i])
+                str += String.format(strFmt, (i+1), timedLaunchAt[i], isSetCap ? timedVolume[i]: timedDuration[i], timedSpeed[i]);
         }
         txtTimedSetting.setText(str);
     }

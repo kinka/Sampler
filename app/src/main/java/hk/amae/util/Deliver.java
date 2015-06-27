@@ -47,7 +47,7 @@ public class Deliver {
             channel.configureBlocking(true);
             data.flip();
             channel.send(data, new InetSocketAddress(svrHost, svrPort));
-            socket.setSoTimeout(1000);
+            socket.setSoTimeout(2000);
 
             socket.receive(packet); // todo 考虑循环收包的问题
             recvData.limit(packet.getLength());

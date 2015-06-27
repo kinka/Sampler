@@ -329,6 +329,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 new Command(new Command.Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
+                        if (!verify) return;
+
                         Battery battery = (Battery) parent.findViewById(R.id.battery);
                         if (battery == null) return;
 
@@ -463,10 +465,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 progSampling.setProgress(cmd.Progress); // todo 也许定时模式也应该显示进度条的
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
+                runningState = cmd.ChannelState;
                 if (cmd.Progress >= 100) {
                     runningState = Comm.STOPPED;
-                    updateRunningState();
                 }
+                updateRunningState();
             }
         }).reqChannelState(Channel.ALL.equals(currChannel) ? Channel.CH1 : currChannel);
     }
@@ -475,8 +478,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__progress != null)
             __progress.cancel();
 
-        if (runningState != Comm.PLAYING)
-            return;
+//        if (runningState != Comm.PLAYING)
+//            return;
 
         __progress = new Timer();
         __progress.schedule(new TimerTask() {
@@ -491,8 +494,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__progress != null)
             __progress.cancel();
 
-        if (runningState != Comm.PLAYING)
-            return;
+//        if (runningState != Comm.PLAYING)
+//            return;
 
         __progress = new Timer();
         __progress.schedule(new TimerTask() {
@@ -533,17 +536,17 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         }
                         txtTips.setText(states);
                         // todo 判断当前通道通行状态，确定是否开始轮询
-/*                            int channel = currChannel.getValue();
-                            if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
-                                if (cmd.MachineState[channel - 1] != 2)
-                                    return;
-                            } else if (channel >= Channel.C1.getValue() && channel <= Channel.C4.getValue()) {
+                        int channel = currChannel.getValue();
+                        if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
+                            if (cmd.MachineState[channel - 1] == 2)
+                                runningState = Comm.PLAYING;
+                        } else if (channel >= Channel.C1.getValue() && channel <= Channel.C4.getValue()) {
 
-                            } else if (channel >= Channel.B1.getValue() && channel <= Channel.B2.getValue()) {
+                        } else if (channel >= Channel.B1.getValue() && channel <= Channel.B2.getValue()) {
 
-                            } else if (channel == Channel.A1.getValue()) {
+                        } else if (channel == Channel.A1.getValue()) {
 
-                            }*/
+                        }
 
                         if (sampleMode == Comm.MANUAL_SET)
                             pollManualState();

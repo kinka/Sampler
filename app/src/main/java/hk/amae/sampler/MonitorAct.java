@@ -3,6 +3,7 @@ package hk.amae.sampler;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -33,6 +34,13 @@ public class MonitorAct extends Activity {
         temp = (TextView) findViewById(R.id.txt_temp);
         datetime = (TextView) findViewById(R.id.txt_datetime);
 
+        findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MonitorAct.this.onBackPressed();
+            }
+        });
+
         Resources res = getResources();
         String pkgName = getPackageName();
         for (int i=0; i<rows.length; i++) {
@@ -59,6 +67,8 @@ public class MonitorAct extends Activity {
             new Command(new Once() {
                 @Override
                 public void done(boolean verify, Command cmd) {
+                    if (!verify) return;
+
                     TextView speed = rows[r][1];
                     TextView volume = rows[r][2];
                     TextView progress = rows[r][3];
@@ -74,6 +84,7 @@ public class MonitorAct extends Activity {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
                 atm.setText(String.format(BasicInfoFrag.atmFormat, cmd.ATM));
                 temp.setText(String.format(BasicInfoFrag.tempFormat, cmd.TEMP));
             }
@@ -82,6 +93,7 @@ public class MonitorAct extends Activity {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
                 if (cmd.DateTime != null)
                     datetime.setText(cmd.DateTime.replace(" ", "\n"));
             }

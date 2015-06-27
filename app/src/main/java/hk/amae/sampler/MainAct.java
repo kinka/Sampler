@@ -43,7 +43,7 @@ import hk.amae.util.Deliver;
 public class MainAct extends Activity implements MainFrag.OnMainFragListener {
     private boolean isLocked = false;
     BasicInfoFrag basicInfoFrag;
-    public static int lastid = -1;
+    public int lastid = -1;
 
     private Timer __basicInfo;
     private int durationBasicInfo = 60*1000;
@@ -188,7 +188,8 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
 
     @Override
     public void onBackPressed() {
-        if (lastid != 0) {
+        if (lastid > 0) {
+            lastid = -1;
             super.onBackPressed();
         } else {
             lastid = -1;

@@ -121,7 +121,11 @@ public class Command {
                 Comm.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Command.this.once.done(verify, Command.this);
+                        try {
+                            Command.this.once.done(verify, Command.this);
+                        } catch (Exception e) {
+
+                        }
                     }
                 });
             }

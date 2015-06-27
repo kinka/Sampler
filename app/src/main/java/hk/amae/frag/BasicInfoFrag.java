@@ -151,8 +151,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                if (!verify)
-                    return;
+                if (!verify) return;
                 ((TextView) parent.findViewById(R.id.txt_model)).setText(String.format(modelFormat, cmd.Model));
                 ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format(snFormat, cmd.SN));
                 ((TextView) parent.findViewById(R.id.txt_ssid)).setText(String.format(hostFormat, Comm.getSP("ssid")));
@@ -162,8 +161,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                if (!verify)
-                    return;
+                if (!verify) return;
                 ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, cmd.ATM));
                 ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, cmd.TEMP));
             }
@@ -172,8 +170,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                if (!verify)
-                    return;
+                if (!verify) return;
                 ((TextView) parent.findViewById(R.id.txt_datetime)).setText(cmd.DateTime);
                 Date toDiff = null;
                 try {

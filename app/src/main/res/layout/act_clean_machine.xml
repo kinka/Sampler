@@ -27,6 +27,11 @@
         android:layout_height="match_parent"
         android:gravity="center">
 
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_weight="1" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="36dp"
@@ -50,6 +55,22 @@
             components:textFormat="已完成 %d%%"
             components:textBelow="true"
             android:indeterminate="false" />
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="返回"
+            android:id="@+id/btn_back"
+            android:background="@drawable/amae_button"
+            android:textColor="@color/amae_text_icons"
+            android:layout_margin="9dp"
+            android:layout_gravity="bottom|right" />
+
     </LinearLayout>
 
 </LinearLayout>

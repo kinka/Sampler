@@ -60,16 +60,6 @@ public class Deliver {
             } else {
                 e.printStackTrace();
             }
-            // todo 尝试重试一次
-//            if (msg.contains("EAGAIN")) {
-//                try {
-//                    Thread.sleep(100);
-//                } catch (Exception ex) {
-//
-//                }
-//                return Deliver.send(data);
-//            }
-//            e.printStackTrace();
             recvData.limit(0);
         }
 

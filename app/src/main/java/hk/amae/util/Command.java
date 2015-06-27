@@ -142,9 +142,6 @@ public class Command {
         }
 
         ByteBuffer reply = Deliver.send(buf);
-        reply.order(ByteOrder.BIG_ENDIAN);
-        if (cmd == 0x101)
-            Comm.logI("limit " + reply.limit());
         if (reply.limit() == 0) return false;
 
         synchronized (__SUCC) {

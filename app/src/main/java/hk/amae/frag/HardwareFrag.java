@@ -24,12 +24,19 @@ public class HardwareFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_hardware, container, false);
-        Comm.logI("listener2...");
+
         v.findViewById(R.id.btn_backlit).setOnClickListener(listener);
         v.findViewById(R.id.btn_time).setOnClickListener(listener);
         v.findViewById(R.id.btn_restore).setOnClickListener(listener);
         v.findViewById(R.id.btn_clear).setOnClickListener(listener);
         v.findViewById(R.id.btn_poweroff).setOnClickListener(listener);
+
+        v.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
         return v;
     }
 

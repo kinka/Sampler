@@ -35,6 +35,13 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
 
         progressBar = (TextProgressBar) v.findViewById(R.id.prog_clearing);
 
+        v.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
         doClearSample(false); // 先查询，看是否仍在清空数据中。。。
 
         return v;

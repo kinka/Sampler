@@ -34,6 +34,13 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
 
         progClean = (TextProgressBar) findViewById(R.id.prog_cleaning);
 
+        findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CleanMachineAct.this.onBackPressed();
+            }
+        });
+
         if (progress == 0)
             doClean();
         else

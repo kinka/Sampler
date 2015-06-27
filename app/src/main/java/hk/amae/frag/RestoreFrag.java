@@ -36,6 +36,13 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
 
         progressBar = (TextProgressBar) v.findViewById(R.id.prog_restoring);
 
+        v.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
         doRestore(false); // 先查询，看是否仍在恢复中。。。
 
         return v;

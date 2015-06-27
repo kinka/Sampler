@@ -18,7 +18,7 @@
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="18dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
             android:gravity="left|center_vertical"
@@ -33,7 +33,7 @@
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="18dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
             android:gravity="left|center_vertical"
@@ -47,7 +47,7 @@
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="18dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
             android:gravity="left|center_vertical"
@@ -61,7 +61,7 @@
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="18dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
             android:gravity="left|center_vertical"
@@ -75,7 +75,7 @@
             android:background="@drawable/amae_button"
             android:textColor="@color/amae_text_icons"
             android:layout_marginLeft="36dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="18dp"
             android:paddingLeft="9dp"
             android:paddingRight="9dp"
             android:gravity="left|center_vertical"
@@ -85,5 +85,15 @@
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:layout_weight="8" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="返回"
+        android:id="@+id/btn_back"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons"
+        android:layout_gravity="right"
+        android:layout_margin="9dp" />
 
 </LinearLayout>

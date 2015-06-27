@@ -137,7 +137,6 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                 public void done(boolean verify, Command cmd) {
                     if (cmd.ChannelMode == 0 || cmd.ChannelMode > ChannelAct.MODE_8IN1)
                         cmd.ChannelMode = ChannelAct.MODE_SINGLE;
-                    // todo 暂时使用本地保存的设置
 //                    cmd.ChannelMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
                     Comm.setIntSP(ChannelAct.SP_CHANNELMODE, cmd.ChannelMode);
                     ft.commit();

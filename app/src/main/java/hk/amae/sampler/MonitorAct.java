@@ -95,7 +95,8 @@ public class MonitorAct extends Activity {
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
                 if (cmd.DateTime != null)
-                    datetime.setText(cmd.DateTime.replace(" ", "\n"));
+                    datetime.setText(cmd.DateTime);
+//                    datetime.setText(cmd.DateTime.replace(" ", "\n"));
             }
         }).reqDateTime();
     }

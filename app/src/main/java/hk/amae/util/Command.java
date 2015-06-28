@@ -141,7 +141,8 @@ public class Command {
             __total++;
         }
 
-        ByteBuffer reply = Deliver.send(buf);
+        int timeout = cmd == 0x101 ? 2000 : 0;
+        ByteBuffer reply = Deliver.send(buf, timeout);
         if (reply.limit() == 0) return false;
 
         synchronized (__SUCC) {

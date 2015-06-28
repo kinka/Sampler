@@ -36,7 +36,7 @@ public class Deliver {
         }
         Comm.logI("connected server: " + svrHost + ":" + svrPort);
     }
-    public static synchronized ByteBuffer send(ByteBuffer data) {
+    public static synchronized ByteBuffer send(ByteBuffer data, int timeout) {
         ByteBuffer recvData = ByteBuffer.allocate(1024*8);
         DatagramPacket packet = new DatagramPacket(recvData.array(), recvData.limit());
 
@@ -47,7 +47,7 @@ public class Deliver {
             channel.configureBlocking(true);
             data.flip();
             channel.send(data, new InetSocketAddress(svrHost, svrPort));
-            socket.setSoTimeout(2000);
+            socket.setSoTimeout(timeout == 0 ? 1000 : timeout);
 
             socket.receive(packet); // todo 考虑循环收包的问题
             recvData.limit(packet.getLength());

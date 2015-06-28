@@ -175,7 +175,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
             public void run() {
                 basicInfoFrag.updateInfo();
             }
-        }, 0, durationBasicInfo);
+        }, 1000, durationBasicInfo);
     }
 
     @Override

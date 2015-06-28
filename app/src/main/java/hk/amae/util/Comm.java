@@ -18,6 +18,7 @@ import java.util.logging.SimpleFormatter;
 import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import hk.amae.frag.BasicInfoFrag;
 
@@ -206,5 +207,37 @@ public class Comm {
         }
 //        Comm.logI("diff " + strDiff);
         return strDiff;
+    }
+
+    public static Timer syncSvrTime(Timer ticker, final TextView textView) {
+        try {
+            final int offset = Comm.getIntSP(BasicInfoFrag.SP_TIMEFIX);
+
+            if (ticker != null)
+                ticker.cancel();
+            ticker = new Timer();
+            ticker.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Date now = Calendar.getInstance().getTime();
+                        now.setTime(now.getTime() - offset); // server now
+                        final String svrTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)).format(now);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView.setText(svrTime);
+                            }
+                        });
+                    } catch (Exception e) {
+
+                    }
+                }
+            }, 0, 1000);
+        } catch (Exception e) {
+            Comm.logE("ticker: " + e.getMessage());
+        }
+
+        return ticker;
     }
 }

@@ -41,6 +41,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
 
     public final static String SP_TIMEFIX = "TIMEFIX";
 
+    private Timer ticker;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,12 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     @Override
     public void onDetach() {
         super.onDetach();
+        try {
+            if (ticker != null)
+                ticker.cancel();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -171,24 +179,36 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
             @Override
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
-                ((TextView) parent.findViewById(R.id.txt_datetime)).setText(cmd.DateTime);
-                Date toDiff = null;
-                try {
-                    toDiff = (new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)).parse(cmd.DateTime);
-                    Date now = Calendar.getInstance().getTime();
-                    boolean before = now.before(toDiff);
-                    long __diff = 0;
-                    if (before) {
-                        __diff = (toDiff.getTime() - now.getTime());
-                    } else {
-                        __diff = (now.getTime() - toDiff.getTime());
-                    }
-                    Comm.setIntSP(SP_TIMEFIX, (int) __diff);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
+//                cmd.DateTime = "2015-06-28 10:31:12";
+                final TextView textView = ((TextView) parent.findViewById(R.id.txt_datetime));
+                textView.setText(cmd.DateTime);
+
+                calcTimeOffset(cmd.DateTime);
+                ticker = Comm.syncSvrTime(ticker, textView);
             }
         }).reqDateTime();
+    }
+
+    private int calcTimeOffset(String datetime) {
+        Date toDiff = null;
+        try {
+            toDiff = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)).parse(datetime);
+            Date now = Calendar.getInstance().getTime();
+            boolean before = now.before(toDiff);
+            long __diff = 0;
+            if (before) {
+                __diff = (toDiff.getTime() - now.getTime());
+            } else {
+                __diff = (now.getTime() - toDiff.getTime());
+            }
+
+            Comm.setIntSP(SP_TIMEFIX, (int) __diff);
+            return (int) __diff;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }

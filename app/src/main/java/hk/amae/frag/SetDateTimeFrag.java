@@ -80,6 +80,8 @@ public class SetDateTimeFrag extends Fragment implements View.OnClickListener {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
+
                 String[] times = Comm.getLocalDateTime(cmd.DateTime);
                 txtDate.setText(times[0]);
                 txtTime.setText(times[1]);

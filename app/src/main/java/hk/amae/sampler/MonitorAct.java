@@ -24,6 +24,7 @@ public class MonitorAct extends Activity {
     TextView atm, datetime, temp;
 
     Timer timer = new Timer();
+    Timer ticker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +60,12 @@ public class MonitorAct extends Activity {
                 updateInfo();
             }
         }, 0, 3000);
+
+        ticker = Comm.syncSvrTime(ticker, datetime);
     }
 
     private void query() {
-        for (int i=0; i<8; i++) {
+        for (int i=0; i<Command.CHANNELCOUNT; i++) {
             final int r = i;
             new Command(new Once() {
                 @Override
@@ -90,7 +93,7 @@ public class MonitorAct extends Activity {
             }
         }).reqATM_TEMP();
 
-        new Command(new Once() {
+/*        new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
@@ -98,13 +101,20 @@ public class MonitorAct extends Activity {
                     datetime.setText(cmd.DateTime);
 //                    datetime.setText(cmd.DateTime.replace(" ", "\n"));
             }
-        }).reqDateTime();
+        }).reqDateTime();*/
     }
 
     @Override
     protected void onPause() {
         try {
-            timer.cancel();
+            if (timer != null)
+                timer.cancel();
+        } catch (Exception e) {
+
+        }
+        try {
+            if (ticker != null)
+                ticker.cancel();
         } catch (Exception e) {
 
         }

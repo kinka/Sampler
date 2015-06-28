@@ -192,7 +192,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 npVolume.setValue(cmd.TargetVolume);
                 npTiming.setValue(cmd.TargetDuration);
                 Comm.logI("svr sampleMode " + sampleMode);
-//                sampleMode = Comm.getIntSP(SP_SAMPLEMODE); // todo 使用服务器的返回结果
                 spinMode.setSelection(sampleMode);
                 switchSampleMode();
             }
@@ -478,8 +477,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__progress != null)
             __progress.cancel();
 
-//        if (runningState != Comm.PLAYING)
-//            return;
+        if (runningState != Comm.PLAYING)
+            return;
 
         __progress = new Timer();
         __progress.schedule(new TimerTask() {
@@ -494,15 +493,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__progress != null)
             __progress.cancel();
 
-//        if (runningState != Comm.PLAYING)
-//            return;
+        if (runningState != Comm.PLAYING)
+            return;
 
         __progress = new Timer();
         __progress.schedule(new TimerTask() {
             @Override
             public void run() {
-//                String selected = spinChannel.getSelectedItem().toString();
-//                Channel channel = selected.equals("全选") ? Channel.ALL : Channel.init(spinChannel.getSelectedItemPosition() + 1);
                 reqChannelState();
             }
         }, 0, durationProgress);
@@ -523,30 +520,15 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         if (!verify) return;
                         String states = "";
                         for (int i = 0; i < Command.CHANNELCOUNT; i++) {
-//                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 4);
+//                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 5);
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
 
                             states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
-                            // 如果reqChannelState的进度条不可靠的话，则重新考虑如何更新对应通道的状态
-//                            if (currChannel.getValue() == i + 1 && cmd.MachineState[i] == 4) {
-//                                runningState = Comm.STOPPED;
-//                                updateRunningState();
-//                            }
                         }
                         txtTips.setText(states);
-                        // todo 判断当前通道通行状态，确定是否开始轮询
-                        int channel = currChannel.getValue();
-                        if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
-                            if (cmd.MachineState[channel - 1] == 2)
-                                runningState = Comm.PLAYING;
-                        } else if (channel >= Channel.C1.getValue() && channel <= Channel.C4.getValue()) {
 
-                        } else if (channel >= Channel.B1.getValue() && channel <= Channel.B2.getValue()) {
-
-                        } else if (channel == Channel.A1.getValue()) {
-
-                        }
+                        resolveState(cmd);
 
                         if (sampleMode == Comm.MANUAL_SET)
                             pollManualState();
@@ -556,6 +538,63 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 }).reqMachineState();
             }
         }, 0, durationState);
+    }
+    private int resolveState(int index) {
+        if (index == 1 || index == 2)
+            return Comm.PLAYING;
+        if (index == 3 || index == 5)
+            return Comm.PAUSED;
+        if (index == 0 || index == 4)
+            return Comm.STOPPED;
+        return Comm.PLAYING;
+    }
+    private void resolveState(Command cmd) {
+        int channel = currChannel.getValue();
+        if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
+            int state = cmd.MachineState[channel - 1];
+            runningState = resolveState(state);
+        } else if (channel >= Channel.C1.getValue() && channel <= Channel.C4.getValue()) {
+            channel = channel - Channel.C1.getValue();
+            int stateA = resolveState(cmd.MachineState[channel*2]);
+            int stateB = resolveState(cmd.MachineState[channel*2 + 1]);
+            if (channel % 2 == 1) {
+                stateA = resolveState(cmd.MachineState[channel*2 - 1]);
+                stateB = resolveState(cmd.MachineState[channel*2]);
+            }
+            if (stateA == Comm.PLAYING || stateB == Comm.PLAYING)
+                runningState = Comm.PLAYING;
+            else if (stateA == Comm.PAUSED || stateB == Comm.PAUSED)
+                runningState = Comm.PAUSED;
+            else
+                runningState = Comm.STOPPED;
+
+        } else if (channel >= Channel.B1.getValue() && channel <= Channel.B2.getValue()) {
+            channel = channel - Channel.B1.getValue();
+            runningState = Comm.STOPPED;
+            int base = 4 * (channel % 2);
+            int i= base;
+            for (; i<base+4 ;i++) {
+                if (resolveState(cmd.MachineState[i]) == Comm.PLAYING) {
+                    runningState = Comm.PLAYING;
+                    break;
+                }
+            }
+            if (i == 4)
+                runningState = Comm.PAUSED;
+        } else if (channel == Channel.A1.getValue()) {
+            runningState = Comm.STOPPED;
+            int i = 0;
+            for (; i<Command.CHANNELCOUNT; i++) {
+                if (resolveState(cmd.MachineState[i]) == Comm.PLAYING) {
+                    runningState = Comm.PLAYING;
+                    break;
+                }
+            }
+            if (i == Command.CHANNELCOUNT)
+                runningState = Comm.PAUSED;
+        }
+
+//        updateRunningState();
     }
 
     @Override

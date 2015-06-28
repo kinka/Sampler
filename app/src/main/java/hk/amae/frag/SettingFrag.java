@@ -123,7 +123,7 @@ public class SettingFrag extends Fragment implements
         new AlertDialog.Builder(parent).setTitle(title)
                 .setView(inputPassword).setPositiveButton("确定", this)
                 .setNegativeButton("取消", this).show();
-
+        Comm.showSoftInput(500);
         return false;
     }
 

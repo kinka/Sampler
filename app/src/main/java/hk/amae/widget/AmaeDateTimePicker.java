@@ -57,7 +57,7 @@ public class AmaeDateTimePicker {
                 public void onDateSet(DatePicker datePicker, int y, int m, int d) {
                     String value = String.format(format, y, m + 1, d);
                     textView.setText(value);
-                    Comm.hideSoftInput();
+
                     if (picker != null)
                         picker.onPick(value);
                 }
@@ -92,7 +92,7 @@ public class AmaeDateTimePicker {
                     public void onTimeSet(TimePicker timePicker, int h, int m) {
                         String value = String.format(format, h, m, s);
                         textView.setText(value);
-                        Comm.hideSoftInput();
+
                         if (picker != null)
                             picker.onPick(value);
                     }

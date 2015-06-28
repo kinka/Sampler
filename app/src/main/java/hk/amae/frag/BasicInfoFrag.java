@@ -182,7 +182,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
 
 //                cmd.DateTime = "2015-06-28 10:31:12";
                 final TextView textView = ((TextView) parent.findViewById(R.id.txt_datetime));
-                textView.setText(cmd.DateTime);
+//                textView.setText(cmd.DateTime);
 
                 calcTimeOffset(cmd.DateTime);
                 ticker = Comm.syncSvrTime(ticker, textView);

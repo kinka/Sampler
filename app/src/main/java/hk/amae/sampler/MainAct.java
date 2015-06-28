@@ -137,15 +137,16 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
                 public void done(boolean verify, Command cmd) {
                     if (cmd.ChannelMode == 0 || cmd.ChannelMode > ChannelAct.MODE_8IN1)
                         cmd.ChannelMode = ChannelAct.MODE_SINGLE;
-//                    cmd.ChannelMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
-                    Comm.setIntSP(ChannelAct.SP_CHANNELMODE, cmd.ChannelMode);
-                    ft.commit();
+                    int lastMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
+                    if (lastMode != cmd.ChannelMode) {
+                        Comm.setIntSP(ChannelAct.SP_CHANNELMODE, cmd.ChannelMode);
+                        ft.commit();
+                    }
                 }
             }).reqChannelMode();
-        } else {
-            ft.commit();
         }
-
+        // 不管结果如何都先commit, 避免由于网络超时出现长时间空白
+        ft.commit();
     }
 
     void killTimer() {

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/AmaeTextLarge"
         android:text="@string/app_title"
-        android:id="@+id/textView"
+        android:id="@+id/app_title"
         android:layout_row="0"
         android:layout_column="0"
         android:gravity="center"

@@ -1,13 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'amae'
+            keyPassword '082573'
+            storeFile file('/home/kinka/AndroidStudioProjects/Sampler/sampler.jks')
+            storePassword '082573'
+        }
+    }
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
-
+    buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "hk.amae.sampler"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -17,9 +24,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:22.2.0'
 }

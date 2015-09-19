@@ -18,7 +18,7 @@ import hk.amae.util.Command;
 public class QueryAct extends Activity {
     private TextView labelSpeed, labelTargetSpeed, labelVolume, labelStandardVol,
         labelTime, labelATM, labelTEMP, labelProgress, labelElapse, labelDuration, labelTargetVolume,
-        labelSampleMode, labelLaunchMode, labelChannel, labelGroup;
+        labelSampleMode, labelLaunchMode, labelChannel, labelGroup, labelGPS;
 
     private LinearLayout wrapSampleMode, wrapLaunchMode, wrapTargetDuration, wrapTargetVolume;
 
@@ -64,9 +64,12 @@ public class QueryAct extends Activity {
         labelLaunchMode = (TextView) findViewById(R.id.label_launch_mode);
         labelChannel = (TextView) findViewById(R.id.label_channel);
         labelGroup = (TextView) findViewById(R.id.label_set_group);
+        labelGPS = (TextView) findViewById(R.id.label_gps);
 
         wrapLaunchMode = (LinearLayout) findViewById(R.id.wrapLaunchMode);
         wrapSampleMode = (LinearLayout) findViewById(R.id.wrapSampleMode);
+
+        labelGPS.setText(Comm.getSP("gps"));
 
         onceDone = new Command.Once() {
             @Override

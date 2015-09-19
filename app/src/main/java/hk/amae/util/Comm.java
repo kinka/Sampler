@@ -2,10 +2,16 @@ package hk.amae.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,10 +21,6 @@ import java.util.TimerTask;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import android.content.SharedPreferences.Editor;
-import android.os.IBinder;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import hk.amae.frag.BasicInfoFrag;
 
@@ -67,6 +69,7 @@ public class Comm {
         initLogger(pkgName);
         handler = new android.os.Handler();
         Deliver.init();
+        Comm.logI("sign " + Comm.getSignuature(pkgName));
     }
 
     public static Logger initLogger(String pkgName) {
@@ -239,5 +242,29 @@ public class Comm {
         }
 
         return ticker;
+    }
+
+    public static String getSignuature(String pkgName) {
+        String sign = "";
+        try {
+            PackageInfo pInfo = ctx.getPackageManager().getPackageInfo(pkgName, PackageManager.GET_SIGNATURES);
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            messageDigest.reset();
+            byte[] sig = messageDigest.digest(pInfo.signatures[0].toByteArray());
+            sign = bufInHex(sig);
+        } catch (Exception e) {
+
+        }
+        return sign;
+    }
+
+    public static String bufInHex(byte[] bytes) {
+//        new BigInteger(bytes).toString(16)
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (byte b:bytes) {
+            sb.append(String.format("%02X", b & 0xff));
+        }
+
+        return sb.toString();
     }
 }

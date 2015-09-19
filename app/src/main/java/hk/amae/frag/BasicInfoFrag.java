@@ -2,9 +2,12 @@ package hk.amae.frag;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -14,13 +17,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.text.ParseException;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
@@ -61,6 +67,9 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         View v = inflater.inflate(R.layout.frag_basic_info, container, false);
         TextView txtSN = (TextView) v.findViewById(R.id.txt_sn);
         txtSN.setOnClickListener(this);
+
+        appTitle = (TextView) v.findViewById(R.id.app_title);
+
         return v;
     }
 
@@ -68,6 +77,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         parent = activity;
+//        reqGPS();
     }
 
     @Override
@@ -79,6 +89,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         } catch (Exception e) {
 
         }
+        removeGPS();
     }
 
     @Override
@@ -211,4 +222,52 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
 
         return 0;
     }
+
+    LocationClient locationClient = null;
+    BDLocationListener bdListener = null;
+    TextView appTitle;
+
+    // 获取GPS信息
+    @Override
+    public void onResume() {
+        super.onResume();
+        reqGPS();
+    }
+
+    void reqGPS() {
+        removeGPS();
+
+        Comm.setSP("gps", "");
+        locationClient = new LocationClient(parent);
+        bdListener = new BDLocationListener() {
+            @Override
+            public void onReceiveLocation(BDLocation bdLocation) {
+                double lat = bdLocation.getLatitude();
+                double lng = bdLocation.getLongitude();
+
+                String ss = "gps " + bdLocation.getLocType() + " lat " + lat + " lng " + lng + " alt " + bdLocation.getAltitude();
+                ss += " " + bdLocation.getAddrStr();
+                Comm.logI(ss);
+
+                Comm.setSP("gps", String.format("%s经 %f\n%s纬   %f", (lng > 0 ? "东":"西"), Math.abs(lng), (lat > 0 ? "北":"南"), Math.abs(lat)));
+            }
+        };
+        locationClient.registerLocationListener(bdListener);
+
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);//设置定位模式
+        option.setCoorType("gcj02");//返回的定位结果是百度经纬度，默认值gcj02
+        option.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
+//        option.setIsNeedAddress(true);
+        option.setOpenGps(true);
+        locationClient.setLocOption(option);
+
+        locationClient.start();
+    }
+    void removeGPS() {
+        if (locationClient != null)
+            locationClient.stop();
+    }
+
+    // keytool -list -v -keystore sampler.jks
 }

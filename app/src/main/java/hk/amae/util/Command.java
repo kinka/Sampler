@@ -98,7 +98,7 @@ public class Command {
     private ByteBuffer build(final int cmd, byte[] data) {
         if (data == null) data = new byte[0];
 //if (cmd > 3) return null;
-        Comm.logI("req cmd 0x" + Integer.toHexString(cmd));
+//        Comm.logI("req cmd 0x" + Integer.toHexString(cmd));
         final ByteBuffer buf = ByteBuffer.allocate(3 + 1 + 2 + 2 + data.length + 2);
         buf.order(ByteOrder.BIG_ENDIAN);
         buf.put((byte) 0xaa);
@@ -153,7 +153,7 @@ public class Command {
         reply.get(); // == 0xfa?
         reply.get(); // version
         int __cmd = reply.getShort(); // cmd
-        Comm.logI("reply cmd 0x" + Integer.toHexString(cmd));
+//        Comm.logI("reply cmd 0x" + Integer.toHexString(cmd));
 
         try {
             int len = reply.getShort();

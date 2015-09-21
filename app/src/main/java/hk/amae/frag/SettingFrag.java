@@ -59,6 +59,7 @@ public class SettingFrag extends Fragment implements
         v.findViewById(R.id.btn_password).setOnClickListener(this);
         v.findViewById(R.id.btn_adjust).setOnClickListener(this);
         v.findViewById(R.id.btn_other).setOnClickListener(this);
+        v.findViewById(R.id.btn_back).setOnClickListener(this);
 
         return v;
     }
@@ -106,6 +107,10 @@ public class SettingFrag extends Fragment implements
 
             case R.id.btn_other:
                 startActivity(new Intent(getActivity(), MiscAct.class));
+                break;
+
+            case R.id.btn_back:
+                getActivity().onBackPressed();
                 break;
         }
     }

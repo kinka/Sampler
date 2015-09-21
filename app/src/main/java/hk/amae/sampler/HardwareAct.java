@@ -28,6 +28,12 @@ public class HardwareAct extends Activity implements View.OnClickListener {
         switchPanel(0);
     }
 
+    @Override
+    public void onBackPressed() {
+        labelTitle.setText(FragTitles[0]);
+        super.onBackPressed();
+    }
+
     private void switchPanel(int id) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         switch (id) {

@@ -456,7 +456,9 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/label_gps"
                     android:layout_weight="3"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:text="东经 113.904965\n北纬   22.568195"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>

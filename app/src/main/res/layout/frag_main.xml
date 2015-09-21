@@ -212,18 +212,29 @@
             android:layout_height="48dp"
             android:id="@+id/layout_timing"
             android:weightSum="1"
-            android:visibility="visible">
-            <TextView
+            android:visibility="gone">
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="设定时长"
-                android:id="@+id/label_timing"
-                android:layout_gravity="center"
-                android:layout_marginRight="9dp"
-                android:textColor="@color/amae_secondary_text"
-                android:paddingRight="9dp"
-                android:layout_weight="0.3" />
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:layout_marginRight="9dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="设定时长"
+                    android:id="@+id/label_timing"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="9dp"
+                    android:textColor="@color/amae_text_icons"
+                    android:background="@drawable/amae_button"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+            </LinearLayout>
+
             <hk.amae.widget.NumberOperator
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -253,18 +264,29 @@
             android:layout_height="48dp"
             android:id="@+id/layout_capacity"
             android:weightSum="1"
-            android:visibility="gone">
-            <TextView
+            android:visibility="visible">
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="设定容量"
-                android:id="@+id/label_cap"
-                android:layout_gravity="center"
-                android:layout_marginRight="9dp"
-                android:textColor="@color/amae_secondary_text"
-                android:paddingRight="9dp"
-                android:layout_weight="0.3" />
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:layout_marginRight="9dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="设定容量"
+                    android:id="@+id/label_cap"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="9dp"
+                    android:textColor="@color/amae_text_icons"
+                    android:background="@drawable/amae_button"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+            </LinearLayout>
+
             <hk.amae.widget.NumberOperator
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -287,6 +309,7 @@
                 android:padding="0dp"
                 android:layout_gravity="center"
                 android:gravity="start" />
+
         </LinearLayout>
 
         <LinearLayout

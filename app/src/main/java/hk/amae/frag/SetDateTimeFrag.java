@@ -12,6 +12,7 @@ import android.widget.DatePicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -85,6 +86,7 @@ public class SetDateTimeFrag extends Fragment implements View.OnClickListener {
                 String[] times = Comm.getLocalDateTime(cmd.DateTime);
                 txtDate.setText(times[0]);
                 txtTime.setText(times[1]);
+                Toast.makeText(getActivity(), "时间已经更新", Toast.LENGTH_SHORT).show();
             }
         }).setDateTime(Comm.getServerDateTime(txtDate.getText().toString(), txtTime.getText().toString()));
     }

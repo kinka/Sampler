@@ -19,6 +19,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -518,14 +520,23 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     @Override
                     public void done(boolean verify, Command cmd) {
                         if (!verify) return;
+                        List<Integer> running = new ArrayList<Integer>();
+                        List<Integer> stopped = new ArrayList<Integer>();
+                        List<Integer> paused = new ArrayList<Integer>();
                         String states = "";
                         for (int i = 0; i < Command.CHANNELCOUNT; i++) {
 //                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 5);
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
 
-                            states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
+                            if (cmd.MachineState[i] == 0) stopped.add(i+1);
+                            else if (cmd.MachineState[i] == 2) running.add(i+1);
+                            else if (cmd.MachineState[i] == 3) paused.add(i+1);
+//                            states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
                         }
+                        states = "采样：" + running.toString() + "\n";
+                        states += "暂停：" + paused.toString() + "\n";
+                        states += "停止：" + stopped.toString();
                         txtTips.setText(states);
 
                         resolveState(cmd);
@@ -647,9 +658,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             if (lastMode == sampleMode) // 防止切换frag的时候意外触发,比如 设置
                 isSpinnerClick = false;
 
-            if (intent != null && isSpinnerClick) {
-                startActivityForResult(intent, 0);
-            }
+//            if (intent != null && isSpinnerClick) {
+//                startActivityForResult(intent, 0);
+//            }
 
             switchSampleMode();
             isSpinnerClick = true;

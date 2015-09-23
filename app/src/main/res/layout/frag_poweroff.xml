@@ -25,7 +25,11 @@
         android:text="2015 年 04 月 01 日"
         android:id="@+id/txt_date"
         android:layout_gravity="center_horizontal"
-        android:gravity="center" />
+        android:gravity="center"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,7 +47,11 @@
         android:text="17 : 22 : 25"
         android:id="@+id/txt_time"
         android:layout_gravity="center_horizontal"
-        android:gravity="center" />
+        android:gravity="center"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:background="@drawable/amae_button"
+        android:textColor="@color/amae_text_icons" />
 
     <Space
         android:layout_width="match_parent"

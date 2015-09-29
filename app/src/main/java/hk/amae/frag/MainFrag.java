@@ -123,6 +123,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
         btnRun = (ImageButton) v.findViewById(R.id.toggle_run);
         btnRun.setOnTouchListener(new AmaeClickDetector(new ClickHandler()));
+        v.findViewById(R.id.btn_stop).setOnClickListener(this);
 
         v.findViewById(R.id.btn_setting).setOnClickListener(this);
         v.findViewById(R.id.btn_connect).setOnClickListener(this);
@@ -356,6 +357,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             case R.id.toggle_lock:
                 isLocked = !isLocked;
                 setLock();
+                break;
+
+            case R.id.btn_stop:
+                runningState = Comm.STOPPED;
+                switchRunningState();
+                Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_setting:
@@ -811,9 +818,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     switchRunningState();
                     break;
                 case AmaeClickDetector.MSG_DBLCLICK:
-                    runningState = Comm.STOPPED;
-                    switchRunningState();
-                    Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
+                    // 单独一个停止按钮 btn_stop
                     break;
             }
         }

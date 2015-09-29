@@ -12,14 +12,14 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:weightSum="1"
+        android:weightSum="4"
         android:id="@+id/layout_lockwrapper">
 
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/toggle_lock"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:cropToPadding="false"
@@ -36,7 +36,7 @@
             android:spinnerMode="dialog"
             android:layout_gravity="center"
             android:dropDownWidth="wrap_content"
-            android:layout_weight="0.15"
+            android:layout_weight="0.5"
             android:prompt="@string/channel_prompt"
             android:paddingLeft="9dp" />
 
@@ -47,7 +47,7 @@
             android:spinnerMode="dialog"
             android:layout_gravity="center"
             android:dropDownWidth="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_weight="1"
             android:prompt="@string/model_prompt" />
 
         <view
@@ -59,7 +59,7 @@
             components:charging="true"
             android:cropToPadding="false"
             android:scaleType="fitCenter"
-            android:layout_weight="0.4"
+            android:layout_weight="1.5"
             android:layout_gravity="center" />
 
     </LinearLayout>
@@ -84,14 +84,27 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/btn_stop"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/stop"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@drawable/amae_imagebutton"
+            android:layout_margin="9dp"
+            android:padding="2dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/toggle_run"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:src="@drawable/play"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:background="@null"
-            android:padding="9dp" />
+            android:background="@drawable/amae_imagebutton"
+            android:layout_margin="9dp" />
 
         <LinearLayout
             android:orientation="vertical"

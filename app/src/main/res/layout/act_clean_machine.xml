@@ -28,7 +28,7 @@
         android:gravity="center">
 
         <Space
-            android:layout_width="20px"
+            android:layout_width="match_parent"
             android:layout_height="20px"
             android:layout_weight="1" />
 
@@ -36,8 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="正在清洁"
-            android:id="@+id/label_cleaning"
+            android:text="等待开始"
+            android:id="@+id/lbl_status"
             android:layout_gravity="left|center_vertical"
             android:gravity="center" />
 
@@ -56,20 +56,50 @@
             components:textBelow="true"
             android:indeterminate="false" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="离自动关机时间还有\n%ds"
+            android:id="@+id/lbl_remain_seconds"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.3"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center" />
+
         <Space
-            android:layout_width="20px"
+            android:layout_width="match_parent"
             android:layout_height="20px"
             android:layout_weight="1" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="返回"
-            android:id="@+id/btn_back"
-            android:background="@drawable/amae_button"
-            android:textColor="@color/amae_text_icons"
-            android:layout_margin="9dp"
-            android:layout_gravity="bottom|right" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="36dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确定"
+                android:id="@+id/btn_confirm"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:layout_margin="0dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="返回"
+                android:id="@+id/btn_back"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:layout_margin="0dp"
+                android:layout_gravity="right" />
+        </LinearLayout>
 
     </LinearLayout>
 

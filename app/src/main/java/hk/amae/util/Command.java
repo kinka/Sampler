@@ -563,7 +563,8 @@ public class Command {
     }
 
     // 清洗
-    public ByteBuffer setClean() {
+    // todo 增加字段，可立即取消清洗
+    public ByteBuffer setClean(boolean doOrCancel) {
         return build(0x10b, null);
     }
 

@@ -21,9 +21,12 @@ import hk.amae.widget.TextProgressBar;
 
 public class RestoreFrag extends Fragment implements DialogInterface.OnClickListener {
 
+    TextView lblStatus;
+
     TextProgressBar progressBar;
     Timer timer = new Timer();
     final String SP_RESTORE = "restore_progress";
+    boolean restoring = false;
 
     public RestoreFrag() {
         // Required empty public constructor
@@ -35,6 +38,7 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
         View v = inflater.inflate(R.layout.frag_restore, container, false);
 
         progressBar = (TextProgressBar) v.findViewById(R.id.prog_restoring);
+        lblStatus = (TextView) v.findViewById(R.id.lbl_status);
 
         v.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,35 +46,38 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
                 getActivity().onBackPressed();
             }
         });
+        v.findViewById(R.id.btn_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (restoring) return;
 
-        doRestore(false); // 先查询，看是否仍在恢复中。。。
+                new AlertDialog.Builder(getActivity()).setTitle("确认恢复出厂设置？")
+                        .setCancelable(false).setPositiveButton("确定恢复", RestoreFrag.this)
+                        .setNegativeButton("取消", RestoreFrag.this).show();
+            }
+        });
+
 
         return v;
     }
 
-    void doRestore(boolean doSet) {
+    void doRestore() {
+        Comm.setIntSP(SP_RESTORE, 0);
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cmd.Progress = (byte) Comm.getIntSP(SP_RESTORE);
-                if (cmd.Progress == 0) {
-                    new AlertDialog.Builder(getActivity()).setTitle("确认恢复出厂设置？")
-                            .setCancelable(false).setPositiveButton("清空", RestoreFrag.this)
-                            .setNegativeButton("取消", RestoreFrag.this).show();
-                } else {
-                    cycleQuery();
-                }
+                lblStatus.setText("正在恢复");
+                timer = new Timer();
+                cycleQuery();
             }
-        }).setRestore(doSet);
+        }).setRestore(true);
     }
 
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
         switch (i) {
             case DialogInterface.BUTTON_POSITIVE:
-                doRestore(true);
-                Comm.setIntSP(SP_RESTORE, 1);
-                cycleQuery();
+                doRestore();
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 getActivity().onBackPressed();
@@ -91,27 +98,17 @@ public class RestoreFrag extends Fragment implements DialogInterface.OnClickList
 
                         progressBar.setProgress(cmd.Progress);
 
+                        Comm.setIntSP(SP_RESTORE, cmd.Progress);
                         if (cmd.Progress >= 100) {
                             timer.cancel();
                             timer.purge();
-                            cmd.Progress = 0;
+                            lblStatus.setText("恢复完成");
+                        } else {
+                            cycleQuery();
                         }
-                        Comm.setIntSP(SP_RESTORE, cmd.Progress);
-
                     }
                 }).setRestore(false);
             }
-        }, 0, 100);
-    }
-
-    @Override
-    public void onPause() {
-        try {
-            timer.cancel();
-            timer.purge();
-        } catch (Exception e) {
-
-        }
-        super.onPause();
+        }, 100);
     }
 }

@@ -258,8 +258,8 @@ public class Command {
         return build(0x2, null);
     }
     public void resolveATM_TEMP(ByteBuffer reply) {
-        ATM = reply.getInt() / 1000f;
-        TEMP = reply.getInt() / 10f;
+        ATM = reply.getInt() % (1000*1000) / 1000f;
+        TEMP = reply.getInt() % (1000*10) / 10f;
     }
 
     public String DateTime;
@@ -522,27 +522,35 @@ public class Command {
     }
 
     // 流量校准
-    public ByteBuffer setAdjust(Channel channel, int expectPressure, int targetSpeed) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + 2 + 2);
+    public ByteBuffer setAdjust(int action, Channel channel, int adjustPressure, int adjustSpeed) {
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 2 + 2 + 2 + 2 + 2 + 2);
+        buffer.put((byte) action);
         buffer.put(channel.getValue());
-        buffer.putShort((short) expectPressure);
-        buffer.putShort((short) targetSpeed);
+        buffer.putShort((short) 0); // 动力输出
+        buffer.putShort((short) 0); // 百分比
+        buffer.putShort((short) 0); // 采集压力
+        buffer.putShort((short) 0); // 电压
+        buffer.putShort((short) adjustPressure);
+        buffer.putShort((short) adjustSpeed);
         return build(0x107, buffer.array());
     }
+    public int AdjustStatus; // 状态
     public int OutputPower; // 动力输出
     public int DutyCycle; // 占空比
     public int PickPower; // 采集压力
     public int PickVoltage; // 电压
-    public int ExpectPressure;
-    public int AdjustSpeed;
+    public int AdjustPressure; // 预估压力
+    public int AdjustSpeed; // 被校流量
     public void resolveAdjust(ByteBuffer reply) {
+        reply.get();
         Channel = Comm.Channel.init(reply.get());
         OutputPower = reply.getShort();
         DutyCycle = reply.getShort();
         PickPower = reply.getShort();
         PickVoltage = reply.getShort();
-        ExpectPressure = reply.getShort();
+        AdjustPressure = reply.getShort();
         AdjustSpeed = reply.getShort();
+        AdjustStatus = reply.get(); // 1  正在校准 2 停止校准
     }
 
     // 锁定界面

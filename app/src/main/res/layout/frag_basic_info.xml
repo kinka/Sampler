@@ -44,24 +44,28 @@
         android:weightSum="5">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/AmaeTextMedium"
             android:text="名称：华测1号"
             android:textColor="#8affffff"
-            android:gravity="center"
             android:id="@+id/txt_ssid"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:gravity="right" />
+
+        <Space
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/AmaeTextMedium"
             android:text="@string/app_sn"
             android:textColor="#8affffff"
-            android:gravity="center"
+            android:gravity="left"
             android:id="@+id/txt_sn"
-            android:layout_weight="3" />
+            android:layout_weight="2" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,24 +80,28 @@
         android:weightSum="5">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/AmaeTextMedium"
             android:text="@string/atm"
             android:textColor="@color/amae_text_icons"
-            android:gravity="center"
             android:id="@+id/txt_atm"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:gravity="right" />
+
+        <Space
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/AmaeTextMedium"
             android:text="@string/temperature"
             android:textColor="@color/amae_text_icons"
-            android:gravity="center"
+            android:gravity="left"
             android:id="@+id/txt_temp"
-            android:layout_weight="3" />
+            android:layout_weight="2" />
     </LinearLayout>
 
     <TextView

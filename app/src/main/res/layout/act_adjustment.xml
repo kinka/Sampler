@@ -18,23 +18,10 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:text="保存"
-        android:layout_width="48dp"
-        android:layout_height="32dp"
-        android:id="@+id/btn_save"
-        android:textColor="@color/amae_text_icons"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:background="@drawable/amae_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
         android:text="返回"
         android:layout_width="48dp"
         android:layout_height="32dp"
-        android:id="@+id/btn_cancel"
+        android:id="@+id/btn_back"
         android:textColor="@color/amae_text_icons"
         android:layout_weight="1"
         android:singleLine="true"
@@ -90,12 +77,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/btn_prev"
-        android:layout_above="@+id/btn_cancel"
+        android:layout_above="@+id/btn_back"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/adjust_container">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="开始校准"
+            android:id="@+id/btn_action"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/amae_text_icons"
+            android:background="@drawable/amae_button"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" />
 
         <Space
             android:layout_width="match_parent"
@@ -142,6 +141,10 @@
                 android:id="@+id/txt_duty_cycle"
                 android:gravity="center"
                 android:singleLine="true" />
+
+            <Space
+                android:layout_width="56dp"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
@@ -183,6 +186,10 @@
                 android:id="@+id/txt_voltage"
                 android:gravity="center"
                 android:singleLine="true" />
+
+            <Space
+                android:layout_width="56dp"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
@@ -205,7 +212,7 @@
                 android:layout_height="36dp"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/txt_expect"
+                android:id="@+id/txt_adjust_pressure"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="0dp"
@@ -220,6 +227,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/textView84"
                 android:gravity="center" />
+
+            <Button
+                android:layout_width="56dp"
+                android:layout_height="32dp"
+                android:text="OK?"
+                android:id="@+id/btn_act_pressure"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:enabled="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -242,7 +258,7 @@
                 android:layout_height="36dp"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/txt_target_speed"
+                android:id="@+id/txt_adjust_speed"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="0dp"
@@ -256,6 +272,15 @@
                 android:text="(mL/min)"
                 android:id="@+id/textView86"
                 android:gravity="center" />
+
+            <Button
+                android:layout_width="56dp"
+                android:layout_height="32dp"
+                android:text="OK?"
+                android:id="@+id/btn_act_speed"
+                android:background="@drawable/amae_button"
+                android:textColor="@color/amae_text_icons"
+                android:enabled="false" />
         </LinearLayout>
 
         <Space

@@ -88,7 +88,7 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
         listView.setOnTouchListener(gestureDetector);
 
         findViewById(R.id.btn_save).setOnClickListener(this);
-        findViewById(R.id.btn_cancel).setOnClickListener(this);
+        findViewById(R.id.btn_back).setOnClickListener(this);
 
         fetchSetting();
     }
@@ -119,20 +119,21 @@ public class ModeSettingAct extends Activity implements View.OnClickListener, Sw
     @Override
     public void onClick(View view) {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
-        view.startAnimation(animation);
 
         switch (view.getId()) {
             case R.id.btn_prev:
+                view.startAnimation(animation);
                  flip(false);
                 break;
             case R.id.btn_next:
+                view.startAnimation(animation);
                 flip(true);
                 break;
             case R.id.btn_save: // channel one by one to save
                 if (checkValid())
                     saveSetting();
                 break;
-            case R.id.btn_cancel:
+            case R.id.btn_back:
                 super.onBackPressed();
                 break;
         }

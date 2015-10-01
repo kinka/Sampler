@@ -4,5 +4,6 @@
         android:state_pressed="true" />
     <item android:drawable="@color/amae_primary"
         android:state_focused="true" />
+    <item android:drawable="@color/amae_divider" android:state_enabled="false" />
     <item android:drawable="@color/amae_accent" />
 </selector>

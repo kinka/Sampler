@@ -18,9 +18,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import hk.amae.frag.BasicInfoFrag;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
 
@@ -141,10 +145,50 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         }).printSample(sampleId);
     }
 
-    private void doSave(String sampleId) {
+    private void doSave(final String sampleId) {
         if (sampleId == null) return;
         // save to storage
-        Toast.makeText(HistoryAct.this, "保存"+sampleId, Toast.LENGTH_SHORT).show();
+        // 获取数据，然后保存成txt文件
+        new Command(new Command.Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                String table = sampleId + "\n";
+                table += "\n当前流量:\t" + String.format("%dmL/min", cmd.Speed);
+                table += "\n设定流量:\t" + String.format("%dmL/min", cmd.TargetSpeed);
+                table += "\n累计实体:\t" + String.format("%dmL", cmd.Volume);
+                table += "\n累计标体:\t" + String.format("%dmL", cmd.StandardVol);
+
+                table += "\n本地时间:\t" + (cmd.DateTime == null ? "" : cmd.DateTime);
+                table += "\n当前气压:\t" + String.format(BasicInfoFrag.atmFormat, cmd.ATM);
+                table += "\n当前温度:\t" + String.format(BasicInfoFrag.tempFormat, cmd.TEMP);
+
+                table += "\n采样进度:\t" + cmd.Progress + "%";
+                table += "\n已采时间:\t" + cmd.Elapse + "s";
+
+                if (cmd.SampleMode == Comm.TIMED_SET_CAP) {
+                    table += "\n设定容量:\t" + cmd.TargetVolume + "mL";
+                } else {
+                    table += "\n设定时长:\t" + cmd.TargetDuration + "min";
+                }
+
+                table += "\n通道:\t" + (cmd.Channel == null ? "" : cmd.Channel.name());
+                table += "\n组数:\t" + (cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
+
+                table += "\nGPS:\t" + Comm.getSP("gps").replace("\n", " ");
+
+                try {
+                    File file = new File(Comm.getDataPath(), sampleId + ".txt");
+                    OutputStream output = new FileOutputStream(file);
+                    output.write(table.getBytes());
+                    output.close();
+                    Toast.makeText(HistoryAct.this, "保存至" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(HistoryAct.this, "保存" + sampleId + "失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Comm.logE(e.toString());
+                }
+
+            }
+        }).reqSampleData(sampleId);
     }
 
     private void showDetail(String id) {

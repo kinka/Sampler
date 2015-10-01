@@ -64,6 +64,7 @@ public class Comm {
 
     private static Context ctx;
     private static android.os.Handler handler;
+    private static String __pkgName = "";
     public static void init(Context ctx, String pkgName) {
         Comm.ctx = ctx;
         initLogger(pkgName);
@@ -73,6 +74,7 @@ public class Comm {
     }
 
     public static Logger initLogger(String pkgName) {
+        __pkgName = pkgName;
         try {
             int FileSizeLimit = 1024 * 1024;
             int FileCount = 2;
@@ -88,6 +90,13 @@ public class Comm {
         }
 
         return logger;
+    }
+
+    public static String getDataPath() {
+        String dir = Environment.getExternalStorageDirectory() + "/" + __pkgName + "/samples";
+        if (!new File(dir).exists())
+            new File(dir).mkdir();
+        return dir;
     }
 
     public static void logI(String msg) {

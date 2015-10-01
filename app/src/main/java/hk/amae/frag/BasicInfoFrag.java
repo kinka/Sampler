@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 
+import hk.amae.sampler.BuildConfig;
 import hk.amae.sampler.R;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
@@ -66,7 +67,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_basic_info, container, false);
         TextView txtSN = (TextView) v.findViewById(R.id.txt_sn);
-        txtSN.setOnClickListener(this);
+        if (BuildConfig.DEBUG)
+            txtSN.setOnClickListener(this);
 
         appTitle = (TextView) v.findViewById(R.id.app_title);
 

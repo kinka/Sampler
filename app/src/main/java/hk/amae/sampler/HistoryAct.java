@@ -54,7 +54,9 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_back).setOnClickListener(this);
 
         txtPage = (TextView) findViewById(R.id.txt_page);
+
         findViewById(R.id.btn_print).setOnClickListener(this);
+        findViewById(R.id.btn_save).setOnClickListener(this);
 
         final EditText editText = (EditText) findViewById(R.id.edit_query);
         editText.addTextChangedListener(new TextWatcher() {
@@ -114,6 +116,11 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                     if (item.print)
                         doPrint(item.title);
                 break;
+            case R.id.btn_save:
+                for (HistoryItem item: historyItems)
+                    if (item.save)
+                        doSave(item.title);
+                break;
             case R.id.label_title:{
                 String id = ((TextView) view).getText().toString();
                 showDetail(id);
@@ -132,6 +139,12 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 Toast.makeText(HistoryAct.this, "正在打印"+sampleId+"中。。。", Toast.LENGTH_SHORT).show();
             }
         }).printSample(sampleId);
+    }
+
+    private void doSave(String sampleId) {
+        if (sampleId == null) return;
+        // save to storage
+        Toast.makeText(HistoryAct.this, "保存"+sampleId, Toast.LENGTH_SHORT).show();
     }
 
     private void showDetail(String id) {
@@ -166,7 +179,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             len = data.size() - base;
         historyItems.clear();
         for (int i=0; i<len; i++)
-            historyItems.add(new HistoryItem(i + 1, data.get(base + i).title, false));
+            historyItems.add(data.get(base + i));
 
         txtPage.setText(String.format(fmtCurrent, currentPage + 1, PageNum));
         ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
@@ -181,7 +194,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                     return;
                 HistoryData.clear();
                 for (int i=0; i<cmd.History.length; i++)
-                    HistoryData.add(new HistoryItem(i+1, cmd.History[i], true));
+                    HistoryData.add(new HistoryItem(i, cmd.History[i]));
                 PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
                 next();
             }
@@ -213,13 +226,16 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             TextView num = (TextView) rowView.findViewById(R.id.label_num);
             TextView title = (TextView) rowView.findViewById(R.id.label_title);
             CheckBox print = (CheckBox) rowView.findViewById(R.id.chk_print);
+            CheckBox save = (CheckBox) rowView.findViewById(R.id.chk_save);
 
             HistoryItem item = values.get(position);
-            num.setText("" + item.rowid);
+            num.setText("" + (position + 1));
             title.setText(item.title);
             print.setChecked(item.print);
+            save.setChecked(item.save);
 
             print.setOnCheckedChangeListener(item);
+            save.setOnCheckedChangeListener(item);
 
             title.setOnClickListener(HistoryAct.this);
 
@@ -228,18 +244,30 @@ public class HistoryAct extends Activity implements View.OnClickListener {
     }
 
     public class HistoryItem implements CheckBox.OnCheckedChangeListener {
-        int rowid = 0;
+        int id = 0;
         String title = "201503281518";
         boolean print = false;
+        boolean save = false;
 
-        public HistoryItem(int id, String title, boolean print) {
-            this.rowid = id;
+        public HistoryItem(int id, String title) {
+            this.id = id;
             this.title = title;
-            this.print = print;
+            this.print = false;
+            this.save = false;
         }
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-            print = checked;
+            if (!compoundButton.isShown()) return;
+
+            if (compoundButton.getId() == R.id.chk_print)
+                this.print = checked;
+            else if (compoundButton.getId() == R.id.chk_save)
+                this.save = checked;
+        }
+
+        @Override
+        public String toString() {
+            return "item: " + id + "=>" + title + " save " + save + " print " + print;
         }
     }
 }

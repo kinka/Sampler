@@ -440,7 +440,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 if (!verify) return;
 
                 npSpeed.setValue(cmd.TargetSpeed);
-                npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长？
+                npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长
                 npTiming.setValue(cmd.TargetDuration);
 
                 if (manualMode != cmd.ManualMode) {

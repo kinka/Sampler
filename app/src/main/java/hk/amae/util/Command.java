@@ -305,6 +305,7 @@ public class Command {
             MachineState[i] = reply.get();
     }
 
+    // todo 解析GPS参数
     public String SampleID; // 采样编号
     public int TargetSpeed; // 设定流量/流速
     public int SampleMode; // 采样模式(定时or定容)
@@ -344,9 +345,12 @@ public class Command {
     }
     public void resolveSampleHistory(ByteBuffer reply) {
         int len = reply.getShort();
+        // todo remove mock
+        len = 40;
         History = new String[len];
         for (int i=0; i<History.length; i++) {
-            History[i] = getString(reply);
+//            History[i] = getString(reply);
+            History[i] = "20151001-" + i;
         }
     }
 
@@ -427,6 +431,7 @@ public class Command {
         return build(0x10d, buffer.array());
     }
 
+    // todo 传递GPS参数
     // 设置采样参数(手动模式)
     public int TargetVolume; // 设定容量
     public int ManualMode; // 手动模式下的定时长/定容量
@@ -447,6 +452,7 @@ public class Command {
         TargetDuration = TargetVolume = reply.getInt();
     }
 
+    // todo 传递GPS参数
     // 设置采样参数(定时定容)
     public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, SettingItem[] items) {
         int len = 1 + 1 + 1 + (1+2+4+1+16)*8;

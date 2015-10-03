@@ -72,8 +72,8 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            cnt -= 1000;
             progress = 100 - cnt * 100 / total;
+            cnt -= 1000;
             progClean.setProgress(progress);
             if (progress >= 100) {
                 progress = 100;
@@ -109,10 +109,11 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
         } catch (Exception e) {
 
         }
+        if (!cleaning) return;
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                cleaning();
+                Toast.makeText(getApplicationContext(), "已经停止清洗", Toast.LENGTH_SHORT).show();
             }
         }).setClean(false);
     }

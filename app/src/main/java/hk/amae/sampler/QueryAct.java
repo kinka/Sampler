@@ -110,6 +110,11 @@ public class QueryAct extends Activity {
 
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());
                 labelGroup.setText(cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
+                if (cmd.GPS.length() == 0) {
+                    Comm.logI("no gps from server");
+                } else {
+                    labelGPS.setText(cmd.GPS);
+                }
             }
         };
 

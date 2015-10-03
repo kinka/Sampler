@@ -19,6 +19,7 @@ public class Command {
     private static int __total = 0;
     private static int __succ = 0;
     byte Version = 1;
+    private int __cmd;
 
     // http://introcs.cs.princeton.edu/java/51data/CRC16CCITT.java.html
     public static short crc16(byte[] bytes) {
@@ -96,6 +97,7 @@ public class Command {
         return getString(reply, null);
     }
     private ByteBuffer build(final int cmd, byte[] data) {
+        __cmd = cmd;
         if (data == null) data = new byte[0];
 //if (cmd > 3) return null;
 //        Comm.logI("req cmd 0x" + Integer.toHexString(cmd));
@@ -305,7 +307,6 @@ public class Command {
             MachineState[i] = reply.get();
     }
 
-    // todo 解析GPS参数
     public String SampleID; // 采样编号
     public int TargetSpeed; // 设定流量/流速
     public int SampleMode; // 采样模式(定时or定容)
@@ -345,12 +346,9 @@ public class Command {
     }
     public void resolveSampleHistory(ByteBuffer reply) {
         int len = reply.getShort();
-        // todo remove mock
-        len = 40;
         History = new String[len];
         for (int i=0; i<History.length; i++) {
-//            History[i] = getString(reply);
-            History[i] = "20151001-" + i;
+            History[i] = getString(reply);
         }
     }
 
@@ -362,8 +360,10 @@ public class Command {
         buffer.put(item.getBytes());
         return build(0x9, buffer.array());
     }
+    public String GPS; // gps 信息
     public void resolveSampleData(ByteBuffer reply) {
         resolveSampleState(reply);
+        GPS = getString(reply);
     }
 
     public String SoftwareVer; // 软件
@@ -431,17 +431,21 @@ public class Command {
         return build(0x10d, buffer.array());
     }
 
-    // todo 传递GPS参数
     // 设置采样参数(手动模式)
     public int TargetVolume; // 设定容量
     public int ManualMode; // 手动模式下的定时长/定容量
     public ByteBuffer setManualChannel(int operation, int mode, Channel channel, int speed, int cap) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4);
+        byte[] gps = Comm.getSP("gps").getBytes();
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4 + 1 + gps.length);
         buffer.put((byte) operation);
         buffer.put((byte) mode);
         buffer.put(channel.getValue());
         buffer.putShort((short) speed);
         buffer.putInt(cap); // 时长或者容量
+
+        buffer.put((byte) gps.length);
+        buffer.put(gps);
+
         return  build(0x101, buffer.array());
     }
     public void resolveManualChannel(ByteBuffer reply) {
@@ -452,10 +456,10 @@ public class Command {
         TargetDuration = TargetVolume = reply.getInt();
     }
 
-    // todo 传递GPS参数
     // 设置采样参数(定时定容)
     public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, SettingItem[] items) {
-        int len = 1 + 1 + 1 + (1+2+4+1+16)*8;
+        byte[] gps = Comm.getSP("gps").getBytes();
+        int len = 1 + 1 + 1 + (1+2+4+1+16)*8 + 1 + gps.length;
         ByteBuffer buffer = ByteBuffer.allocate(len);
         buffer.put((byte) (doSet ? 1 : 2));
         buffer.put((byte) mode);
@@ -469,6 +473,9 @@ public class Command {
             buffer.put((byte) datetime.length());
             buffer.put(datetime.getBytes());
         }
+
+        buffer.put((byte) gps.length);
+        buffer.put(gps);
 
         return build(0x102, buffer.array());
     }
@@ -577,9 +584,9 @@ public class Command {
     }
 
     // 清洗
-    // todo 增加字段，可立即取消清洗
     public ByteBuffer setClean(boolean doOrCancel) {
-        return build(0x10b, null);
+        byte[] data = new byte[] {(byte) (doOrCancel ? 1: 2)};
+        return build(0x10b, data);
     }
 
     public void setSN(String sn) {

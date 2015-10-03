@@ -174,7 +174,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 table += "\n通道:\t" + (cmd.Channel == null ? "" : cmd.Channel.name());
                 table += "\n组数:\t" + (cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
 
-                table += "\nGPS:\t" + Comm.getSP("gps").replace("\n", " ");
+                table += "\nGPS:\t" + cmd.GPS.replace("\n", " ");
 
                 try {
                     File file = new File(Comm.getDataPath(), sampleId + ".txt");

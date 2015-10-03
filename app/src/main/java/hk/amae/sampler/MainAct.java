@@ -196,12 +196,14 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
         if (lastid < 0) {
             connectServer();
         }
-        if (hasGPSDevice() && !isGPSOpen()) {
+        if (hasGPSDevice() && !isGPSOpen() && !isAlerting) {
+            isAlerting = true;
             new AlertDialog.Builder(this).setTitle("GPS定位功能")
                     .setMessage("检测到GPS定位功能没有打开，请点击打开")
                     .setPositiveButton("打开", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            isAlerting = false;
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
                     }).setCancelable(false).show();

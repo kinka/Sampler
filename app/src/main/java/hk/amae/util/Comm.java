@@ -96,7 +96,8 @@ public class Comm {
     }
 
     public static String getDataPath() {
-        String dir = Environment.getExternalStorageDirectory() + "/" + __pkgName + "/samples";
+//        String dir = Environment.getExternalStorageDirectory() + "/" + __pkgName + "/samples";
+        String dir = Environment.getExternalStorageDirectory() + "/download/amae";
         if (!new File(dir).exists())
             new File(dir).mkdir();
         return dir;

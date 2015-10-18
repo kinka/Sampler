@@ -80,7 +80,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private int lastManualMode;
 
     private Timer __battery, __progress, __launch, __state;
-    private final int durationBattery = 60*1000, durationProgress = 2*1000, durationState = 1*1000;
+    private final int durationBattery = 60*1000, durationProgress = 1*1000, durationState = 3*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;

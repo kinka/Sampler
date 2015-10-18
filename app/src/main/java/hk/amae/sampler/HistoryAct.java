@@ -3,6 +3,7 @@ package hk.amae.sampler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +43,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
     ArrayList<HistoryItem> filterItems = new ArrayList<>();
     boolean isFiltering = false;
     boolean[] cached = new boolean[HistoryData.size() / PageSize];
+    String tips = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +125,13 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                         doPrint(item.title);
                 break;
             case R.id.btn_save:
+                tips = "";
+                int cnt = 0;
                 for (HistoryItem item: historyItems)
-                    if (item.save)
+                    if (item.save) {
                         doSave(item.title);
+                        cnt++;
+                    }
                 break;
             case R.id.label_title:{
                 String id = ((TextView) view).getText().toString();
@@ -149,7 +155,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
 
     private void doSave(final String sampleId) {
         if (sampleId == null) return;
-        // save to storage
+
         // 获取数据，然后保存成txt文件
         new Command(new Command.Once() {
             @Override
@@ -176,25 +182,26 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 table += "\n通道:\t" + (cmd.Channel == null ? "" : cmd.Channel.name());
                 table += "\n组数:\t" + (cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
 
-                table += "\nGPS:\t" + cmd.GPS.replace("\n", " ");
-                // todo 显示时间长一点
+                table += "\nGPS:\t" + (cmd.GPS == null ? "" : cmd.GPS).replace("\n", " ");
+
                 try {
                     File file = new File(Comm.getDataPath(), sampleId + ".txt");
                     OutputStream output = new FileOutputStream(file);
                     output.write(table.getBytes());
                     output.close();
-                    Toast.makeText(HistoryAct.this, "保存至" + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    tips += sampleId + "成功保存至" + file.getAbsolutePath() + "\n";
                 } catch (Exception e) {
-                    Toast.makeText(HistoryAct.this, "保存" + sampleId + "失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    tips += sampleId + "失败: " + e.getMessage() + "\n";
                     Comm.logE(e.toString());
                 }
+                Comm.showTips(tips);
 
             }
         }).reqSampleData(sampleId);
     }
 
     private void showDetail(String id) {
-        Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "编号: " + id, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(HistoryAct.this, QueryAct.class);
         intent.putExtra(QueryAct.KEY_ITEM, id);
         startActivity(intent);

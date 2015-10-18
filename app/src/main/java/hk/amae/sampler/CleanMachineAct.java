@@ -96,6 +96,8 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (cmd.CleanTime != 0)
+                    cnt = total = cmd.CleanTime * 1000;
                 cleaning();
             }
         }).setClean(true);

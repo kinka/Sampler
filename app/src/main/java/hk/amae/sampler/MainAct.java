@@ -149,6 +149,7 @@ public class MainAct extends Activity implements MainFrag.OnMainFragListener {
             new Command(new Command.Once() {
                 @Override
                 public void done(boolean verify, Command cmd) {
+                    if (!verify) return;
                     if (cmd.ChannelMode == 0 || cmd.ChannelMode > ChannelAct.MODE_8IN1)
                         cmd.ChannelMode = ChannelAct.MODE_SINGLE;
                     int lastMode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);

@@ -168,25 +168,43 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
         }
     }
 
-    public void updateInfo() {
+    int __model_limit = 3;
+    void reqModel() {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                if (!verify) return;
+                if (!verify) {
+                    if (__model_limit >= 0) reqModel();
+                    __model_limit--;
+                    return;
+                }
+                __model_limit = 3;
                 ((TextView) parent.findViewById(R.id.txt_model)).setText(String.format(modelFormat, cmd.Model));
                 ((TextView) parent.findViewById(R.id.txt_sn)).setText(String.format(snFormat, cmd.SN));
                 ((TextView) parent.findViewById(R.id.txt_ssid)).setText(String.format(hostFormat, Comm.getSP("ssid")));
             }
         }).reqModel();
+    }
 
+    int __atm_limit = 3;
+    void reqATM() {
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-                if (!verify) return;
+                if (!verify) {
+                    if (__atm_limit >= 0) reqATM();
+                    __atm_limit--;
+                    return;
+                }
+                __atm_limit = 3;
                 ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, cmd.ATM));
                 ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, cmd.TEMP));
             }
         }).reqATM_TEMP();
+    }
+    public void updateInfo() {
+        reqModel();
+        reqATM();
 
         new Command(new Once() {
             @Override
@@ -196,8 +214,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
 //                cmd.DateTime = "2015-06-28 10:31:12";
                 final TextView textView = ((TextView) parent.findViewById(R.id.txt_datetime));
 //                textView.setText(cmd.DateTime);
-
-                calcTimeOffset(cmd.DateTime);
+                if (cmd.DateTime.length() > 0)
+                    calcTimeOffset(cmd.DateTime);
                 ticker = Comm.syncSvrTime(ticker, textView);
             }
         }).reqDateTime();

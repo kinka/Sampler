@@ -30,9 +30,9 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
     TextView labelChannel;
     int channel = 1;
 
-    TextView outputPower, dutyCycle, pickPower, pickVoltage;
+    TextView outputPower, dutyCycle, pickPower, pickVoltage, adjustStatus;
     EditText adjustPressure, adjustSpeed;
-    Button btnPressure, btnSpeed;
+    Button btnPressure, btnSpeed, btnAction;
 
     final int ACT_QUERY = 1; // 查询状态
     final int ACT_START = 2; // 开始校准
@@ -66,11 +66,14 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
         dutyCycle = (TextView) findViewById(R.id.txt_duty_cycle);
         pickPower = (TextView) findViewById(R.id.txt_pressure);
         pickVoltage = (TextView) findViewById(R.id.txt_voltage);
+        adjustStatus = (TextView) findViewById(R.id.txt_status);
 
         adjustPressure = (EditText) findViewById(R.id.txt_adjust_pressure);
         adjustSpeed = (EditText) findViewById(R.id.txt_adjust_speed);
 
-        findViewById(R.id.btn_action).setOnClickListener(this);
+        btnAction = (Button) findViewById(R.id.btn_action);
+        btnAction.setOnClickListener(this);
+
         findViewById(R.id.btn_back).setOnClickListener(this);
 
         btnPressure = (Button) findViewById(R.id.btn_act_pressure);
@@ -93,31 +96,20 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
     @Override
     public void onClick(View view) {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
-
+        view.startAnimation(animation);
         switch (view.getId()) {
             case R.id.btn_prev:
-                view.startAnimation(animation);
                 flip(false);
                 break;
             case R.id.btn_next:
-                view.startAnimation(animation);
                 flip(true);
                 break;
             case R.id.btn_action:
-                view.startAnimation(animation);
                 Button btn = (Button) view;
                 if (state == STATE_ING) { // 正在校准
                     doAdjust(ACT_STOP);
-                    btn.setText("开始校准");
-                    state = STATE_STOPPED;
-                    btnPressure.setEnabled(false);
-                    btnSpeed.setEnabled(false);
                 } else {
                     doAdjust(ACT_START);
-                    btn.setText("正在校准...");
-                    state = STATE_ING;
-                    btnPressure.setEnabled(true);
-                    btnSpeed.setEnabled(true);
                 }
                 break;
             case R.id.btn_act_pressure:
@@ -135,21 +127,43 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
 
     private void doAdjust(final int act) {
         if (act == ACT_STOP) killTimer();
+        String strPressure = adjustPressure.getText().toString();
+        String strSpeed = adjustSpeed.getText().toString();
+        if (strPressure.length() == 0) strPressure = "0";
+        if (strSpeed.length() == 0) strSpeed = "0";
 
-        int expect = Integer.valueOf(adjustPressure.getText().toString());
-        int speed = Integer.valueOf(adjustSpeed.getText().toString());
+        int expect = Integer.valueOf(strPressure);
+        int speed = Integer.valueOf(strSpeed);
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
+
                 outputPower.setText(cmd.OutputPower + "");
                 dutyCycle.setText("(" + cmd.DutyCycle + "%)");
                 pickPower.setText(cmd.PickPower + "");
                 pickVoltage.setText(String.format("(%.02fV)", cmd.PickVoltage / 1000.0));
-                adjustPressure.setText(cmd.AdjustPressure + "");
-                adjustSpeed.setText(cmd.AdjustSpeed + "");
+                if (act == ACT_START || act == ACT_SPEED)
+                    adjustPressure.setText(cmd.AdjustPressure + "");
 
-                if (act == ACT_START)
+                if (act == ACT_STOP) {
+                    btnAction.setText("开始校准");
+                    adjustStatus.setText("等待校准");
+                    state = STATE_STOPPED;
+                    btnPressure.setEnabled(false);
+                    btnSpeed.setEnabled(false);
+                } else if (act == ACT_START) {
+                    btnAction.setText("结束校准");
+                    adjustStatus.setText("正在校准");
+                    state = STATE_ING;
+                    btnPressure.setEnabled(true);
+                    btnSpeed.setEnabled(true);
                     query();
+                }
+
+                if (cmd.AdjustStatus == ACT_STOP)
+                    adjustStatus.setText("校准完成");
+                Comm.logI("status " + cmd.AdjustStatus);
             }
         }).setAdjust(act, Comm.Channel.init(channel), expect, speed);
     }

@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import hk.amae.frag.BasicInfoFrag;
+import hk.amae.frag.MainFrag;
 import hk.amae.util.Comm;
 import hk.amae.util.Command;
 
@@ -69,11 +70,12 @@ public class QueryAct extends Activity {
         wrapLaunchMode = (LinearLayout) findViewById(R.id.wrapLaunchMode);
         wrapSampleMode = (LinearLayout) findViewById(R.id.wrapSampleMode);
 
-        labelGPS.setText(Comm.getSP("gps"));
+//        labelGPS.setText(Comm.getSP("gps"));
 
         onceDone = new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
 //                cmd.TargetSpeed = 200;
 //                cmd.DateTime = "2015-06-01 23:33";
                 labelSpeed.setText(String.format("%dmL/min", cmd.Speed));
@@ -110,7 +112,7 @@ public class QueryAct extends Activity {
 
                 labelChannel.setText(cmd.Channel == null ? "" : cmd.Channel.name());
                 labelGroup.setText(cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
-                if (cmd.GPS.length() == 0) {
+                if (cmd.GPS == null || cmd.GPS.length() == 0) {
                     Comm.logI("no gps from server");
                 } else {
                     labelGPS.setText(cmd.GPS);
@@ -134,10 +136,11 @@ public class QueryAct extends Activity {
 
     private void realtimeQuery() {
         timer = new Timer();
+        final Comm.Channel channel = Comm.Channel.init(Comm.getIntSP(MainFrag.SP_CURRENTCHANNEL));
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                new Command(onceDone).reqSampleState();
+                new Command(onceDone).reqSampleState(channel);
             }
         }, 0, 5000);
     }

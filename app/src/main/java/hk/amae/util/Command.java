@@ -216,6 +216,9 @@ public class Command {
                 case 0x10c:
                     resolveChannelMode(reply);
                     break;
+                case 0x10b:
+                    resolveClean(reply);
+                    break;
             }
 
             // 校验sum
@@ -288,7 +291,7 @@ public class Command {
     public int Speed;
     public int Volume;
     public ByteBuffer reqChannelState(Channel channel) { // 查询实时流量和已采样
-        return build(0x5, new byte[] {channel.getValue()});
+        return build(0x5, new byte[] {channel == null ? 0 : channel.getValue()});
     }
     public void resolveChannelState(ByteBuffer reply) {
         ChannelState = reply.get();
@@ -316,8 +319,8 @@ public class Command {
     public int TargetDuration; // 设定时间
     public boolean Manual; // 手动/定时
     public byte Group; // 定时模式 第几组 手动模式为0
-    public ByteBuffer reqSampleState() { // 查询当前采样情况
-        return build(0x7, null);
+    public ByteBuffer reqSampleState(Channel channel) { // 查询当前采样情况
+        return build(0x7, new byte[] {channel.getValue()});
     }
     public void resolveSampleState(ByteBuffer reply) {
         SampleID = getString(reply);
@@ -335,9 +338,11 @@ public class Command {
         Channel = Comm.Channel.init(reply.get());
         Manual = reply.get() == 1;
         Group = reply.get();
+        GPS = getString(reply);
     }
 
     public String[] History;
+    public int HistorySize;
     public ByteBuffer reqSampleHistory(int start, int end) { // 查询历史采样数据编号
         ByteBuffer buffer = ByteBuffer.allocate(2 + 2);
         buffer.putShort((short) start);
@@ -345,10 +350,14 @@ public class Command {
         return build(0x8, buffer.array());
     }
     public void resolveSampleHistory(ByteBuffer reply) {
+        HistorySize = reply.getShort();
         int len = reply.getShort();
+//        HistorySize = 45;
+//        int len = 20;
         History = new String[len];
         for (int i=0; i<History.length; i++) {
             History[i] = getString(reply);
+//            History[i] = "20151017"+(i+1);
         }
     }
 
@@ -363,7 +372,6 @@ public class Command {
     public String GPS; // gps 信息
     public void resolveSampleData(ByteBuffer reply) {
         resolveSampleState(reply);
-        GPS = getString(reply);
     }
 
     public String SoftwareVer; // 软件
@@ -387,12 +395,6 @@ public class Command {
 //    public int SettingNum; // 第几条设置
 //    public int TargetVolume;
     public SettingItem[] SettingItems;
-    public ByteBuffer reqTimedSetting(int mode, Channel channel) { // 查询定时(定容)设置
-        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);
-        buffer.put((byte) mode);
-        buffer.put(channel.getValue());
-        return build(0xb, buffer.array());
-    }
     public void resolveTimedSetting(ByteBuffer reply) {
         SettingItems = new SettingItem[ModeSettingAct.GROUPCOUNT];
 
@@ -414,6 +416,12 @@ public class Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public ByteBuffer reqTimedSetting(int mode, Channel channel) { // 查询定时(定容)设置
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);
+        buffer.put((byte) mode);
+        buffer.put(channel.getValue());
+        return build(0xb, buffer.array());
     }
 
     public int ChannelMode;
@@ -584,9 +592,13 @@ public class Command {
     }
 
     // 清洗
+    public int CleanTime; // 清洗时长
     public ByteBuffer setClean(boolean doOrCancel) {
         byte[] data = new byte[] {(byte) (doOrCancel ? 1: 2)};
         return build(0x10b, data);
+    }
+    public void resolveClean(ByteBuffer reply) {
+        CleanTime = reply.getShort();
     }
 
     public void setSN(String sn) {

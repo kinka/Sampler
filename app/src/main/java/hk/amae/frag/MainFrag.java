@@ -64,7 +64,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     TextView txtTips;
 
-    private Channel currChannel;
+    private Channel currChannel = Channel.ALL;
     private int runningState = Comm.STOPPED; // -1 停止 0 暂停 1 运行
     private boolean isLocked = false;
     private int sampleMode;
@@ -75,11 +75,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
     private final String SP_MANUALMODE = "manual_mode"; // 手动情况下设定时长还是设定容量
     public static final String SP_SAMPLEMODE = "sample_mode";
+    public static final String SP_CURRENTCHANNEL = "current_channel";
 
     private int lastManualMode;
 
     private Timer __battery, __progress, __launch, __state;
-    private final int durationBattery = 60*1000, durationProgress = 2*1000, durationState = 3*1000;
+    private final int durationBattery = 60*1000, durationProgress = 2*1000, durationState = 1*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
     public static int MaxSpeed = UNITSPEED;
@@ -182,10 +183,14 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     void init() {
         initChannelState();
 
-        // 主要是想知道是手动模式还是定时模式(定时长/定容量)
+        // 主要是想知道是手动模式还是定时模式(定时长/定容量), 以及当前工作的通道
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
+                if (!verify) return;
+
+                currChannel = cmd.Channel;
+
                 spinChannel.setOnItemSelectedListener(MainFrag.this);
                 spinMode.setOnItemSelectedListener(MainFrag.this);
 
@@ -198,7 +203,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 spinMode.setSelection(sampleMode);
                 switchSampleMode();
             }
-        }).reqSampleState();
+        }).reqSampleState(Channel.ALL);
 
         askBatteryState();
 
@@ -370,6 +375,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             case R.id.btn_query:
             case R.id.btn_clean:
                 mCallback.onButtonClick(view.getId());
+                if (currChannel != null)
+                    Comm.setIntSP(SP_CURRENTCHANNEL, currChannel.getValue());
                 break;
             case R.id.btn_monitor:
                 startActivity(new Intent(getActivity(), MonitorAct.class));
@@ -440,7 +447,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 if (!verify) return;
 
                 npSpeed.setValue(cmd.TargetSpeed);
-                npVolume.setValue(cmd.TargetVolume); // todo 返回设定容量还是设定时长
+                npVolume.setValue(cmd.TargetVolume);
                 npTiming.setValue(cmd.TargetDuration);
 
                 if (manualMode != cmd.ManualMode) {
@@ -536,9 +543,9 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
 
-                            if (cmd.MachineState[i] == 0) stopped.add(i+1);
-                            else if (cmd.MachineState[i] == 2) running.add(i+1);
+                            if (cmd.MachineState[i] == 2) running.add(i+1);
                             else if (cmd.MachineState[i] == 3) paused.add(i+1);
+                            else stopped.add(i+1);
 //                            states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
                         }
                         states = "采样：" + running.toString() + "\n";

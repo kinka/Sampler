@@ -31,15 +31,17 @@ import hk.amae.util.Command;
 
 public class HistoryAct extends Activity implements View.OnClickListener {
     ListView listView;
-    int PageSize = 25;
+    int PageSize = 20;
+    int TotalSize = 140;
     int PageNum = 0;
     int currentPage = -1;
     String fmtCurrent = "位号%03d/%d";
     TextView txtPage;
-    static ArrayList<HistoryItem> HistoryData = new ArrayList<>(800);
+    ArrayList<HistoryItem> HistoryData = new ArrayList<>(800);
     ArrayList<HistoryItem> historyItems = new ArrayList<>();
     ArrayList<HistoryItem> filterItems = new ArrayList<>();
     boolean isFiltering = false;
+    boolean[] cached = new boolean[HistoryData.size() / PageSize];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
 
         listView = (ListView) findViewById(R.id.listView);
 
-        fetch(1, 800);
+        fetch(1, PageSize);
 
         HistoryArrayAdaptor adaptor = new HistoryArrayAdaptor(this, R.layout.history_item, historyItems);
         listView.setAdapter(adaptor);
@@ -95,7 +97,7 @@ public class HistoryAct extends Activity implements View.OnClickListener {
             }
             PageNum = filterItems.size() / PageSize + (filterItems.size() % PageSize == 0 ? 0 : 1);
         } else {
-            PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
+            PageNum = TotalSize / PageSize + (TotalSize % PageSize == 0 ? 0 : 1);
         }
 
         currentPage = -1;
@@ -175,15 +177,15 @@ public class HistoryAct extends Activity implements View.OnClickListener {
                 table += "\n组数:\t" + (cmd.SampleMode == Comm.MANUAL_SET ? "0" : String.format("第%d组", cmd.Group));
 
                 table += "\nGPS:\t" + cmd.GPS.replace("\n", " ");
-
+                // todo 显示时间长一点
                 try {
                     File file = new File(Comm.getDataPath(), sampleId + ".txt");
                     OutputStream output = new FileOutputStream(file);
                     output.write(table.getBytes());
                     output.close();
-                    Toast.makeText(HistoryAct.this, "保存至" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HistoryAct.this, "保存至" + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
-                    Toast.makeText(HistoryAct.this, "保存" + sampleId + "失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HistoryAct.this, "保存" + sampleId + "失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     Comm.logE(e.toString());
                 }
 
@@ -202,7 +204,6 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         if (currentPage == 0)
             return;
         currentPage--;
-
         flip();
     }
     private void next() {
@@ -229,18 +230,23 @@ public class HistoryAct extends Activity implements View.OnClickListener {
         ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
     }
 
-    private void fetch(int start, int end) {
+    private void fetch(final int start, final int end) {
         new Command(new Command.Once() {
             @Override
             public void done(boolean verify, Command cmd) {
-//                cmd.History = new String[(int) Math.round(Math.random()*800)];
                 if (cmd.History == null)
                     return;
-                HistoryData.clear();
+//                HistoryData.clear();
+                TotalSize = cmd.HistorySize;
                 for (int i=0; i<cmd.History.length; i++)
-                    HistoryData.add(new HistoryItem(i, cmd.History[i]));
-                PageNum = HistoryData.size() / PageSize + (HistoryData.size() % PageSize == 0 ? 0 : 1);
-                next();
+                    HistoryData.add(new HistoryItem(start + i, cmd.History[i]));
+                PageNum = TotalSize / PageSize + (TotalSize % PageSize == 0 ? 0 : 1);
+                if (start == 1)
+                    next();
+                int left = TotalSize - end;
+                if (left > 0)
+                    fetch(end + 1, end + (left < PageSize ? left : PageSize));
+                cached[start / PageSize] = true;
             }
         }).reqSampleHistory(start, end);
     }

@@ -320,7 +320,7 @@ public class Command {
     public boolean Manual; // 手动/定时
     public byte Group; // 定时模式 第几组 手动模式为0
     public ByteBuffer reqSampleState(Channel channel) { // 查询当前采样情况
-        return build(0x7, new byte[] {channel.getValue()});
+        return build(0x7, new byte[] {channel == null ? 0 : channel.getValue()});
     }
     public void resolveSampleState(ByteBuffer reply) {
         SampleID = getString(reply);
@@ -420,7 +420,7 @@ public class Command {
     public ByteBuffer reqTimedSetting(int mode, Channel channel) { // 查询定时(定容)设置
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1);
         buffer.put((byte) mode);
-        buffer.put(channel.getValue());
+        buffer.put(channel == null ? 0 : channel.getValue());
         return build(0xb, buffer.array());
     }
 
@@ -447,7 +447,7 @@ public class Command {
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4 + 1 + gps.length);
         buffer.put((byte) operation);
         buffer.put((byte) mode);
-        buffer.put(channel.getValue());
+        buffer.put(channel == null ? 0 : channel.getValue());
         buffer.putShort((short) speed);
         buffer.putInt(cap); // 时长或者容量
 
@@ -471,7 +471,7 @@ public class Command {
         ByteBuffer buffer = ByteBuffer.allocate(len);
         buffer.put((byte) (doSet ? 1 : 2));
         buffer.put((byte) mode);
-        buffer.put(channel.getValue());
+        buffer.put(channel == null ? 0 : channel.getValue());
 
         for (SettingItem item:items) {
             buffer.put((byte) (item.isSet ? 1 : 2));

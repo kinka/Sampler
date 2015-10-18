@@ -13,6 +13,10 @@ public class Deliver {
     public static final String DefaultSvr = "192.168.8.1:36500";
     public static final String SP_SVR = "server";
 
+    // 丢包统计
+    static private long total = 0;
+    static private long lost = 0;
+
     static String svrHost = "192.168.8.1";
     static int svrPort = 36500;
     public static void printData(byte[] data) {
@@ -41,6 +45,8 @@ public class Deliver {
         DatagramPacket packet = new DatagramPacket(recvData.array(), recvData.limit());
 
         try {
+            total = (total + 1 ) % 10;
+            if (total < lost) lost = 0;
             DatagramChannel channel = DatagramChannel.open();
             DatagramSocket socket = channel.socket();
             socket.bind(null);
@@ -61,6 +67,14 @@ public class Deliver {
                 e.printStackTrace();
             }
             recvData.limit(0);
+            lost++;
+            double percent = (lost+1.0)/(total+1.0);
+            if (total >= 9 && percent >= 0.5) {
+                Comm.showTips("网络貌似不通，请检查网络状态");
+                total = 0;
+                lost = 0;
+            }
+            Comm.logI("lost " + lost + "/" + total + "=" + percent);
         }
 
         return recvData;

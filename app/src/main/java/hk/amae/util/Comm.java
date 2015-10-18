@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,10 +64,12 @@ public class Comm {
     public final static int STOPPED = 0x0;
 
     private static Context ctx;
+    private static Toast globalToast;
     private static android.os.Handler handler;
     private static String __pkgName = "";
     public static void init(Context ctx, String pkgName) {
         Comm.ctx = ctx;
+        globalToast = Toast.makeText(ctx, "", Toast.LENGTH_SHORT);
         initLogger(pkgName);
         handler = new android.os.Handler();
         Deliver.init();
@@ -105,12 +108,22 @@ public class Comm {
     public static void logE(String msg) {
         logger.severe(msg);
     }
+    public static void showTips(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                globalToast.setDuration(Toast.LENGTH_LONG);
+                globalToast.setText(msg);
+                globalToast.show();
+            }
+        });
+    }
 
     public static void setSP(String key, String value) {
         SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
         Editor editor = commSP.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
         Comm.logI("write " + key + "=" + value);
     }
     public static String getSP(String key) {
@@ -122,7 +135,7 @@ public class Comm {
         SharedPreferences commSP = ctx.getSharedPreferences("comm", Context.MODE_PRIVATE);
         Editor editor = commSP.edit();
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
         Comm.logI("write " + key + "=" + value);
     }
     public static int getIntSP(String key) {

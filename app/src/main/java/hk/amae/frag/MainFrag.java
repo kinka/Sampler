@@ -69,6 +69,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private boolean isLocked = false;
     private int sampleMode;
     private boolean isSpinnerClick = true;
+    private int ChannelBase = 0;
 
     private String fmtSpeed = "%d\nmL/min";
     private String fmtVolume = "%.2fL";
@@ -189,10 +190,11 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
 
-                currChannel = cmd.Channel;
-
                 spinChannel.setOnItemSelectedListener(MainFrag.this);
                 spinMode.setOnItemSelectedListener(MainFrag.this);
+
+                if (cmd.Channel != null)
+                    spinChannel.setSelection(cmd.Channel.getValue() - ChannelBase);
 
                 sampleMode = cmd.Manual ? Comm.MANUAL_SET : cmd.SampleMode;
                 Comm.setIntSP(SP_MANUALMODE, cmd.ManualMode);
@@ -312,18 +314,22 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             case ChannelAct.MODE_COUPLE:
                 MaxSpeed = UNITSPEED * 2;
                 currChannel = Channel.C1;
+                ChannelBase = currChannel.getValue();
                 return R.array.channels_C;
             case ChannelAct.MODE_4IN1:
                 MaxSpeed = UNITSPEED * 4;
                 currChannel = Channel.B1;
+                ChannelBase = currChannel.getValue();
                 return R.array.channels_B;
             case ChannelAct.MODE_8IN1:
                 MaxSpeed = UNITSPEED * 8;
                 currChannel = Channel.A1;
+                ChannelBase = currChannel.getValue();
                 return R.array.channels_A;
             default:
                 MaxSpeed = UNITSPEED;
                 currChannel = Channel.CH1;
+                ChannelBase = currChannel.getValue();
                 return R.array.channels_CH;
         }
     }

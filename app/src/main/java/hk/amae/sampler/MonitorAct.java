@@ -97,7 +97,7 @@ public class MonitorAct extends Activity {
             base = 1 + 8; // C1 - C4
         else if (rows.length == 2)
             base = 1 + 8 + 4; // B1 - B2
-        else
+        else if (rows.length == 1)
             base = 1 + 8 + 4 + 2; // A1
 
         for (int i=0; i<rows.length; i++) {

@@ -585,7 +585,8 @@ public class Command {
 
     // 定时关机
     public ByteBuffer setShutdown(boolean rightnow, String dateTime) {
-        ByteBuffer buffer = ByteBuffer.allocate(1 + dateTime.length());
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + dateTime.length());
+        buffer.put((byte) (rightnow ? 1 : 0));
         buffer.put((byte) dateTime.length());
         buffer.put(dateTime.getBytes());
         return build(0x10a, buffer.array());

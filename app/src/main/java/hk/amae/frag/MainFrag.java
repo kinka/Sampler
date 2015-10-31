@@ -549,24 +549,34 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     public void done(boolean verify, Command cmd) {
                         if (!verify) return;
                         // todo 显示合并结果
-                        List<Integer> running = new ArrayList<Integer>();
-                        List<Integer> stopped = new ArrayList<Integer>();
-                        List<Integer> paused = new ArrayList<Integer>();
+                        List<String> running = new ArrayList<String>();
+                        List<String> stopped = new ArrayList<String>();
+                        List<String> paused = new ArrayList<String>();
                         String states = "";
-                        for (int i = 0; i < Command.CHANNELCOUNT; i++) {
+                        int chCount = 8;
+                        if (ChannelBase == Channel.A1.getValue())
+                            chCount = 1;
+                        else if (ChannelBase == Channel.B1.getValue())
+                            chCount = 2;
+                        else if (ChannelBase == Channel.C1.getValue())
+                            chCount = 4;
+
+                        for (int i = 0; i < chCount; i++) {
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
 
-                            if (cmd.MachineState[i] == 2) running.add(i+1);
-                            else if (cmd.MachineState[i] == 3) paused.add(i+1);
-                            else stopped.add(i+1);
+                            String tmp = Channel.init(i + ChannelBase).toString();
+                            if (cmd.MachineState[i] == 2) running.add(tmp);
+                            else if (cmd.MachineState[i] == 3) paused.add(tmp);
+                            else stopped.add(tmp);
                         }
                         states = "采样：" + running.toString() + "\n";
                         states += "暂停：" + paused.toString() + "\n";
                         states += "停止：" + stopped.toString();
                         txtTips.setText(states);
 
-                        resolveState(cmd);
+//                        resolveState(cmd);
+                        runningState = resolveState(cmd.MachineState[currChannel.getValue() - ChannelBase]);
 
                         if (sampleMode == Comm.MANUAL_SET)
                             pollManualState();
@@ -589,6 +599,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     // 通道合并的状态下，判断当前通道的运行状态
     private void resolveState(Command cmd) {
         int channel = currChannel.getValue();
+
         if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
             int state = cmd.MachineState[channel - 1];
             runningState = resolveState(state);

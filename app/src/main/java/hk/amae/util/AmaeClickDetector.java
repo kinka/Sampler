@@ -1,5 +1,6 @@
 package hk.amae.util;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
@@ -33,7 +34,9 @@ public class AmaeClickDetector implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        final int id = view.getId();
         switch (view.getId()) {
+            case R.id.btn_stop:
             case R.id.toggle_run:
                 if (poweroffTask == null)
                     poweroffTask = new TimerTask() {
@@ -51,6 +54,9 @@ public class AmaeClickDetector implements View.OnTouchListener {
                         public void run() {
                             Message msg = new Message();
                             msg.what = MSG_CLICK;
+                            Bundle data = new Bundle();
+                            data.putInt("which", id);
+                            msg.setData(data);
                             handler.sendMessage(msg);
                             clickTask = null;
                             clickCnt = 0;

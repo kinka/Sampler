@@ -52,7 +52,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     TextProgressBar progSampling;
     Activity parent;
     ImageButton btnLock;
-    ImageButton btnRun;
+    ImageButton btnRun, btnStop;
     LinearLayout wrapManual, wrapTiming;
     LinearLayout layoutCap, layoutTiming;
     TextView txtSpeed, txtVolume;
@@ -125,7 +125,10 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
         btnRun = (ImageButton) v.findViewById(R.id.toggle_run);
         btnRun.setOnTouchListener(new AmaeClickDetector(new ClickHandler()));
-        v.findViewById(R.id.btn_stop).setOnClickListener(this);
+
+        btnStop = (ImageButton) v.findViewById(R.id.btn_stop);
+//        btnStop.setOnClickListener(this);
+        btnStop.setOnTouchListener(new AmaeClickDetector(new ClickHandler()));
 
         v.findViewById(R.id.btn_setting).setOnClickListener(this);
         v.findViewById(R.id.btn_connect).setOnClickListener(this);
@@ -817,21 +820,30 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     class ClickHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            Bundle data = msg.getData();
             switch (msg.what) {
                 case AmaeClickDetector.MSG_PRESSED_3:
                     Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
                     // 发送当前时间
+                    // todo 实现关机功能
                     break;
                 case AmaeClickDetector.MSG_CLICK:
-                    if (runningState == Comm.PLAYING) {
-                        runningState = Comm.PAUSED;
+                    if (data == null) break;
+
+                    int id = data.getInt("which");
+                    if (id == R.id.btn_stop) {
+                        runningState = Comm.STOPPED;
+                        Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
+                        break;
                     } else {
-                        runningState = Comm.PLAYING;
+                        if (runningState == Comm.PLAYING) {
+                            runningState = Comm.PAUSED;
+                        } else {
+                            runningState = Comm.PLAYING;
+                        }
                     }
+
                     switchRunningState();
-                    break;
-                case AmaeClickDetector.MSG_DBLCLICK:
-                    // 单独一个停止按钮 btn_stop
                     break;
             }
         }

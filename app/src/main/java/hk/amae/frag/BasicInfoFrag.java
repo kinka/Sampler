@@ -40,6 +40,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     private EditText snPassword;
     private EditText snText;
 
+    private TextView txtATM, txtTemp, txtSSID, txtModel, txtSN;
+
     String snFormat;
     String hostFormat;
     String modelFormat;
@@ -71,6 +73,17 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
             txtSN.setOnClickListener(this);
 
         appTitle = (TextView) v.findViewById(R.id.app_title);
+        txtATM = (TextView) v.findViewById(R.id.txt_atm);
+        txtTemp = (TextView) v.findViewById(R.id.txt_temp);
+        txtSSID = (TextView) v.findViewById(R.id.txt_ssid);
+        txtModel = (TextView) v.findViewById(R.id.txt_model);
+        txtSN = (TextView) v.findViewById(R.id.txt_sn);
+
+        txtATM.setText(String.format(atmFormat, 0.0));
+        txtTemp.setText(String.format(tempFormat, 0.0));
+        txtModel.setText(String.format(modelFormat, ""));
+        txtSN.setText(String.format(snFormat, "000000000"));
+        txtSSID.setText(String.format(hostFormat, "未连接"));
 
         return v;
     }
@@ -79,7 +92,6 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         parent = activity;
-//        reqGPS();
     }
 
     @Override
@@ -117,6 +129,7 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                     }
                 });
                 tmpDialog.show();
+                Comm.showSoftInput(500);
                 break;
         }
     }
@@ -197,8 +210,8 @@ public class BasicInfoFrag extends Fragment implements View.OnClickListener, Ale
                     return;
                 }
                 __atm_limit = 3;
-                ((TextView) parent.findViewById(R.id.txt_atm)).setText(String.format(atmFormat, cmd.ATM));
-                ((TextView) parent.findViewById(R.id.txt_temp)).setText(String.format(tempFormat, cmd.TEMP));
+                txtATM.setText(String.format(atmFormat, cmd.ATM));
+                txtTemp.setText(String.format(tempFormat, cmd.TEMP));
             }
         }).reqATM_TEMP();
     }

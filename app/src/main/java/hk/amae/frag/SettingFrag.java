@@ -122,7 +122,7 @@ public class SettingFrag extends Fragment implements
         inputPassword = new EditText(parent);
         inputPassword.setSingleLine();
         inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+        inputPassword.setInputType(InputType.TYPE_CLASS_NUMBER);
         inputPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         String title = String.format("请输入%s密码", type == 1 ? "管理员" : "校准");
         new AlertDialog.Builder(parent).setTitle(title)

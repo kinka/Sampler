@@ -19,8 +19,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -124,7 +126,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         btnLock.setOnClickListener(this);
 
         btnRun = (ImageButton) v.findViewById(R.id.toggle_run);
-        btnRun.setOnTouchListener(new AmaeClickDetector(new ClickHandler()));
+        btnRun.setOnClickListener(this);
 
         btnStop = (ImageButton) v.findViewById(R.id.btn_stop);
 //        btnStop.setOnClickListener(this);
@@ -300,7 +302,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         if (waitingGroup == -1) return;
 
                         String diff = Comm.getDateDiff(timedLaunchAt[waitingGroup]);
-                        txtCountDown.setText(String.format("第%d组 启动倒计时 %s", waitingGroup+1, diff));
+                        txtCountDown.setText(String.format("第%d组 启动倒计时 约%s", waitingGroup+1, diff));
                         if (diff.indexOf("-") == 0) { // 下一组
                             startCountDown();
                         }
@@ -373,10 +375,13 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                 setLock();
                 break;
 
-            case R.id.btn_stop:
-                runningState = Comm.STOPPED;
+            case R.id.toggle_run:
+                if (runningState == Comm.PLAYING) {
+                    runningState = Comm.PAUSED;
+                } else {
+                    runningState = Comm.PLAYING;
+                }
                 switchRunningState();
-                Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_setting:
@@ -486,7 +491,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             public void done(boolean verify, Command cmd) {
                 if (!verify) return;
 
-                progSampling.setProgress(cmd.Progress); // todo 也许定时模式也应该显示进度条的
+                progSampling.setProgress(cmd.Progress);
                 txtSpeed.setText(String.format(fmtSpeed, cmd.Speed));
                 txtVolume.setText(String.format(fmtVolume, cmd.Volume / 1000.0));
                 runningState = cmd.ChannelState;
@@ -543,6 +548,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     @Override
                     public void done(boolean verify, Command cmd) {
                         if (!verify) return;
+                        // todo 显示合并结果
                         List<Integer> running = new ArrayList<Integer>();
                         List<Integer> stopped = new ArrayList<Integer>();
                         List<Integer> paused = new ArrayList<Integer>();
@@ -817,15 +823,24 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         void onButtonClick(int id);
     }
 
+    private void shutdownNow() {
+        new Command(new Once() {
+            @Override
+            public void done(boolean verify, Command cmd) {
+                Toast.makeText(parent, "已经关机!", Toast.LENGTH_LONG).show();
+                parent.finish();
+                System.exit(0);
+            }
+        }).setShutdown(true, "0000-00-00 00:00:00");
+    }
+
     class ClickHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             Bundle data = msg.getData();
             switch (msg.what) {
                 case AmaeClickDetector.MSG_PRESSED_3:
-                    Toast.makeText(parent, "关机提醒", Toast.LENGTH_SHORT).show();
-                    // 发送当前时间
-                    // todo 实现关机功能
+                    shutdownNow();
                     break;
                 case AmaeClickDetector.MSG_CLICK:
                     if (data == null) break;
@@ -834,16 +849,8 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                     if (id == R.id.btn_stop) {
                         runningState = Comm.STOPPED;
                         Toast.makeText(parent, "已发送停止命令", Toast.LENGTH_SHORT).show();
-                        break;
-                    } else {
-                        if (runningState == Comm.PLAYING) {
-                            runningState = Comm.PAUSED;
-                        } else {
-                            runningState = Comm.PLAYING;
-                        }
+                        switchRunningState();
                     }
-
-                    switchRunningState();
                     break;
             }
         }

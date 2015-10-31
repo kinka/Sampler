@@ -35,70 +35,66 @@ public class AmaeClickDetector implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         final int id = view.getId();
-        switch (view.getId()) {
-            case R.id.btn_stop:
-            case R.id.toggle_run:
-                if (poweroffTask == null)
-                    poweroffTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = MSG_PRESSED_3;
-                            handler.sendMessage(msg);
-                            poweroffTask = null;
-                        }
-                    };
-                if (clickTask == null)
-                    clickTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            Message msg = new Message();
-                            msg.what = MSG_CLICK;
-                            Bundle data = new Bundle();
-                            data.putInt("which", id);
-                            msg.setData(data);
-                            handler.sendMessage(msg);
-                            clickTask = null;
-                            clickCnt = 0;
-                        }
-                    };
+        if (poweroffTask == null)
+            poweroffTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Message msg = new Message();
+                    msg.what = MSG_PRESSED_3;
+                    handler.sendMessage(msg);
+                    poweroffTask = null;
+                }
+            };
+        if (clickTask == null)
+            clickTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Message msg = new Message();
+                    msg.what = MSG_CLICK;
+                    Bundle data = new Bundle();
+                    data.putInt("which", id);
+                    msg.setData(data);
+                    handler.sendMessage(msg);
+                    clickTask = null;
+                    clickCnt = 0;
+                }
+            };
 
-                final int CLICKGAP = 150, DBLCLICKGAP = 150;
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    btnRunTimer.schedule(poweroffTask, 3000);
+        final int CLICKGAP = 150, DBLCLICKGAP = 150;
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            btnRunTimer.schedule(poweroffTask, 3000);
 
-                    touchStartTime = System.currentTimeMillis();
+            touchStartTime = System.currentTimeMillis();
 
 //                    Comm.logI("gap " + (touchStartTime - lastupTime));
-                    if (clickCnt==1 && touchStartTime - lastupTime < DBLCLICKGAP) { // 触发双击
-                        clickCnt++;
-                        clickTask.cancel();
-                        clickTask = null;
-                        Message msg = new Message();
-                        msg.what = MSG_DBLCLICK;
-                        handler.sendMessage(msg);
-                    }
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if (clickCnt==1 && touchStartTime - lastupTime < DBLCLICKGAP) { // 触发双击
+                clickCnt++;
+                clickTask.cancel();
+                clickTask = null;
+                Message msg = new Message();
+                msg.what = MSG_DBLCLICK;
+                handler.sendMessage(msg);
+            }
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
-                    long touchEndTime = System.currentTimeMillis();
+            long touchEndTime = System.currentTimeMillis();
 //                    Comm.logI("passed time " + (touchEndTime - touchStartTime));
-                    if (touchEndTime - touchStartTime < 3000) {
-                        poweroffTask.cancel();
-                        poweroffTask = null;
-                    }
+            if (touchEndTime - touchStartTime < 3000) {
+                poweroffTask.cancel();
+                poweroffTask = null;
+            }
 
-                    if (touchEndTime - touchStartTime <= CLICKGAP) { // click
-                        clickCnt++;
-                        if (clickCnt == 1)
-                            btnRunTimer.schedule(clickTask, DBLCLICKGAP);
-                        else
-                            clickCnt = 0;
-                    }
+            if (touchEndTime - touchStartTime <= CLICKGAP) { // click
+                clickCnt++;
+                if (clickCnt == 1)
+                    btnRunTimer.schedule(clickTask, DBLCLICKGAP);
+                else
+                    clickCnt = 0;
+            }
 
-                    lastupTime = System.currentTimeMillis();
-                }
-                break;
+            lastupTime = System.currentTimeMillis();
         }
+
         return false;
     }
 }

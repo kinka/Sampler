@@ -5,13 +5,13 @@ android {
         debug {
             keyAlias 'amae'
             keyPassword 'amae2015'
-            storeFile file('/home/kinka/AndroidStudioProjects/Sampler/sampler.jks')
+            storeFile file('../sampler.jks')
             storePassword 'amae2015'
         }
         release {
             keyAlias 'amae'
             keyPassword 'amae2015'
-            storeFile file('/home/kinka/AndroidStudioProjects/Sampler/sampler.jks')
+            storeFile file('../sampler.jks')
             storePassword 'amae2015'
         }
     }

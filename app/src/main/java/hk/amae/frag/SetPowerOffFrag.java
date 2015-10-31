@@ -65,7 +65,7 @@ public class SetPowerOffFrag extends Fragment implements View.OnClickListener {
                         Comm.setSP("shutdown_time", shutdownTime);
                         Toast.makeText(getActivity(), "定时关机已经设置", Toast.LENGTH_SHORT).show();
                     }
-                }).setShutdown(shutdownTime);
+                }).setShutdown(false, shutdownTime);
                 break;
             case R.id.btn_back:
                 getActivity().onBackPressed();

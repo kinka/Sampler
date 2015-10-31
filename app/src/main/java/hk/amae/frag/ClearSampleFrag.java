@@ -90,7 +90,7 @@ public class ClearSampleFrag extends Fragment implements DialogInterface.OnClick
                 new Command(new Command.Once() {
                     @Override
                     public void done(boolean verify, Command cmd) {
-                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR); // todo 使用机器返回的进度
+                        cmd.Progress = (byte) Comm.getIntSP(SP_CLEAR);
                         cmd.Progress += 10;
 
                         progressBar.setProgress(cmd.Progress);

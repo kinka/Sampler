@@ -554,14 +554,12 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         List<Integer> paused = new ArrayList<Integer>();
                         String states = "";
                         for (int i = 0; i < Command.CHANNELCOUNT; i++) {
-//                            cmd.MachineState[i] = (byte) (Math.round(Math.random() * 100) % 5);
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
                                 cmd.MachineState[i] = 0;
 
                             if (cmd.MachineState[i] == 2) running.add(i+1);
                             else if (cmd.MachineState[i] == 3) paused.add(i+1);
                             else stopped.add(i+1);
-//                            states += String.format("通道%d%s ", i + 1, State[cmd.MachineState[i]]);
                         }
                         states = "采样：" + running.toString() + "\n";
                         states += "暂停：" + paused.toString() + "\n";
@@ -588,6 +586,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             return Comm.STOPPED;
         return Comm.PLAYING;
     }
+    // 通道合并的状态下，判断当前通道的运行状态
     private void resolveState(Command cmd) {
         int channel = currChannel.getValue();
         if (channel >= Channel.CH1.getValue() && channel <= Channel.CH8.getValue()) {
@@ -633,8 +632,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             if (i == Command.CHANNELCOUNT)
                 runningState = Comm.PAUSED;
         }
-
-//        updateRunningState();
     }
 
     @Override

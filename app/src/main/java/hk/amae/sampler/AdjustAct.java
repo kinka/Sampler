@@ -45,7 +45,7 @@ public class AdjustAct extends Activity implements View.OnClickListener, SwipeIn
     final int STATE_ING = 1;
     final int STATE_STOPPED = 2;
     Timer timer = new Timer();
-// todo 键盘弹出 界面上移
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

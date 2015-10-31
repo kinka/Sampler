@@ -19,7 +19,7 @@ import hk.amae.util.Command.Once;
  */
 public class MonitorAct extends Activity {
     private final String fmtRow = "row_%d_%d"; // 虽然这样子挺笨的，但是不想麻烦再去搞个列表项
-    TextView[][] rows = new TextView[8][4];
+    TextView[][] rows;
 
     TextView atm, datetime, temp;
 
@@ -42,9 +42,18 @@ public class MonitorAct extends Activity {
             }
         });
 
+
+        initRows();
+
         Resources res = getResources();
         String pkgName = getPackageName();
-        for (int i=0; i<rows.length; i++) {
+        for (int i=0; i<Command.CHANNELCOUNT; i++) {
+            if (i >= rows.length) {
+                // 隐藏不必要的通道信息
+                int id = res.getIdentifier(String.format("row_%d", i), "id", pkgName);
+                findViewById(id).setVisibility(View.GONE);
+                continue;
+            }
             rows[i] = new TextView[4];
             for (int j=0; j<4; j++) {
                 int id = res.getIdentifier(String.format(fmtRow, i, j), "id", pkgName);
@@ -64,22 +73,51 @@ public class MonitorAct extends Activity {
         ticker = Comm.syncSvrTime(ticker, datetime);
     }
 
+    private void initRows() {
+        int mode = Comm.getIntSP(ChannelAct.SP_CHANNELMODE);
+        switch (mode) {
+            case ChannelAct.MODE_SINGLE:
+                rows = new TextView[8][4];
+                break;
+            case ChannelAct.MODE_COUPLE:
+                rows = new TextView[4][4];
+                break;
+            case ChannelAct.MODE_4IN1:
+                rows = new TextView[2][4];
+                break;
+            case ChannelAct.MODE_8IN1:
+                rows = new TextView[1][4];
+                break;
+        }
+    }
+
     private void query() {
-        for (int i=0; i<Command.CHANNELCOUNT; i++) {
+        int base = 1; // CH1 - CH8
+        if (rows.length == 4)
+            base = 1 + 8; // C1 - C4
+        else if (rows.length == 2)
+            base = 1 + 8 + 4; // B1 - B2
+        else
+            base = 1 + 8 + 4 + 2; // A1
+
+        for (int i=0; i<rows.length; i++) {
             final int r = i;
+            int ch = i + base;
             new Command(new Once() {
                 @Override
                 public void done(boolean verify, Command cmd) {
                     if (!verify) return;
 
+                    TextView txtCh = rows[r][0];
                     TextView speed = rows[r][1];
                     TextView volume = rows[r][2];
                     TextView progress = rows[r][3];
+                    txtCh.setText(cmd.Channel.toString());
                     speed.setText(String.format("%d", cmd.Speed));
                     volume.setText(String.format("%.2f", cmd.Volume / 1000f));
                     progress.setText(String.format("%d%%", cmd.Progress));
                 }
-            }).reqChannelState(Comm.Channel.init(i+1)); // CH1 - CH8
+            }).reqChannelState(Comm.Channel.init(ch));
         }
     }
 
@@ -92,16 +130,6 @@ public class MonitorAct extends Activity {
                 temp.setText(String.format(BasicInfoFrag.tempFormat, cmd.TEMP));
             }
         }).reqATM_TEMP();
-
-/*        new Command(new Once() {
-            @Override
-            public void done(boolean verify, Command cmd) {
-                if (!verify) return;
-                if (cmd.DateTime != null)
-                    datetime.setText(cmd.DateTime);
-//                    datetime.setText(cmd.DateTime.replace(" ", "\n"));
-            }
-        }).reqDateTime();*/
     }
 
     @Override

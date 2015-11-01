@@ -338,7 +338,7 @@ public class Command {
         Channel = Comm.Channel.init(reply.get());
         Manual = reply.get() == 1;
         Group = reply.get();
-        GPS = getString(reply);
+        GPS = formatGPS(getString(reply));
     }
 
     public String[] History;
@@ -443,7 +443,7 @@ public class Command {
     public int TargetVolume; // 设定容量
     public int ManualMode; // 手动模式下的定时长/定容量
     public ByteBuffer setManualChannel(int operation, int mode, Channel channel, int speed, int cap) {
-        byte[] gps = Comm.getSP("gps").getBytes();
+        byte[] gps = formatGPS(null).getBytes();
         ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 1 + 2 + 4 + 1 + gps.length);
         buffer.put((byte) operation);
         buffer.put((byte) mode);
@@ -466,7 +466,7 @@ public class Command {
 
     // 设置采样参数(定时定容)
     public ByteBuffer setTimedChannel(boolean doSet, int mode, Channel channel, SettingItem[] items) {
-        byte[] gps = Comm.getSP("gps").getBytes();
+        byte[] gps = formatGPS(null).getBytes();
         int len = 1 + 1 + 1 + (1+2+4+1+16)*8 + 1 + gps.length;
         ByteBuffer buffer = ByteBuffer.allocate(len);
         buffer.put((byte) (doSet ? 1 : 2));
@@ -607,5 +607,14 @@ public class Command {
         buffer.put((byte) sn.length());
         buffer.put(sn.getBytes());
         build(0x10c, buffer.array());
+    }
+
+    private String formatGPS(String gps) {
+        if (gps == null) {
+            gps = Comm.getSP("gps");
+            return gps.replace("\n", ","); // 发送
+        } else {
+            return gps.replace(",", "\n"); // 接收
+        }
     }
 }

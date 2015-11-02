@@ -539,6 +539,16 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
         if (__state != null)
             __state.cancel();
 
+        final int chCount;
+        if (ChannelBase == Channel.A1.getValue())
+            chCount = 1;
+        else if (ChannelBase == Channel.B1.getValue())
+            chCount = 2;
+        else if (ChannelBase == Channel.C1.getValue())
+            chCount = 4;
+        else
+            chCount = 8;
+
         __state = new Timer();
         __state.schedule(new TimerTask() {
             @Override
@@ -553,13 +563,6 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         List<String> stopped = new ArrayList<String>();
                         List<String> paused = new ArrayList<String>();
                         String states = "";
-                        int chCount = 8;
-                        if (ChannelBase == Channel.A1.getValue())
-                            chCount = 1;
-                        else if (ChannelBase == Channel.B1.getValue())
-                            chCount = 2;
-                        else if (ChannelBase == Channel.C1.getValue())
-                            chCount = 4;
 
                         for (int i = 0; i < chCount; i++) {
                             if (cmd.MachineState[i] >= State.length || cmd.MachineState[i] < 0)
@@ -583,7 +586,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
                         else
                             pollTimedState();
                     }
-                }).reqMachineState();
+                }).reqMachineState(chCount);
             }
         }, 0, durationState);
     }

@@ -3,6 +3,8 @@ package hk.amae.util;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import javax.crypto.Mac;
+
 import hk.amae.sampler.ModeSettingAct;
 import hk.amae.util.Comm.Channel;
 
@@ -301,8 +303,9 @@ public class Command {
         Progress = reply.get();
     }
 
-    public byte[] MachineState = new byte[8];
-    public ByteBuffer reqMachineState() { // 查询机器工作状态
+    public byte[] MachineState;
+    public ByteBuffer reqMachineState(int channelCount) { // 查询机器工作状态
+        MachineState = new byte[channelCount];
         return build(0x6, null);
     }
     public void resolveMachineState(ByteBuffer reply) {

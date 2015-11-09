@@ -114,7 +114,7 @@ public class NumberOperator extends FrameLayout implements View.OnClickListener,
     }
 
     public int getDefault() {
-        return defaultValue;
+        return defaultValue * delta;
     }
 
     public int getValue() {

@@ -86,6 +86,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
     private final int durationBattery = 60*1000, durationProgress = 1*1000, durationState = 3*1000;
 
     private static final int UNITSPEED = 1000; // 单通道最高流量
+    private static int XValue = 1; // 倍率，跟合并通道的层次有关，比如单通道，则为1,又通道，则为2
     public static int MaxSpeed = UNITSPEED;
 
     private String[] timedLaunchAt = new String[ModeSettingAct.GROUPCOUNT];
@@ -317,22 +318,26 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
 
         switch (mode) {
             case ChannelAct.MODE_COUPLE:
-                MaxSpeed = UNITSPEED * 2;
+                XValue = 2;
+                MaxSpeed = UNITSPEED * XValue;
                 currChannel = Channel.C1;
                 ChannelBase = currChannel.getValue();
                 return R.array.channels_C;
             case ChannelAct.MODE_4IN1:
-                MaxSpeed = UNITSPEED * 4;
+                XValue = 4;
+                MaxSpeed = UNITSPEED * XValue;
                 currChannel = Channel.B1;
                 ChannelBase = currChannel.getValue();
                 return R.array.channels_B;
             case ChannelAct.MODE_8IN1:
-                MaxSpeed = UNITSPEED * 8;
+                XValue = 8;
+                MaxSpeed = UNITSPEED * XValue;
                 currChannel = Channel.A1;
                 ChannelBase = currChannel.getValue();
                 return R.array.channels_A;
             default:
-                MaxSpeed = UNITSPEED;
+                XValue = 1;
+                MaxSpeed = UNITSPEED * XValue;
                 currChannel = Channel.CH1;
                 ChannelBase = currChannel.getValue();
                 return R.array.channels_CH;
@@ -760,6 +765,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             targetVolume = npVolume.getDefault();
 
         npSpeed.setValue(targetSpeed);
+        npSpeed.setDelta(100 * XValue);
 
         int manualMode = Comm.getIntSP(SP_MANUALMODE);
         if (manualMode == 0) {
@@ -773,7 +779,7 @@ public class MainFrag extends Fragment implements View.OnClickListener, AdapterV
             layoutCap.setVisibility(View.VISIBLE);
             layoutTiming.setVisibility(View.GONE);
             npVolume.setValue(targetVolume);
-            npVolume.setDelta(100);
+            npVolume.setDelta(100 * XValue);
         } else if (manualMode == Comm.TIMED_SET_TIME) {
             if (lastManualMode == Comm.TIMED_SET_CAP)
                 targetDuration = targetVolume / targetSpeed;

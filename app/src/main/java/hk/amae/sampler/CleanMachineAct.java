@@ -20,19 +20,19 @@ import hk.amae.widget.TextProgressBar;
 
 public class CleanMachineAct extends Activity implements DialogInterface.OnClickListener {
 
-    TextProgressBar progClean;
-    TextView lblStatus;
-    TextView lblRemaining;
+    static TextProgressBar progClean;
+    static TextView lblStatus;
+    static TextView lblRemaining;
 
     static String fmtRemaining;
 
     TimerTask cleanTask;
-    Timer timer;
+    static Timer timer;
     static int progress = 0;
 
-    int total = 60 * 5 * 1000;
-    int cnt = total;
-    boolean cleaning = false;
+    static int total = 60 * 5 * 1000;
+    static int cnt = total;
+    static boolean cleaning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
 
         progress = 0;
 
-        lblRemaining.setText(String.format(fmtRemaining, cnt / 1000));
+        lblRemaining.setText("\n");
 
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,19 +62,17 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
                 doClean();
             }
         });
-
-//        if (progress == 0)
-//            doClean();
-//        else
-//            cleaning();
     }
 
-    private Handler handler = new Handler() {
+    private Handler handler = new TimerHandler();
+
+    static class TimerHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progress = 100 - cnt * 100 / total;
-            cnt -= 1000;
+
             progClean.setProgress(progress);
+            lblRemaining.setText(String.format(fmtRemaining, cnt / 1000));
             if (progress >= 100) {
                 progress = 100;
                 cleaning = false;
@@ -82,14 +80,18 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
                     timer.cancel();
                     timer.purge();
                     lblStatus.setText("清洗完毕");
-                    Toast.makeText(CleanMachineAct.this, "清洗完毕", Toast.LENGTH_SHORT).show();
+                    lblRemaining.setText("\n");
+                    Toast.makeText(progClean.getContext(), "清洗完毕", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
 
                 }
+            } else {
+                cnt -= 1000;
+                if (cnt < 0) cnt = 0;
             }
-            lblRemaining.setText(String.format(fmtRemaining, cnt / 1000));
         }
-    };
+    }
+
     private void doClean() {
         if (cleaning) return;
         lblStatus.setText("正在清洗");
@@ -130,7 +132,7 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
                 handler.sendMessage(msg);
             }
         };
-        timer.schedule(cleanTask, 1000, 1000);
+        timer.schedule(cleanTask, 0, 1000);
     }
 
     @Override
@@ -145,12 +147,6 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
             new AlertDialog.Builder(this).setTitle("清洁中").setMessage("确定离开，将立即取消清洗")
                     .setPositiveButton("离开", this).setNegativeButton("留下", this).setCancelable(false).show();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        cancelClean();
-        super.onPause();
     }
 
     @Override

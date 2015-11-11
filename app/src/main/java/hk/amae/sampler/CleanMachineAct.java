@@ -106,14 +106,17 @@ public class CleanMachineAct extends Activity implements DialogInterface.OnClick
     }
 
     private void cancelClean() {
+		if (!cleaning) return;
+		
         try {
             timer.cancel();
             timer.purge();
             progress = 0;
+			cleaning = false;
         } catch (Exception e) {
 
         }
-        if (!cleaning) return;
+        
         new Command(new Once() {
             @Override
             public void done(boolean verify, Command cmd) {
